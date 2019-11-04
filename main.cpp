@@ -18,7 +18,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
+const float POINT_COUNT = 9;
 
 int main()
 {
@@ -59,12 +59,19 @@ int main()
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f, // left
-            0.5f, -0.5f, 0.0f, // right
-            0.0f,  0.5f, 0.0f  // top
-    };
+//    // ------------------------------------------------------------------
+//    float vertices[] = {
+//            -0.5f, -0.5f, 0.0f, // left
+//            0.5f, -0.5f, 0.0f, // right
+//            0.0f,  0.5f, 0.0f  // top
+//    };
+    Circle xxx(1.0,POINT_COUNT);
+    xxx.gen_vertices();
+
+    float *vertices = xxx.get_vertices();
+    for (int cntr = 0; cntr <9; cntr++){
+        std::cout <<vertices[cntr]<<"\n";
+    }
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -73,7 +80,7 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)*9, vertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -105,8 +112,6 @@ int main()
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -143,5 +148,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+    GLint dims[4] = {0};
+    glGetIntegerv(GL_VIEWPORT, dims);
+    GLint fbWidth = dims[2];
+    GLint fbHeight = dims[3];
+    glViewport(0, 0, fbWidth, fbHeight);
 }

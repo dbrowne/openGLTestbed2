@@ -53,7 +53,18 @@ void::Circle::gen_vertices() {
         vertices[cntr+2] = z;
         cntr +=VERTEX_SIZE;
         theta += incr;
+        std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
+    }
 
+  //    // ------------------------------------------------------------------
+    float vertex[] = {
+            -0.5f, -0.5f, 0.0f, // left
+            0.5f, -0.5f, 0.0f, // right
+            0.0f,  0.5f, 0.0f  // top
+    };
+
+    for (int cntr = 0; cntr <9; cntr++){
+        vertices[cntr] = vertex[cntr];
     }
 
 }
