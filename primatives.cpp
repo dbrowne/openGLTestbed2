@@ -46,11 +46,12 @@ void::Circle::gen_vertices() {
     cntr = 0;
     while (theta <= 2*PI){
         x=radius*cos(theta);
-        vertices[cntr++] = x;
+        vertices[cntr] = x;
         y=radius*sin(theta);
-        vertices[cntr++] = y;
+        vertices[cntr+1] = y;
 
-        vertices[cntr++] = z;
+        vertices[cntr+2] = z;
+        cntr +=VERTEX_SIZE;
         theta += incr;
 
     }

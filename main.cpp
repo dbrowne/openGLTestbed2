@@ -1,23 +1,6 @@
 #include <iostream>
 #include "primatives.h"
-int main() {
-    Circle xxx;
-    float *vecs;
-    float points;
-    int cntr;
-    points =365;
-    xxx.set_point_Count(points);
-    xxx.gen_vertices();
-
-    vecs = xxx.get_vertices();
-
-    cntr =0;
-
-    while (cntr <3*points){
-        std::cout << vecs[cntr++] <<","<< vecs[cntr++]<<","<<vecs[cntr++]<<"\n";
-    }
-
-
-
-    return 0;
-}
+#include "glad.h"
+#include "Shader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"

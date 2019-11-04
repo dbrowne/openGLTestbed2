@@ -7,7 +7,7 @@
 #include<math.h>
 #include <vector>
 
-const double PI = 3.141596;
+const double PI = 3.1415967;
 const int VERTEX_SIZE = 3;
 
 class Circle
