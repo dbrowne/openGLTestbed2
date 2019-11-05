@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -16,7 +17,8 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 64;
+const float POINT_COUNT = 3;
+
 int main()
 {
     // glfw: initialize and configure
@@ -88,7 +90,7 @@ int main()
 
 
     // uncomment this call to draw in wireframe polygons.
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
     ourShader.use();
@@ -134,6 +136,20 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    }
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

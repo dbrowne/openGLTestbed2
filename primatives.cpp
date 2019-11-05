@@ -56,29 +56,34 @@ void ::Polyg::gen_vertices() {
             vertices[idx] =0;
             vertices[idx+1] =0;
             vertices[idx+2] =z;
-            set_color(idx, 1.0, 1.0, 1.0);
+            set_color(idx, 1.0, 0.0, 0.0);
             idx += offset;
-
+            x = radius * cos(theta);
+            y = radius * sin(theta);
+            vertices[idx] = x;
+            vertices[idx + 1] = y;
+            vertices[idx + 2] = z;
+            set_color(idx, 0.0, 1.0, 0.0);
+        } else {
+            x = radius * cos(theta);
+            y = radius * sin(theta);
+            vertices[idx] = x;
+            vertices[idx + 1] = y;
+            vertices[idx + 2] = z;
+            set_color(idx, 0.0, 0.0, 1.0);
         }
-        x=radius*cos(theta);
-        y=radius*sin(theta);
-        vertices[idx] = x;
-        vertices[idx+1] =y;
-        vertices[idx+2] =z;
-        set_color(idx, 1.0, 1.0, 1.0);
-
         idx += offset;
         cntr++;
 
         theta += incr;
-//        std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
     }
-    idx -= offset;
-    theta = 2 * PI;
-    vertices[idx]=radius*cos(theta);
-    vertices[idx+1]=radius*sin(theta);
-    vertices[idx+2]=z;
-    set_color(idx, 1.0, 1.0, 1.0);
+    // finish the shape properly
+//    idx -= offset;
+//    theta = 0;
+//    vertices[idx]=radius*cos(theta);
+//    vertices[idx+1]=radius*sin(theta);
+//    vertices[idx+2]=z;
+//    set_color(idx, 1.0, 0, 0);
 
 
 }
