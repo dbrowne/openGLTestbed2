@@ -56,9 +56,7 @@ void ::Polyg::gen_vertices() {
             vertices[idx] =0;
             vertices[idx+1] =0;
             vertices[idx+2] =z;
-            vertices[idx+3] = 1.0;
-            vertices[idx+4] = 1.0;
-            vertices[idx+5] = 1.0;
+            set_color(idx, 1.0, 1.0, 1.0);
             idx += offset;
 
         }
@@ -67,9 +65,8 @@ void ::Polyg::gen_vertices() {
         vertices[idx] = x;
         vertices[idx+1] =y;
         vertices[idx+2] =z;
-        vertices[idx+3] = 1.0;
-        vertices[idx+4] = 1.0;
-        vertices[idx+5] = 1.0;
+        set_color(idx, 1.0, 1.0, 1.0);
+
         idx += offset;
         cntr++;
 
@@ -77,13 +74,12 @@ void ::Polyg::gen_vertices() {
 //        std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
     }
     idx -= offset;
-    theta =0;
+    theta = 2 * PI;
     vertices[idx]=radius*cos(theta);
     vertices[idx+1]=radius*sin(theta);
     vertices[idx+2]=z;
-    vertices[idx+3]=1.0;
-    vertices[idx+4]=1.0;
-    vertices[idx+5]=1.0;
+    set_color(idx, 1.0, 1.0, 1.0);
+
 
 }
 
@@ -91,3 +87,9 @@ float *::Polyg::get_vertices() {
     return vertices;
 }
 
+void Polyg::set_color(int idx, float r, float g, float b) {
+    vertices[idx + 3] = r;
+    vertices[idx + 4] = g;
+    vertices[idx + 5] = b;
+
+}

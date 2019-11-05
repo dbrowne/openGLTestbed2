@@ -17,6 +17,8 @@ private:
     float *vertices;
     float point_count;
 
+    void set_color(int idx, float r, float g, float b);
+
 
 public:
     const int VERTEX_SIZE = 3;
