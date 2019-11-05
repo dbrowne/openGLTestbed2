@@ -6,28 +6,28 @@
 #include <iostream>
 
 
-Circle::Circle() {
+Polyg::Polyg() {
     radius = 1.0;
     point_count = 4;
 }
 
-Circle::Circle(float rad, float pc) {
+Polyg::Polyg(float rad, float pc) {
     radius = rad;
     point_count = pc;
 }
 
-Circle::~Circle() = default;
+Polyg::~Polyg() = default;
 
-void Circle::set_point_Count(float pc) {
+void Polyg::set_point_Count(float pc) {
     point_count = pc;
 }
 
-void Circle::set_radius(float rad) {
+void Polyg::set_radius(float rad) {
     radius = rad;
 }
 
 
-void::Circle::gen_vertices() {
+void ::Polyg::gen_vertices() {
     int sz;
     int cntr;
     float theta =0;
@@ -41,7 +41,7 @@ void::Circle::gen_vertices() {
     sz = offset*point_count*3;
     vertices = (float *)malloc(sz*sizeof(float));
     if (!vertices){
-        std::cout <<"Circle: Malloc failed\n";
+        std::cout << "Polyg: Malloc failed\n";
         exit(0);
     }
 
@@ -85,32 +85,9 @@ void::Circle::gen_vertices() {
     vertices[idx+4]=1.0;
     vertices[idx+5]=1.0;
 
-//  //    // ------------------------------------------------------------------
-//    float vertex[] = {
-//            0.0f, 0.0f, 0.0f, // left
-//            0.5f, -0.0f, 0.0f, // right
-//            0.0f,  0.5f, 0.0f,  //
-//            0.0f, 0.5f, 0.0f,
-//            -0.5f, 0.0f, 0.0f,
-//            0.0f,0.0f, 0.0f,
-//            -0.5f, 0.0f,0.0f,
-//            0.0f, -0.5f,0.0f,
-//            0.0f, 0.0f, 0.0f
-//
-//
-//    };
-//
-//    std::cout<<"--------------------------------\n";
-//    int i;
-//    i = 0;
-//     while (i<sz){
-//         std::cout <<vertices[i]<< " , "<<vertices[i+1]<<" , "<<vertices[i+2]<<"\n";
-//         i+=VERTEX_SIZE;
-//     }
-
 }
 
-float*::Circle::get_vertices() {
+float *::Polyg::get_vertices() {
     return vertices;
 }
 

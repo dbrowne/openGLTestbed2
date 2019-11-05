@@ -10,7 +10,7 @@
 const double PI = 3.1415967;
 
 
-class Circle
+class Polyg
 {
 private:
     float radius;
@@ -21,11 +21,12 @@ private:
 public:
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE =3;
-    Circle();
 
-    Circle(float radius, float point_count);
+    Polyg();
 
-    ~Circle();
+    Polyg(float radius, float point_count);
+
+    ~Polyg();
 
     void set_radius(float radius);
     void set_point_Count(float point_count);

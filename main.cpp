@@ -16,7 +16,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 16;
+const float POINT_COUNT = 32;
 
 int main()
 {
@@ -59,7 +59,7 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
 
-    Circle xxx(0.5,POINT_COUNT);
+    Polyg xxx(0.5, POINT_COUNT);
     xxx.gen_vertices();
 
     float *vertices = xxx.get_vertices();
