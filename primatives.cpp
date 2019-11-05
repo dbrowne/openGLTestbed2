@@ -37,7 +37,8 @@ void::Circle::gen_vertices() {
     int idx =0;
     z = 0.0;
 
-    sz = VERTEX_SIZE*point_count*3;
+    offset = VERTEX_SIZE+COLOR_SIZE;
+    sz = offset*point_count*3;
     vertices = (float *)malloc(sz*sizeof(float));
     if (!vertices){
         std::cout <<"Circle: Malloc failed\n";
@@ -48,14 +49,17 @@ void::Circle::gen_vertices() {
     cntr = 0;
 
     while (cntr <2*point_count){
-        if (cntr%(VERTEX_SIZE-1) ==0){
+        if (cntr%2 ==0){
             if (theta >0){
                 theta -=incr;
             }
             vertices[idx] =0;
             vertices[idx+1] =0;
             vertices[idx+2] =z;
-            idx += VERTEX_SIZE;
+            vertices[idx+3] = 1.0;
+            vertices[idx+4] = 1.0;
+            vertices[idx+5] = 1.0;
+            idx += offset;
 
         }
         x=radius*cos(theta);
@@ -63,17 +67,23 @@ void::Circle::gen_vertices() {
         vertices[idx] = x;
         vertices[idx+1] =y;
         vertices[idx+2] =z;
-        idx += VERTEX_SIZE;
+        vertices[idx+3] = 1.0;
+        vertices[idx+4] = 1.0;
+        vertices[idx+5] = 1.0;
+        idx += offset;
         cntr++;
 
         theta += incr;
-        std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
+//        std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
     }
-    idx -= VERTEX_SIZE;
+    idx -= offset;
     theta =0;
     vertices[idx]=radius*cos(theta);
     vertices[idx+1]=radius*sin(theta);
     vertices[idx+2]=z;
+    vertices[idx+3]=1.0;
+    vertices[idx+4]=1.0;
+    vertices[idx+5]=1.0;
 
 //  //    // ------------------------------------------------------------------
 //    float vertex[] = {
@@ -90,13 +100,13 @@ void::Circle::gen_vertices() {
 //
 //    };
 //
-    std::cout<<"--------------------------------\n";
-    int i;
-    i = 0;
-     while (i<sz){
-         std::cout <<vertices[i]<< " , "<<vertices[i+1]<<" , "<<vertices[i+2]<<"\n";
-         i+=VERTEX_SIZE;
-     }
+//    std::cout<<"--------------------------------\n";
+//    int i;
+//    i = 0;
+//     while (i<sz){
+//         std::cout <<vertices[i]<< " , "<<vertices[i+1]<<" , "<<vertices[i+2]<<"\n";
+//         i+=VERTEX_SIZE;
+//     }
 
 }
 

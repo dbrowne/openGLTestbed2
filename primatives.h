@@ -20,6 +20,7 @@ private:
 
 public:
     const int VERTEX_SIZE = 3;
+    const int COLOR_SIZE =3;
     Circle();
 
     Circle(float radius, float point_count);

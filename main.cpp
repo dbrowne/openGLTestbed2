@@ -18,7 +18,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 48;
+const float POINT_COUNT = 16;
 
 int main()
 {
@@ -59,12 +59,8 @@ int main()
 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
-//    // ------------------------------------------------------------------
-//    float vertices[] = {
-//            -0.5f, -0.5f, 0.0f, // left
-//            0.5f, -0.5f, 0.0f, // right
-//            0.0f,  0.5f, 0.0f  // top
-//    };
+    // ------------------------------------------------------------------
+
     Circle xxx(0.5,POINT_COUNT);
     xxx.gen_vertices();
 
@@ -78,9 +74,9 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)*POINT_COUNT*xxx.VERTEX_SIZE*3, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)*POINT_COUNT*xxx.VERTEX_SIZE*xxx.COLOR_SIZE*3, vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
