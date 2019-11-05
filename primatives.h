@@ -8,7 +8,7 @@
 #include <vector>
 
 const double PI = 3.1415967;
-const int VERTEX_SIZE = 3;
+
 
 class Circle
 {
@@ -19,6 +19,7 @@ private:
 
 
 public:
+    const int VERTEX_SIZE = 3;
     Circle();
 
     Circle(float radius, float point_count);

@@ -8,7 +8,7 @@
 
 Circle::Circle() {
     radius = 1.0;
-    point_count = 365;
+    point_count = 4;
 }
 
 Circle::Circle(float rad, float pc) {
@@ -33,9 +33,11 @@ void::Circle::gen_vertices() {
     float theta =0;
     float x, y, z;
     float incr;
+    int offset = 0;
+    int idx =0;
     z = 0.0;
 
-    sz = VERTEX_SIZE*point_count;
+    sz = VERTEX_SIZE*point_count*3;
     vertices = (float *)malloc(sz*sizeof(float));
     if (!vertices){
         std::cout <<"Circle: Malloc failed\n";
@@ -44,28 +46,57 @@ void::Circle::gen_vertices() {
 
     incr = 2*PI/point_count;
     cntr = 0;
-    while (theta <= 2*PI){
-        x=radius*cos(theta);
-        vertices[cntr] = x;
-        y=radius*sin(theta);
-        vertices[cntr+1] = y;
 
-        vertices[cntr+2] = z;
-        cntr +=VERTEX_SIZE;
+    while (cntr <2*point_count){
+        if (cntr%(VERTEX_SIZE-1) ==0){
+            if (theta >0){
+                theta -=incr;
+            }
+            vertices[idx] =0;
+            vertices[idx+1] =0;
+            vertices[idx+2] =z;
+            idx += VERTEX_SIZE;
+
+        }
+        x=radius*cos(theta);
+        y=radius*sin(theta);
+        vertices[idx] = x;
+        vertices[idx+1] =y;
+        vertices[idx+2] =z;
+        idx += VERTEX_SIZE;
+        cntr++;
+
         theta += incr;
         std::cout << " " << x << " , " << y <<" , "<<z<<"\n";
     }
+    idx -= VERTEX_SIZE;
+    theta =0;
+    vertices[idx]=radius*cos(theta);
+    vertices[idx+1]=radius*sin(theta);
+    vertices[idx+2]=z;
 
-  //    // ------------------------------------------------------------------
-    float vertex[] = {
-            -0.5f, -0.5f, 0.0f, // left
-            0.5f, -0.5f, 0.0f, // right
-            0.0f,  0.5f, 0.0f  // top
-    };
-
-    for (int cntr = 0; cntr <9; cntr++){
-        vertices[cntr] = vertex[cntr];
-    }
+//  //    // ------------------------------------------------------------------
+//    float vertex[] = {
+//            0.0f, 0.0f, 0.0f, // left
+//            0.5f, -0.0f, 0.0f, // right
+//            0.0f,  0.5f, 0.0f,  //
+//            0.0f, 0.5f, 0.0f,
+//            -0.5f, 0.0f, 0.0f,
+//            0.0f,0.0f, 0.0f,
+//            -0.5f, 0.0f,0.0f,
+//            0.0f, -0.5f,0.0f,
+//            0.0f, 0.0f, 0.0f
+//
+//
+//    };
+//
+    std::cout<<"--------------------------------\n";
+    int i;
+    i = 0;
+     while (i<sz){
+         std::cout <<vertices[i]<< " , "<<vertices[i+1]<<" , "<<vertices[i+2]<<"\n";
+         i+=VERTEX_SIZE;
+     }
 
 }
 
