@@ -4,8 +4,10 @@
 
 #ifndef TESTBED2_PRIMATIVES_H
 #define TESTBED2_PRIMATIVES_H
-#include<math.h>
+
+#include<cmath>
 #include <vector>
+#include "Color.h"
 
 const double PI = 3.1415967;
 
@@ -16,22 +18,37 @@ private:
     float radius;
     float *vertices;
     float point_count;
+    Color *color[3];    // for each vertex
 
-    void set_color(int idx, float r, float g, float b);
+    void set_vertex_color(int idx, int vtx);
 
 
 public:
     const int VERTEX_SIZE = 3;
-    const int COLOR_SIZE =3;
+    const int COLOR_SIZE = 4;
 
     Polyg();
 
     Polyg(float radius, float point_count);
 
+    Polyg(float rad, float pc, Color c1);
+
     ~Polyg();
 
     void set_radius(float radius);
     void set_point_Count(float point_count);
+
+    void set_color(Color c);
+
+    void set_color(int v, Color c);
+
+    void set_color(Color c0, Color c1, Color c2);
+
+    void set_alpha(float a);
+
+    void set_alpha(int v, float a);
+
+
 
     void gen_vertices();
     float *get_vertices();

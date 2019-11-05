@@ -17,7 +17,7 @@ void processInput(GLFWwindow *window);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 3;
+const float POINT_COUNT = 5;
 
 int main()
 {
@@ -61,6 +61,7 @@ int main()
     // ------------------------------------------------------------------
 
     Polyg xxx(0.5, POINT_COUNT);
+    
     xxx.gen_vertices();
 
     float *vertices = xxx.get_vertices();
@@ -75,10 +76,11 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)*POINT_COUNT*xxx.VERTEX_SIZE*xxx.COLOR_SIZE*3, vertices, GL_STATIC_DRAW);
 
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
     //color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, (xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
