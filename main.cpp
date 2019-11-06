@@ -11,13 +11,17 @@
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 const float POINT_COUNT = 16;
+
+int g_tex_flag = 0;
+bool g_tex_key = false;
 
 int main()
 {
@@ -43,6 +47,8 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
+//    glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -138,7 +144,7 @@ int main()
     {
         // input
         // -----
-        processInput(window);
+//        processInput(window);
 
         // render
         // ------
@@ -147,7 +153,7 @@ int main()
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-
+        ourShader.setInt("texflag", g_tex_flag);
         ourShader.use();
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
@@ -173,7 +179,7 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -190,7 +196,11 @@ void processInput(GLFWwindow *window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+        g_tex_flag += 1;
+        g_tex_flag %= 3;
+        std::cout << g_tex_flag << "\n";
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
