@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define IMAGENAME "awesomeface.png"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -18,7 +19,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 16;
+const float POINT_COUNT = 3;
 
 int g_tex_flag = 0;
 bool g_tex_key = false;
@@ -38,7 +39,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Testbed2", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -66,10 +67,10 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
 
-    Polyg xxx(0.5, POINT_COUNT);
-
+    Polyg xxx(1.0, POINT_COUNT);
+    xxx.set_alpha(0);
     xxx.gen_vertices();
-
+    xxx.print_vertices();
     float *vertices = xxx.get_vertices();
 
     unsigned int VBO, VAO;
@@ -79,23 +80,25 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)*POINT_COUNT*xxx.VERTEX_SIZE*xxx.COLOR_SIZE*3, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * POINT_COUNT * xxx.VERTEX_SIZE * xxx.COLOR_SIZE * xxx.TEXTURE_SIZE,
+                 vertices, GL_STATIC_DRAW);
 
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+    glVertexAttribPointer(0, xxx.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     //color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+    glVertexAttribPointer(1, xxx.COLOR_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
-                          (void *) (3 * sizeof(float)));
+                          (void *) (xxx.VERTEX_SIZE * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    //texture attribute
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+    glVertexAttribPointer(2, xxx.TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
-                          (void *) (3 * sizeof(float)));
+                          (void *) ((xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -122,9 +125,9 @@ int main()
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    unsigned char *data = stbi_load("water.bmp", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(IMAGENAME, &width, &height, &nrChannels, 0);
     if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
         std::cout << "Failed to load texture" << std::endl;
@@ -157,7 +160,8 @@ int main()
         ourShader.use();
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 3*POINT_COUNT);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
+//        glDrawElements(GL_TRIANGLES,3*POINT_COUNT, GL_UNSIGNED_INT,0);
         // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

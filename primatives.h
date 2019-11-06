@@ -22,12 +22,18 @@ private:
 
     void set_vertex_color(int idx, int vtx);
 
+    void dump_vertex(int offset);
+
+    void set_vertex(int idx, float x, float y, float z);
+
+    void set_tex_pos(int idx, float x, float y);
+
 
 public:
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
-    
+    const int MAX_VERT_ELEMS = 8;
 
     Polyg();
 
@@ -50,7 +56,7 @@ public:
 
     void set_alpha(int v, float a);
 
-
+    void print_vertices(void);
 
     void gen_vertices();
     float *get_vertices();

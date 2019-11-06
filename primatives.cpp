@@ -9,6 +9,9 @@
 Polyg::Polyg() {
     radius = 1.0;
     point_count = 16;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
 }
 
 Polyg::Polyg(float rad, float pc) {
@@ -66,30 +69,23 @@ void ::Polyg::gen_vertices() {
             if (theta > 0) {
                 theta -= incr;
             }
-            vertices[idx] = 0;
-            vertices[idx + 1] = 0;
-            vertices[idx + 2] = z;
-            set_vertex_color(idx, 0);
-            vertices[idx + 7] = 0;
-            vertices[idx + 8] = 0;
-            idx += offset;
             x = radius * cos(theta);
             y = radius * sin(theta);
-            vertices[idx] = x;
-            vertices[idx + 1] = y;
-            vertices[idx + 2] = z;
+
+            set_vertex(idx, 0, 0, z);
+            set_vertex_color(idx, 0);
+            set_tex_pos(idx, radius, radius);
+            idx += offset;
+
+            set_vertex(idx, x, y, z);
             set_vertex_color(idx, 1);
-            vertices[idx + 7] = 0;
-            vertices[idx + 8] = y;
+            set_tex_pos(idx, x, y);
         } else {
             x = radius * cos(theta);
             y = radius * sin(theta);
-            vertices[idx] = x;
-            vertices[idx + 1] = y;
-            vertices[idx + 2] = z;
+            set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
-            vertices[idx + 7] = x;
-            vertices[idx + 8] = y;
+            set_tex_pos(idx, x, y);
         }
         idx += offset;
         cntr++;
@@ -98,8 +94,15 @@ void ::Polyg::gen_vertices() {
     }
 }
 
+
 float *::Polyg::get_vertices() {
     return vertices;
+}
+
+void ::Polyg::set_vertex(int idx, float x, float y, float z) {
+    vertices[idx] = x;
+    vertices[idx + 1] = y;
+    vertices[idx + 2] = z;
 }
 
 void Polyg::set_vertex_color(int idx, int vtx) {
@@ -107,9 +110,12 @@ void Polyg::set_vertex_color(int idx, int vtx) {
     vertices[idx + 4] = color[vtx]->g;
     vertices[idx + 5] = color[vtx]->b;
     vertices[idx + 6] = color[vtx]->a;
-
 }
 
+void Polyg::set_tex_pos(int idx, float x, float y) {
+    vertices[idx + 7] = x;
+    vertices[idx + 8] = y;
+}
 void Polyg::set_alpha(float a) {
     for (int i = 0; i < 3; i++) {
         color[i]->a = a;
@@ -152,4 +158,41 @@ void Polyg::set_color(Color c0, Color c1, Color c2) {
     color[2]->b = c2.b;
     color[2]->a = c2.a;
 
+}
+
+
+void Polyg::print_vertices() {
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex \n";
+    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    int cntr = 0;
+    for (int i = 0; i < 2 * point_count; i++) {
+        std::cout << i << ":  ";
+        if (i % 2 == 0) {
+            dump_vertex(cntr);
+            cntr += offset;
+            std::cout << i << ":  ";
+            dump_vertex(cntr);
+        } else {
+            dump_vertex(cntr);
+            std::cout << "\n";
+        }
+        cntr += offset;
+
+    }
+}
+
+void Polyg::dump_vertex(int offset) {
+    for (int j = 0; j < 3; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+
+    std::cout << ":\t\t ";
+    for (int j = 3; j <= 6; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+    std::cout << ":\t\t";
+    for (int j = 7; j <= 8; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+    std::cout << "\n";
 }

@@ -4,6 +4,7 @@ in vec4 ourColor;
 in vec2 TexCoord;
 uniform sampler2D texture1;
 uniform int texflag;
+
 void main()
 {
     if (texflag == 0){
