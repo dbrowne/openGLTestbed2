@@ -8,7 +8,7 @@
 
 Polyg::Polyg() {
     radius = 1.0;
-    point_count = 4;
+    point_count = 16;
 }
 
 Polyg::Polyg(float rad, float pc) {
@@ -50,7 +50,7 @@ void ::Polyg::gen_vertices() {
     int idx = 0;
     z = 0.0;
 
-    offset = VERTEX_SIZE + COLOR_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     sz = offset * point_count * 3;
     vertices = (float *) malloc(sz * sizeof(float));
     if (!vertices) {
@@ -70,6 +70,8 @@ void ::Polyg::gen_vertices() {
             vertices[idx + 1] = 0;
             vertices[idx + 2] = z;
             set_vertex_color(idx, 0);
+            vertices[idx + 7] = 0;
+            vertices[idx + 8] = 0;
             idx += offset;
             x = radius * cos(theta);
             y = radius * sin(theta);
@@ -77,6 +79,8 @@ void ::Polyg::gen_vertices() {
             vertices[idx + 1] = y;
             vertices[idx + 2] = z;
             set_vertex_color(idx, 1);
+            vertices[idx + 7] = 0;
+            vertices[idx + 8] = y;
         } else {
             x = radius * cos(theta);
             y = radius * sin(theta);
@@ -84,6 +88,8 @@ void ::Polyg::gen_vertices() {
             vertices[idx + 1] = y;
             vertices[idx + 2] = z;
             set_vertex_color(idx, 2);
+            vertices[idx + 7] = x;
+            vertices[idx + 8] = y;
         }
         idx += offset;
         cntr++;
