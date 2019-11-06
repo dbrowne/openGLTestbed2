@@ -74,18 +74,18 @@ void ::Polyg::gen_vertices() {
 
             set_vertex(idx, 0, 0, z);
             set_vertex_color(idx, 0);
-            set_tex_pos(idx, radius, radius);
+            set_tex_pos(idx, 0.0, 0.0);
             idx += offset;
 
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 1);
-            set_tex_pos(idx, x, y);
+            set_tex_pos(idx, 1, 1);
         } else {
             x = radius * cos(theta);
             y = radius * sin(theta);
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
-            set_tex_pos(idx, x, y);
+            set_tex_pos(idx, 1, 0);
         }
         idx += offset;
         cntr++;
