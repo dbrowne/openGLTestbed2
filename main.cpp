@@ -25,7 +25,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 5;
+const float POINT_COUNT = 9;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -92,8 +92,7 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * POINT_COUNT * xxx.VERTEX_SIZE * xxx.COLOR_SIZE * xxx.TEXTURE_SIZE,
-                 vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
@@ -210,7 +209,7 @@ int main()
 
         // render
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * xxx.get_vertex_count());
 
 //        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();

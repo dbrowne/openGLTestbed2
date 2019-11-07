@@ -25,6 +25,8 @@ private:
     unsigned int *indices{};
     float point_count;
     Color *color[3]{};    // for each vertex
+    int vertex_size;
+    int vertex_count;
 
 
     void set_vertex_color(int idx, int vtx);
@@ -74,6 +76,10 @@ public:
     unsigned int *get_indices();
 
     void set_index(int idx, int pos);
+
+    int get_vertex_size(void);
+
+    int get_vertex_count();
 };
 
 

@@ -64,6 +64,9 @@ void ::Polyg::gen_vertices() {
     if (z != 0) {
         bot_offset = sz;
         sz = sz * 2;
+        vertex_count = 2 * point_count;
+    } else {
+        vertex_count = point_count;
     }
 
     vertices = (float *) malloc(sz * sizeof(float));
@@ -71,6 +74,7 @@ void ::Polyg::gen_vertices() {
         std::cout << "Polyg: Malloc failed. cannot allocate vertices\n";
         exit(-1);
     }
+    vertex_size = sz;
 
     indices = (unsigned int *) malloc(3 * point_count * sizeof(unsigned int));
     if (!indices) {
@@ -105,7 +109,7 @@ void ::Polyg::gen_vertices() {
             set_tex_pos(idx, 1, 1);
             if (z != 0) {
                 set_vertex(idx + bot_offset, x, y, 0);
-                set_vertex_color(idx + bot_offset, 0);
+                set_vertex_color(idx + bot_offset, 1);
                 set_tex_pos(idx + bot_offset, 1, 1);
             }
             index_cntr++;
@@ -118,7 +122,7 @@ void ::Polyg::gen_vertices() {
             set_tex_pos(idx, 1, 0);
             if (z != 0) {
                 set_vertex(idx + bot_offset, x, y, 0);
-                set_vertex_color(idx + bot_offset, 0);
+                set_vertex_color(idx + bot_offset, 2);
                 set_tex_pos(idx + bot_offset, 1, 1);
             }
             indices[index_pos++] = index_cntr + 1;
@@ -263,4 +267,12 @@ void Polyg::set_index(int idx, int pos) {
 
 void Polyg::set_z_axis(float z_val) {
     z = z_val;
+}
+
+int Polyg::get_vertex_size() {
+    return vertex_size;
+}
+
+int Polyg::get_vertex_count() {
+    return vertex_count;
 }
