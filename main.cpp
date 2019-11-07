@@ -1,3 +1,10 @@
+// Dwight J. Browne
+//@TODO: Add Axes
+//@TODO: Add Perspective
+//@TODO: Add WASD keys
+//@TODO: Correct Keymap
+
+
 #include <iostream>
 #include "primatives.h"
 #include "glad.h"
@@ -41,8 +48,7 @@ int main()
     // glfw window creation
     // --------------------
     GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Testbed2", nullptr, nullptr);
-    if (window == nullptr)
-    {
+    if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -54,8 +60,7 @@ int main()
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -157,8 +162,7 @@ int main()
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // input
         // -----
 //        processInput(window);
@@ -174,9 +178,9 @@ int main()
         ourShader.use();
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-//        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
 
-        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
+//        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();
 
         // glBindVertexArray(0); // no need to unbind it every time

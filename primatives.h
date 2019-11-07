@@ -1,6 +1,10 @@
 //
 // Created by Dwight J. Browne on 11/3/19.
-//
+//@TODO:remove default constructor
+//@TODO:Correct Triangle windings
+//@TODO:Add Test mode
+//@TODO:FIX index array
+
 
 #ifndef TESTBED2_PRIMATIVES_H
 #define TESTBED2_PRIMATIVES_H

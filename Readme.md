@@ -24,6 +24,7 @@ Some references:
 - [Introducing Shaders]
 - [OpenGl Tutorial]
 - [Terminology]
+- [Geometry and Tesselation on GPU]
 
 
 [Common Mistakes]:https://www.khronos.org/opengl/wiki/Common_Mistakes
@@ -45,3 +46,4 @@ Some references:
 [Introducing Shaders]:https://openframeworks.cc/ofBook/chapters/shaders.html
 [OpenGl Tutorial]:http://www.opengl-tutorial.org/
 [Terminology]:https://cognitivewaves.wordpress.com/opengl-terminology-demystified/
+[Geometry and Tesselation on GPU]:https://cgg.mff.cuni.cz/~pepca/lectures/pdf/hw-12-geomtess.en.pdf
