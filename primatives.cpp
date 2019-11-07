@@ -138,10 +138,11 @@ float *::Polyg::get_vertices() {
 unsigned int *::Polyg::get_indices() {
     return indices;
 }
-void ::Polyg::set_vertex(int idx, float x, float y, float z) {
+
+void ::Polyg::set_vertex(int idx, float x, float y, float z1) {
     vertices[idx] = x;
     vertices[idx + 1] = y;
-    vertices[idx + 2] = z;
+    vertices[idx + 2] = z1;
 }
 
 void Polyg::set_vertex_color(int idx, int vtx) {

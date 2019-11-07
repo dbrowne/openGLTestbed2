@@ -21,17 +21,17 @@ class Polyg
 private:
     float radius;
     float z;
-    float *vertices;
-    unsigned int *indices;
+    float *vertices{};
+    unsigned int *indices{};
     float point_count;
-    Color *color[3];    // for each vertex
+    Color *color[3]{};    // for each vertex
 
 
     void set_vertex_color(int idx, int vtx);
 
     void dump_vertex(int offset);
 
-    void set_vertex(int idx, float x, float y, float z);
+    void set_vertex(int idx, float x, float y, float z1);
 
     void set_tex_pos(int idx, float x, float y);
 
