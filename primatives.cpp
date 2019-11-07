@@ -51,14 +51,22 @@ void ::Polyg::gen_vertices() {
     float incr;
     int offset = 0;
     int idx = 0;
+    int index_cntr = 0;
+    int index_pos = 0;
     z = 0.0;
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     sz = offset * point_count * 3;
     vertices = (float *) malloc(sz * sizeof(float));
     if (!vertices) {
-        std::cout << "Polyg: Malloc failed\n";
-        exit(0);
+        std::cout << "Polyg: Malloc failed. cannot allocate vertices\n";
+        exit(-1);
+    }
+
+    indices = (unsigned int *) malloc(3 * point_count * sizeof(unsigned int));
+    if (!indices) {
+        std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
+        exit(-1);
     }
 
     incr = 2 * PI / point_count;
@@ -75,17 +83,21 @@ void ::Polyg::gen_vertices() {
             set_vertex(idx, 0, 0, z);
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
+            indices[index_pos++] = 0;
             idx += offset;
 
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
+            index_cntr++;
+            indices[index_pos++] = index_cntr;
         } else {
             x = radius * cos(theta);
             y = radius * sin(theta);
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
+            indices[index_pos++] = index_cntr + 1;
         }
         idx += offset;
         cntr++;
@@ -99,6 +111,9 @@ float *::Polyg::get_vertices() {
     return vertices;
 }
 
+unsigned int *::Polyg::get_indices() {
+    return indices;
+}
 void ::Polyg::set_vertex(int idx, float x, float y, float z) {
     vertices[idx] = x;
     vertices[idx + 1] = y;
@@ -165,17 +180,18 @@ void Polyg::print_vertices() {
     std::cout << " #:    vertex:\t\tcolor:\t\ttex \n";
     int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     int cntr = 0;
-    for (int i = 0; i < 2 * point_count; i++) {
-        std::cout << i << ":  ";
-        if (i % 2 == 0) {
-            dump_vertex(cntr);
-            cntr += offset;
-            std::cout << i << ":  ";
-            dump_vertex(cntr);
-        } else {
-            dump_vertex(cntr);
-            std::cout << "\n";
-        }
+    int vtx_cnt = 0;
+    for (int i = 0; i < point_count; i++) {
+        std::cout << vtx_cnt++ << ":  ";
+        dump_vertex(cntr);
+        cntr += offset;
+        std::cout << vtx_cnt++ << ":  ";
+        dump_vertex(cntr);
+        std::cout << vtx_cnt++ << ":  ";
+        cntr += offset;
+        dump_vertex(cntr);
+        std::cout << "\n";
+
         cntr += offset;
 
     }
@@ -195,4 +211,20 @@ void Polyg::dump_vertex(int offset) {
         std::cout << vertices[offset + j] << ", ";
     }
     std::cout << "\n";
+}
+
+void Polyg::print_indices() {
+    int offset = 0;
+    for (int i = 0; i < point_count; i++) {
+        std::cout << indices[offset] << ", " << indices[offset + 1] << ", " << indices[offset + 2] << "\n";
+        offset += 3;
+        if (i % 3 == 0 && i != 0) {
+            std::cout << "\n\n";
+        }
+    }
+    std::cout << "\n";
+}
+
+void Polyg::set_index(int idx, int pos) {
+    indices[idx] = pos;
 }

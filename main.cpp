@@ -5,16 +5,17 @@
 #include "Shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "extra_funcs.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 #define IMAGENAME "awesomeface.png"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
-
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -71,11 +72,16 @@ int main()
     xxx.set_alpha(0);
     xxx.gen_vertices();
     xxx.print_vertices();
+    xxx.print_indices();
     float *vertices = xxx.get_vertices();
+    unsigned int *indices = xxx.get_indices();
 
-    unsigned int VBO, VAO;
+
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
 
@@ -83,15 +89,24 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * POINT_COUNT * xxx.VERTEX_SIZE * xxx.COLOR_SIZE * xxx.TEXTURE_SIZE,
                  vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * POINT_COUNT, indices, GL_STATIC_DRAW);
+    glCheckError();
+
     // Position attribute
     glVertexAttribPointer(0, xxx.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float), (void *) 0);
+    glCheckError();
+
     glEnableVertexAttribArray(0);
 
     //color attribute
     glVertexAttribPointer(1, xxx.COLOR_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
                           (void *) (xxx.VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+
     glEnableVertexAttribArray(1);
 
     //texture attribute
@@ -99,6 +114,8 @@ int main()
     glVertexAttribPointer(2, xxx.TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
                           (void *) ((xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float)));
+    glCheckError();
+
     glEnableVertexAttribArray(2);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -134,9 +151,6 @@ int main()
     }
     stbi_image_free(data);
 
-    // uncomment this call to draw in wireframe polygons.
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 
     ourShader.use();
     ourShader.setInt("texture1", 0);
@@ -160,8 +174,11 @@ int main()
         ourShader.use();
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
-//        glDrawElements(GL_TRIANGLES,3*POINT_COUNT, GL_UNSIGNED_INT,0);
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
+
+        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
+        glCheckError();
+
         // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

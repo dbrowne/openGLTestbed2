@@ -17,6 +17,7 @@ class Polyg
 private:
     float radius;
     float *vertices;
+    unsigned int *indices;
     float point_count;
     Color *color[3];    // for each vertex
 
@@ -58,9 +59,14 @@ public:
 
     void print_vertices(void);
 
+    void print_indices(void);
+
     void gen_vertices();
     float *get_vertices();
 
+    unsigned int *get_indices();
+
+    void set_index(int idx, int pos);
 };
 
 
