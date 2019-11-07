@@ -30,8 +30,13 @@ const float POINT_COUNT = 9;
 int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 0;
+int g_bottom_flag = 1;
+
 int main()
 {
+
+    int total_vertices;
+    int vertices_to_render;
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -81,6 +86,7 @@ int main()
     xxx.print_indices();
     float *vertices = xxx.get_vertices();
     unsigned int *indices = xxx.get_indices();
+    total_vertices = xxx.get_vertex_count();
 
 
     unsigned int VBO, VAO, EBO;
@@ -187,6 +193,7 @@ int main()
             model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
             projection = glm::perspective(glm::radians(45.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+
         } else {
             projection = glm::ortho(-(float) SCR_WIDTH, (float) SCR_WIDTH, -(float) SCR_HEIGHT, (float) SCR_HEIGHT,
                                     0.1f, 100.0f);   //this is a cheat for now
@@ -205,11 +212,15 @@ int main()
 
 
         //----------------------------------------------
-
+        if (g_bottom_flag == 1) {
+            vertices_to_render = total_vertices;
+        } else {
+            vertices_to_render = total_vertices / 2;
+        }
 
         // render
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3 * xxx.get_vertex_count());
+        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
 
 //        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();
@@ -257,6 +268,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         }
         g_poly_flag++;
         g_poly_flag %= 3;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+        switch (g_bottom_flag) {
+            case 0:
+                g_bottom_flag = 1;
+                break;
+            case 1:
+                g_bottom_flag = 0;
+                break;
+            default:
+                break;
+
+        }
+
     }
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
