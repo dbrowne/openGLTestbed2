@@ -1,6 +1,5 @@
 //
 // Created by Dwight J. Browne on 11/4/19.
-//@TODO: remove default constructor
 //
 
 #ifndef TESTBED2_COLOR_H

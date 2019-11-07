@@ -20,10 +20,12 @@ class Polyg
 {
 private:
     float radius;
+    float z;
     float *vertices;
     unsigned int *indices;
     float point_count;
     Color *color[3];    // for each vertex
+
 
     void set_vertex_color(int idx, int vtx);
 
@@ -48,6 +50,7 @@ public:
 
     ~Polyg();
 
+    void set_z_axis(float z_val); // not the most elegant but I am working fast and this is my 2nd C++ program
     void set_radius(float radius);
     void set_point_Count(float point_count);
 

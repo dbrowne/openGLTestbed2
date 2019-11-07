@@ -9,6 +9,7 @@
 Polyg::Polyg() {
     radius = 1.0;
     point_count = 16;
+    z = 0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
@@ -17,6 +18,7 @@ Polyg::Polyg() {
 Polyg::Polyg(float rad, float pc) {
     radius = rad;
     point_count = pc;
+    z = 0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
@@ -26,6 +28,7 @@ Polyg::Polyg(float rad, float pc) {
 Polyg::Polyg(float rad, float pc, const Color c1) {
     radius = rad;
     point_count = pc;
+    z = 0;
     color[0] = new Color(c1.r, c1.g, c1.b, c1.a);
     color[1] = new Color(c1.r, c1.g, c1.b, c1.a);
     color[2] = new Color(c1.r, c1.g, c1.b, c1.a);
@@ -47,16 +50,22 @@ void ::Polyg::gen_vertices() {
     int sz;
     int cntr;
     float theta = 0;
-    float x, y, z;
+    float x, y;
     float incr;
     int offset = 0;
     int idx = 0;
     int index_cntr = 0;
     int index_pos = 0;
-    z = 0.0;
+    int bot_offset = 0;
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     sz = offset * point_count * 3;
+
+    if (z != 0) {
+        bot_offset = sz;
+        sz = sz * 2;
+    }
+
     vertices = (float *) malloc(sz * sizeof(float));
     if (!vertices) {
         std::cout << "Polyg: Malloc failed. cannot allocate vertices\n";
@@ -83,20 +92,35 @@ void ::Polyg::gen_vertices() {
             set_vertex(idx, 0, 0, z);
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
+            if (z != 0) {
+                set_vertex(idx + bot_offset, 0, 0, 0);
+                set_vertex_color(idx + bot_offset, 0);
+                set_tex_pos(idx + bot_offset, 0.0, 0.0);
+            }
             indices[index_pos++] = 0;
             idx += offset;
 
-            set_vertex(idx, x, y, z);
+            set_vertex(idx, x, y, 0);
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
+            if (z != 0) {
+                set_vertex(idx + bot_offset, x, y, 0);
+                set_vertex_color(idx + bot_offset, 0);
+                set_tex_pos(idx + bot_offset, 1, 1);
+            }
             index_cntr++;
             indices[index_pos++] = index_cntr;
         } else {
             x = radius * cos(theta);
             y = radius * sin(theta);
-            set_vertex(idx, x, y, z);
+            set_vertex(idx, x, y, 0);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
+            if (z != 0) {
+                set_vertex(idx + bot_offset, x, y, 0);
+                set_vertex_color(idx + bot_offset, 0);
+                set_tex_pos(idx + bot_offset, 1, 1);
+            }
             indices[index_pos++] = index_cntr + 1;
         }
         idx += offset;
@@ -181,7 +205,14 @@ void Polyg::print_vertices() {
     int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     int cntr = 0;
     int vtx_cnt = 0;
-    for (int i = 0; i < point_count; i++) {
+    int pc = 0;
+    if (z != 0) {
+        pc = 2 * point_count;
+    } else {
+        pc = point_count;
+    }
+
+    for (int i = 0; i < pc; i++) {
         std::cout << vtx_cnt++ << ":  ";
         dump_vertex(cntr);
         cntr += offset;
@@ -227,4 +258,8 @@ void Polyg::print_indices() {
 
 void Polyg::set_index(int idx, int pos) {
     indices[idx] = pos;
+}
+
+void Polyg::set_z_axis(float z_val) {
+    z = z_val;
 }

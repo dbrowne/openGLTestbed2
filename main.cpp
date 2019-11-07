@@ -1,8 +1,6 @@
 // Dwight J. Browne
 //@TODO: Add Axes
-//@TODO: Add Perspective
 //@TODO: Add WASD keys
-//@TODO: Correct Keymap
 
 
 #include <iostream>
@@ -27,11 +25,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 3;
+const float POINT_COUNT = 5;
 
 int g_tex_flag = 0;
-bool g_tex_key = false;
-
+int g_poly_flag = 0;
+int g_perspective = 0;
 int main()
 {
     // glfw: initialize and configure
@@ -64,6 +62,9 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
 
     // build and compile our shader zprogram
     // ------------------------------------
@@ -74,7 +75,7 @@ int main()
     // ------------------------------------------------------------------
 
     Polyg xxx(1.0, POINT_COUNT);
-    xxx.set_alpha(0);
+    xxx.set_z_axis(.85);
     xxx.gen_vertices();
     xxx.print_vertices();
     xxx.print_indices();
@@ -167,7 +168,7 @@ int main()
         // -----
 //        processInput(window);
 
-        // render
+
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -177,6 +178,37 @@ int main()
         ourShader.setInt("texflag", g_tex_flag);
         ourShader.use();
 
+        //-------------------------------------------- perspective
+        // create transformations
+        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        ourShader.setInt("perspective", g_perspective);
+        if (g_perspective) {
+            model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+            projection = glm::perspective(glm::radians(45.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+        } else {
+            projection = glm::ortho(-(float) SCR_WIDTH, (float) SCR_WIDTH, -(float) SCR_HEIGHT, (float) SCR_HEIGHT,
+                                    0.1f, 100.0f);   //this is a cheat for now
+        }
+        // retrieve the matrix uniform locations
+        unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+        // pass them to the shaders (3 different ways)
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+        // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+        ourShader.setMat4("projection", projection);
+
+
+
+
+
+        //----------------------------------------------
+
+
+        // render
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3 * POINT_COUNT);
 
@@ -206,25 +238,44 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
 
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+        switch (g_poly_flag) {
+            case 0:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+                break;
+            case 1:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                break;
+            case 2:
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+                break;
+            default:
+                break;
+        }
+        g_poly_flag++;
+        g_poly_flag %= 3;
+    }
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-    }
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        switch (g_perspective) {
+            case 0:
+                g_perspective = 1;
+                break;
+            case 1:
+                g_perspective = 0;
+                break;
+            default:
+                break;
+        }
     }
 
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
         g_tex_flag += 1;
         g_tex_flag %= 3;
-        std::cout << g_tex_flag << "\n";
     }
 }
 
