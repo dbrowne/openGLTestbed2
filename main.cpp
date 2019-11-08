@@ -85,12 +85,12 @@ int main()
     Axes ax;
     ax.set_symmetric(1);
     ax.gen_vertices();
-    ax.print_vertices();
+//    ax.print_vertices();
     Polyg xxx(1.0, POINT_COUNT);
     xxx.set_z_axis(.85);
     xxx.gen_vertices();
-//    xxx.print_vertices();
-//    xxx.print_indices();
+    xxx.print_vertices();
+    xxx.print_indices();
     float *vertices = xxx.get_vertices();
     float *axes_verts = ax.get_vertices();
 
@@ -258,7 +258,7 @@ int main()
 //        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
 
         glBindVertexArray(Axis_VAO);
-        glDrawArrays(GL_LINES, 0, 4);
+        glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
 
 //        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();
