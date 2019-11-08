@@ -6,6 +6,92 @@
 #include <iostream>
 #include "Color.h"
 
+Axes::Axes() {
+
+    symmetric = 0;
+    point_count = 3;
+    axis_color[0] = Color(1.0, 0.0, 0.0, 1.0);
+    axis_color[1] = Color(0.0, 1.0, 0.0, 1.0);
+    axis_color[2] = Color(0.0, 0.0, 1.0, 1.0);
+    axes[0] = 1.0;
+    axes[1] = 1.0;
+    axes[2] = 1.0;
+
+
+}
+
+void Axes::set_symmetric(int sym) {
+    symmetric = 1;
+}
+
+float *::Axes::get_vertices() {
+    return vertices;
+}
+
+unsigned int Axes::get_vertex_count() {
+    return vertex_count;
+}
+
+int Axes::get_vertex_size() {
+    return vertex_size;
+}
+
+void Axes::gen_vertices() {
+    int offset;
+    int sz;
+    int cnt = 0;
+    float start = 0.0;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    sz = offset * point_count * 2;
+    vertices = (float *) malloc(sz * sizeof(float));
+    if (!vertices) {
+        std::cout << "Polyg: Malloc failed. cannot allocate vertices\n";
+        exit(-1);
+    }
+
+    for (int i = 0; i < sz; i++) {
+        vertices[i] = 0.0;
+    }
+
+    if (symmetric == 1) {
+        start = -1.0;
+    }
+    for (int i = 0; i < 3; i++) {
+        vertices[cnt + i] = start * axes[i];
+        vertices[cnt + VERTEX_SIZE] = axis_color[i].r;
+        vertices[cnt + VERTEX_SIZE + 1] = axis_color[i].g;
+        vertices[cnt + VERTEX_SIZE + 2] = axis_color[i].b;
+        vertices[cnt + VERTEX_SIZE + 3] = axis_color[i].a;
+        cnt += offset;
+        vertices[cnt + i] = axes[i];
+        vertices[cnt + VERTEX_SIZE] = axis_color[i].r;
+        vertices[cnt + VERTEX_SIZE + 1] = axis_color[i].g;
+        vertices[cnt + VERTEX_SIZE + 2] = axis_color[i].b;
+        vertices[cnt + VERTEX_SIZE + 3] = axis_color[i].a;
+        cnt += offset;
+    }
+    vertex_size = 6;
+}
+
+void Axes::print_vertices() {
+    int cnt = 0;
+    int sz = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    for (int i = 0; i < vertex_count; i++) {
+        prt_ax(cnt, sz);
+        cnt += 7;
+    }
+}
+
+void Axes::prt_ax(int offst, int sz) {
+
+    for (int j = 0; j < sz; j++) {
+        std::cout << vertices[offst + j] << ",";
+    }
+    std::cout << "\n";
+}
+
+Axes::~Axes() = default;
+
 Polyg::Polyg() {
     radius = 1.0;
     point_count = 16;

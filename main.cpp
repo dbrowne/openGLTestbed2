@@ -25,11 +25,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-const float POINT_COUNT = 9;
+const float POINT_COUNT = 3;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
-int g_perspective = 0;
+int g_perspective = 1;
 int g_bottom_flag = 1;
 
 int main()
@@ -70,6 +70,10 @@ int main()
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    glDepthRange(0.0f, 1.0f);
+
 
     // build and compile our shader zprogram
     // ------------------------------------
@@ -78,30 +82,38 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-
+    Axes ax;
+    ax.set_symmetric(1);
+    ax.gen_vertices();
+    ax.print_vertices();
     Polyg xxx(1.0, POINT_COUNT);
     xxx.set_z_axis(.85);
     xxx.gen_vertices();
-    xxx.print_vertices();
-    xxx.print_indices();
+//    xxx.print_vertices();
+//    xxx.print_indices();
     float *vertices = xxx.get_vertices();
+//    float *axes_verts =ax.get_vertices();
+
     unsigned int *indices = xxx.get_indices();
     total_vertices = xxx.get_vertex_count();
+    float t[42] = {-1, 0, 0, 1, 0, 0, 1,
+                   1, 0, 0, 1, 0, 0, 1,
+                   0, -1, 0, 0, 1, 0, 1,
+                   0, 1, 0, 0, 1, 0, 1,
+                   0, 0, -1, 0, 0, 1, 1,
+                   0, 0, 1, 0, 0, 1, 1};
+    float *axes_verts = t;
 
-
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO, EBO, Axis_VAO, Axis_VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * POINT_COUNT, indices, GL_STATIC_DRAW);
     glCheckError();
 
@@ -109,7 +121,6 @@ int main()
     glVertexAttribPointer(0, xxx.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float), (void *) 0);
     glCheckError();
-
     glEnableVertexAttribArray(0);
 
     //color attribute
@@ -117,16 +128,13 @@ int main()
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
                           (void *) (xxx.VERTEX_SIZE * sizeof(float)));
     glCheckError();
-
     glEnableVertexAttribArray(1);
 
     //texture attribute
-
     glVertexAttribPointer(2, xxx.TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
                           (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
                           (void *) ((xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float)));
     glCheckError();
-
     glEnableVertexAttribArray(2);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -135,6 +143,30 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+
+
+    //Axis
+    glGenVertexArrays(1, &Axis_VAO);
+    glGenBuffers(1, &Axis_VBO);
+
+    glBindVertexArray(Axis_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, Axis_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(axes_verts) * ax.get_vertex_size(), axes_verts, GL_STATIC_DRAW);
+    // Position attribute
+    glVertexAttribPointer(0, ax.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float), (void *) 0);
+    glCheckError();
+
+
+    //color attribute
+    glVertexAttribPointer(1, ax.COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                          (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float),
+                          (void *) (ax.VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(1);
+
+
+    glEnableVertexAttribArray(0);
 
 
     // load and create a texture
@@ -162,9 +194,11 @@ int main()
     }
     stbi_image_free(data);
 
-
     ourShader.use();
     ourShader.setInt("texture1", 0);
+
+
+
 
     // render loop
     // -----------
@@ -176,6 +210,7 @@ int main()
 
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
@@ -219,8 +254,11 @@ int main()
         }
 
         // render
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
+//        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
+
+        glBindVertexArray(Axis_VAO);
+        glDrawArrays(GL_LINES, 0, 4);
 
 //        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();

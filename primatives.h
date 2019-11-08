@@ -15,6 +15,47 @@
 
 const double PI = 3.1415967;
 
+class Axes {
+private:
+    float axes[3];
+    Color axis_color[3];
+    int symmetric;
+    float *vertices{};
+    float point_count;
+
+    void prt_ax(int offst, int sz);
+
+    const int vertex_count = 6;
+
+public:
+    Axes();
+
+    ~Axes();
+
+    void set_axis_color(int axis, Color c);
+
+    void set_axis_len(int axis, float axis_len);
+
+    void print_vertices();
+
+    float *get_vertices(void);
+
+    void gen_vertices();
+
+    void set_symmetric(int sym);
+
+    const int VERTEX_SIZE = 3;
+    const int COLOR_SIZE = 4;
+    const int TEXTURE_SIZE = 0;
+    int vertex_size;
+
+    unsigned int get_vertex_count();
+
+    int get_vertex_size();
+
+};
+
+
 
 class Polyg
 {
