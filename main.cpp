@@ -92,17 +92,17 @@ int main()
 //    xxx.print_vertices();
 //    xxx.print_indices();
     float *vertices = xxx.get_vertices();
-//    float *axes_verts =ax.get_vertices();
+    float *axes_verts = ax.get_vertices();
 
     unsigned int *indices = xxx.get_indices();
     total_vertices = xxx.get_vertex_count();
-    float t[42] = {-1, 0, 0, 1, 0, 0, 1,
-                   1, 0, 0, 1, 0, 0, 1,
-                   0, -1, 0, 0, 1, 0, 1,
-                   0, 1, 0, 0, 1, 0, 1,
-                   0, 0, -1, 0, 0, 1, 1,
-                   0, 0, 1, 0, 0, 1, 1};
-    float *axes_verts = t;
+//    float t[42] = {-1, 0, 0, 1, 0, 0, 1,
+//                   1, 0, 0, 1, 0, 0, 1,
+//                   0, -1, 0, 0, 1, 0, 1,
+//                   0, 1, 0, 0, 1, 0, 1,
+//                   0, 0, -1, 0, 0, 1, 1,
+//                   0, 0, 1, 0, 0, 1, 1};
+//    float *axes_verts = t;
 
     unsigned int VBO, VAO, EBO, Axis_VAO, Axis_VBO;
     glGenVertexArrays(1, &VAO);
