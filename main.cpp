@@ -41,7 +41,7 @@ float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
 float g_angle = 20.0f;
 
-const float POINT_COUNT = 48;
+const float POINT_COUNT = 36;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -106,8 +106,8 @@ int main()
     ax.set_symmetric(1);
     ax.gen_vertices();
     Polyg xxx(1.0, POINT_COUNT);
-    xxx.set_z_axis(.85);
     xxx.gen_vertices();
+    xxx.print_vertices();
     xxx.print_indices();
 
     float *vertices = xxx.get_vertices();
@@ -264,7 +264,11 @@ int main()
         if (g_bottom_flag == 1) {
             vertices_to_render = total_vertices;
         } else {
-            vertices_to_render = total_vertices / 2;
+            if (xxx.get_bottom()) {
+                vertices_to_render = total_vertices / 2;
+            } else {
+                vertices_to_render = total_vertices;
+            }
         }
 
         // render

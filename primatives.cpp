@@ -95,7 +95,10 @@ Axes::~Axes() = default;
 Polyg::Polyg() {
     radius = 1.0;
     point_count = 16;
-    z = 0;
+    coord[0] = 0.0;
+    coord[1] = 0.0;
+    coord[2] = 0.0;
+    height = 0.0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
@@ -104,22 +107,54 @@ Polyg::Polyg() {
 Polyg::Polyg(float rad, float pc) {
     radius = rad;
     point_count = pc;
-    z = 0;
+    coord[0] = 0.0;
+    coord[1] = 0.0;
+    coord[2] = 0.0;
+    height = 0.0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
 
 }
 
+
+Polyg::Polyg(float rad, float pc, float h) {     // make them different default colors for testing
+    radius = rad;
+    point_count = pc;
+    coord[0] = 0.0;
+    coord[1] = 0.0;
+    coord[2] = 0.0;
+    height = h;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(1.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+
+}
 Polyg::Polyg(float rad, float pc, const Color c1) {
     radius = rad;
     point_count = pc;
-    z = 0;
+    coord[0] = 0.0;
+    coord[1] = 0.0;
+    coord[2] = 0.0;
+    height = 0.0;
     color[0] = new Color(c1.r, c1.g, c1.b, c1.a);
     color[1] = new Color(c1.r, c1.g, c1.b, c1.a);
     color[2] = new Color(c1.r, c1.g, c1.b, c1.a);
 
 }
+
+Polyg::Polyg(float rad, float pc, Color c1, float h) {
+    radius = rad;
+    point_count = pc;
+    height = h;
+    coord[0] = 0.0;
+    coord[1] = 0.0;
+    coord[2] = 0.0;
+    color[0] = new Color(c1.r, c1.g, c1.b, c1.a);
+    color[1] = new Color(c1.r, c1.g, c1.b, c1.a);
+    color[2] = new Color(c1.r, c1.g, c1.b, c1.a);
+}
+
 
 Polyg::~Polyg() = default;
 
@@ -136,7 +171,7 @@ void ::Polyg::gen_vertices() {
     int sz;
     int cntr;
     float theta = 0;
-    float x, y;
+    float x, y, z;
     float incr;
     int offset = 0;
     int idx = 0;
@@ -148,13 +183,15 @@ void ::Polyg::gen_vertices() {
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     sz = offset * point_count * 3;
 
-    if (z != 0) {
+    if (height != 0) {
         bot_offset = sz;
         sz = sz * 2;
         vertex_count = 2 * point_count;
         idx_offset = 3 * point_count;
+        has_bottom = true;
     } else {
         vertex_count = point_count;
+        has_bottom = false;
     }
 
     vertices = (float *) malloc(sz * sizeof(float));
@@ -179,28 +216,27 @@ void ::Polyg::gen_vertices() {
             if (theta > 0) {
                 theta -= incr;
             }
-            x = radius * cos(theta);
-            y = radius * sin(theta);
+            x = radius * cos(theta) + coord[0];
+            y = radius * sin(theta) + coord[1];
 
-            set_vertex(idx, 0, 0, z);
+            set_vertex(idx, coord[0], coord[1], coord[2] + height);
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
-            if (z != 0) {
-                set_vertex(idx + bot_offset, 0, 0, 0);
+            if (height != 0) {
+                set_vertex(idx + bot_offset, coord[0], coord[1], coord[2]);
                 set_vertex_color(idx + bot_offset, 0);
                 set_tex_pos(idx + bot_offset, 0.0, 0.0);
                 indices[index_pos + idx_offset] = point_count + 1;
             }
             indices[index_pos++] = 0;
-
             idx += offset;
 
             set_vertex(idx, x, y, 0);
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
             index_cntr++;
-            if (z != 0) {
-                set_vertex(idx + bot_offset, x, y, 0);
+            if (height != 0) {
+                set_vertex(idx + bot_offset, x, y, coord[2]);
                 set_vertex_color(idx + bot_offset, 1);
                 set_tex_pos(idx + bot_offset, 1, 1);
                 indices[index_pos + idx_offset] = index_cntr;
@@ -208,13 +244,13 @@ void ::Polyg::gen_vertices() {
 
             indices[index_pos++] = index_cntr;
         } else {
-            x = radius * cos(theta);
-            y = radius * sin(theta);
+            x = radius * cos(theta) + coord[0];
+            y = radius * sin(theta) + coord[1];
             set_vertex(idx, x, y, 0);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
-            if (z != 0) {
-                set_vertex(idx + bot_offset, x, y, 0);
+            if (height != 0) {
+                set_vertex(idx + bot_offset, x, y, coord[2]);
                 set_vertex_color(idx + bot_offset, 2);
                 set_tex_pos(idx + bot_offset, 1, 1);
                 indices[index_pos + idx_offset] = index_cntr + 1;
@@ -315,7 +351,7 @@ void Polyg::print_vertices() {
     int cntr = 0;
     int vtx_cnt = 0;
     int pc = 0;
-    if (z != 0) {
+    if (height != 0) {
         pc = 2 * point_count;
     } else {
         pc = point_count;
@@ -369,8 +405,8 @@ void Polyg::set_index(int idx, int pos) {
     indices[idx] = pos;
 }
 
-void Polyg::set_z_axis(float z_val) {
-    z = z_val;
+void Polyg::set_height(float h) {
+    height = h;
 }
 
 int Polyg::get_vertex_size() {
@@ -379,4 +415,8 @@ int Polyg::get_vertex_size() {
 
 int Polyg::get_vertex_count() {
     return vertex_count;
+}
+
+bool Polyg::get_bottom() {
+    return has_bottom;
 }

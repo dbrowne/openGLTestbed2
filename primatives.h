@@ -27,6 +27,7 @@ private:
 
     const unsigned int vertex_count = 6;
 
+
 public:
     Axes(float ax_len);
 
@@ -37,6 +38,7 @@ public:
     void set_axis_len(int axis, float axis_len);
 
     void print_vertices();
+
 
     float *get_vertices(void);
 
@@ -53,6 +55,7 @@ public:
 
     int get_vertex_size();
 
+
 };
 
 
@@ -60,8 +63,9 @@ public:
 class Polyg
 {
 private:
+    float coord[3];
+    float height;
     float radius;
-    float z;
     float *vertices{};
     unsigned int *indices{};
     int point_count;
@@ -69,7 +73,7 @@ private:
     int vertex_size;
     int vertex_count;
     int index_size;
-
+    bool has_bottom;
 
     void set_vertex_color(int idx, int vtx);
 
@@ -88,13 +92,20 @@ public:
 
     Polyg();
 
-    Polyg(float radius, float point_count);
+    Polyg(float radius, float pc);
 
+    Polyg(float rad, float pc, float h);
     Polyg(float rad, float pc, Color c1);
+
+    Polyg(float rad, float pc, Color c1, float h);
+
+    bool get_bottom();
 
     ~Polyg();
 
-    void set_z_axis(float z_val); // not the most elegant but I am working fast and this is my 2nd C++ program
+    void set_pos(float val, int axis);
+
+    void set_height(float h);
     void set_radius(float radius);
     void set_point_Count(float point_count);
 
