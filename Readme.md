@@ -1,7 +1,5 @@
 OpenGL Testbed
 -----------------
-Trying to get some modern opengl programming under my belt here: Part 2
-
 Based on the code in [Learn OpenGL]
 
 Some references:   
