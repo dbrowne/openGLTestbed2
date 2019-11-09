@@ -1,5 +1,6 @@
 //
 // Created by Dwight J. Browne on 11/3/19.
+//@TODO:refactor for circle property
 //@TODO:Correct Triangle windings
 //@TODO:Add Test mode
 //@TODO:FIX index array
@@ -76,7 +77,7 @@ private:
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
-    void set_tex_pos(int idx, float x, float y);
+    void set_tex_pos(int idx, float x, float y);   //set texture
 
 
 public:
