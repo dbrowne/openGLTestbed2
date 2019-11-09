@@ -4,7 +4,6 @@ Trying to get some modern opengl programming under my belt here: Part 2
 
 Based on the code in [Learn OpenGL]
 
-
 Some references:   
 - [Common Mistakes]
 - [GLSL Common Mistakes]
@@ -26,7 +25,6 @@ Some references:
 - [Terminology]
 - [Geometry and Tesselation on GPU]
 - [OpenGL Mathematics]
-
 
 [Common Mistakes]:https://www.khronos.org/opengl/wiki/Common_Mistakes
 [Learn OpenGL]:https://learnopengl.com
