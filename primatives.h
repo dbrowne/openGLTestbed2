@@ -27,7 +27,7 @@ private:
     const unsigned int vertex_count = 6;
 
 public:
-    Axes();
+    Axes(float ax_len);
 
     ~Axes();
 
@@ -63,17 +63,18 @@ private:
     float z;
     float *vertices{};
     unsigned int *indices{};
-    float point_count;
+    int point_count;
     Color *color[3]{};    // for each vertex
     int vertex_size;
     int vertex_count;
+    int index_size;
 
 
     void set_vertex_color(int idx, int vtx);
 
     void dump_vertex(int offset);
 
-    void set_vertex(int idx, float x, float y, float z1);
+    void set_vertex(int idx, float x1, float y1, float z1);
 
     void set_tex_pos(int idx, float x, float y);
 
@@ -118,6 +119,8 @@ public:
     void set_index(int idx, int pos);
 
     int get_vertex_size(void);
+
+    int get_index_size(void);
 
     int get_vertex_count();
 };

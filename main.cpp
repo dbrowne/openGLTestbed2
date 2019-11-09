@@ -58,7 +58,7 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
-//    glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -81,12 +81,13 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    Axes ax;
+    Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
     Polyg xxx(1.0, POINT_COUNT);
     xxx.set_z_axis(.85);
     xxx.gen_vertices();
+    xxx.print_indices();
 
     float *vertices = xxx.get_vertices();
     float *axes_verts = ax.get_vertices();
@@ -105,7 +106,7 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * POINT_COUNT, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * xxx.get_index_size(), indices, GL_STATIC_DRAW);
     glCheckError();
 
     // Position attribute
@@ -233,10 +234,6 @@ int main()
         // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
         ourShader.setMat4("projection", projection);
 
-
-
-
-
         //----------------------------------------------
         if (g_bottom_flag == 1) {
             vertices_to_render = total_vertices;
@@ -248,11 +245,12 @@ int main()
         glBindVertexArray(
                 VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(Axis_VAO);
         glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
 
-//        glDrawElements(GL_TRIANGLES, 3 * POINT_COUNT, GL_UNSIGNED_INT, 0);
         glCheckError();
 
         // glBindVertexArray(0); // no need to unbind it every time
