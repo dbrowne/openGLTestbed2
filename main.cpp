@@ -1,5 +1,4 @@
 // Dwight J. Browne
-//@TODO: Add Axes
 //@TODO: Add WASD keys
 
 
@@ -85,24 +84,16 @@ int main()
     Axes ax;
     ax.set_symmetric(1);
     ax.gen_vertices();
-//    ax.print_vertices();
     Polyg xxx(1.0, POINT_COUNT);
     xxx.set_z_axis(.85);
     xxx.gen_vertices();
-    xxx.print_vertices();
-    xxx.print_indices();
+
     float *vertices = xxx.get_vertices();
     float *axes_verts = ax.get_vertices();
 
     unsigned int *indices = xxx.get_indices();
     total_vertices = xxx.get_vertex_count();
-//    float t[42] = {-1, 0, 0, 1, 0, 0, 1,
-//                   1, 0, 0, 1, 0, 0, 1,
-//                   0, -1, 0, 0, 1, 0, 1,
-//                   0, 1, 0, 0, 1, 0, 1,
-//                   0, 0, -1, 0, 0, 1, 1,
-//                   0, 0, 1, 0, 0, 1, 1};
-//    float *axes_verts = t;
+
 
     unsigned int VBO, VAO, EBO, Axis_VAO, Axis_VBO;
     glGenVertexArrays(1, &VAO);
@@ -254,8 +245,9 @@ int main()
         }
 
         // render
-//        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-//        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
+        glBindVertexArray(
+                VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
 
         glBindVertexArray(Axis_VAO);
         glDrawArrays(GL_LINES, 0, ax.get_vertex_count());

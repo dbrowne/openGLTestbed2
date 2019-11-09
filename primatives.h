@@ -1,6 +1,5 @@
 //
 // Created by Dwight J. Browne on 11/3/19.
-//@TODO:remove default constructor
 //@TODO:Correct Triangle windings
 //@TODO:Add Test mode
 //@TODO:FIX index array
@@ -25,7 +24,7 @@ private:
 
     void prt_ax(int offst, int sz);
 
-    const int vertex_count = 6;
+    const unsigned int vertex_count = 6;
 
 public:
     Axes();

@@ -13,4 +13,4 @@ link_directories("/usr/local/lib")
 
 
 add_executable(testbed2 main.cpp primatives.cpp primatives.h glad.cpp glad.h khrplatform.h Shader.h stb_image.h filesystem.h Color.cpp Color.h extra_funcs.cpp extra_funcs.h)
-target_link_libraries(testbed2 ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
+target_link_libraries(testbed2 ${OPENGL_LIBRARIES} GLEW::GLEW glfw -v)

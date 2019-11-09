@@ -70,7 +70,7 @@ void Axes::gen_vertices() {
         vertices[cnt + VERTEX_SIZE + 3] = axis_color[i].a;
         cnt += offset;
     }
-    vertex_size = 6;
+    vertex_size = offset * vertex_count;
 }
 
 void Axes::print_vertices() {
