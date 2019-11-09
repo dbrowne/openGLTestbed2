@@ -166,6 +166,21 @@ void Polyg::set_radius(float rad) {
     radius = rad;
 }
 
+Polyg::Polyg(float rad, float pc, float x, float y, float z, float h) {
+    radius = rad;
+    point_count = pc;
+    height = h;
+    coord[0] = x;
+    coord[1] = y;
+    coord[2] = z;
+    height = h;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(1.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+
+
+}
+
 
 void ::Polyg::gen_vertices() {
     int sz;
@@ -231,7 +246,7 @@ void ::Polyg::gen_vertices() {
             indices[index_pos++] = 0;
             idx += offset;
 
-            set_vertex(idx, x, y, 0);
+            set_vertex(idx, x, y, coord[2]);
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
             index_cntr++;
@@ -246,7 +261,7 @@ void ::Polyg::gen_vertices() {
         } else {
             x = radius * cos(theta) + coord[0];
             y = radius * sin(theta) + coord[1];
-            set_vertex(idx, x, y, 0);
+            set_vertex(idx, x, y, coord[2]);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
             if (height != 0) {

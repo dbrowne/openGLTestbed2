@@ -92,7 +92,9 @@ public:
 
     Polyg();
 
-    Polyg(float radius, float pc);
+    Polyg(float rad, float pc);
+
+    Polyg(float rad, float pc, float x, float y, float z, float h);
 
     Polyg(float rad, float pc, float h);
     Polyg(float rad, float pc, Color c1);

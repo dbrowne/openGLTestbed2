@@ -41,7 +41,7 @@ float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
 float g_angle = 20.0f;
 
-const float POINT_COUNT = 36;
+const float POINT_COUNT = 3;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -105,7 +105,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Polyg xxx(1.0, POINT_COUNT);
+    Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
     xxx.gen_vertices();
     xxx.print_vertices();
     xxx.print_indices();
