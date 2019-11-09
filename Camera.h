@@ -1,5 +1,6 @@
 //
 // Created by Dwight J. Browne on 11/8/19.
+// from www.learnopengl.com
 //
 
 #ifndef TESTBED2_CAMERA_H

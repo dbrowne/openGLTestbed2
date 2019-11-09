@@ -31,7 +31,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -39,9 +39,9 @@ bool firstMouse = true;
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
+float g_angle = 20.0f;
 
-
-const float POINT_COUNT = 4;
+const float POINT_COUNT = 48;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -241,17 +241,17 @@ int main()
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
         if (g_perspective) {
-            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT,
+            glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT,
                                                     0.1f, 100.0f);
             ourShader.setMat4("projection", projection);
             // camera/view transformation
-            glm::mat4 view = camera.GetViewMatrix();
+            glm::mat4 view = g_camera.GetViewMatrix();
             ourShader.setMat4("view", view);
             // calculate the model matrix for each object and pass it to shader before drawing
             glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-            float angle = 20.0f;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 0.3f, 0.5f));
             ourShader.setMat4("model", model);
         } else {
             projection = glm::ortho(-(float) SCR_WIDTH, (float) SCR_WIDTH, -(float) SCR_HEIGHT, (float) SCR_HEIGHT,
@@ -357,15 +357,29 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_tex_flag %= 3;
     }
 
-
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime * 10);
+        g_camera.ProcessKeyboard(FORWARD, deltaTime * 10);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime * 10);
+        g_camera.ProcessKeyboard(BACKWARD, deltaTime * 10);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime * 10);
+        g_camera.ProcessKeyboard(LEFT, deltaTime * 10);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime * 10);
+        g_camera.ProcessKeyboard(RIGHT, deltaTime * 10);
+
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        g_angle -= 1.5;
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        g_angle += 1.5;
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {}
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {}
+    if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
+        g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+    }
+
+
+
 
 }
 
@@ -397,12 +411,12 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    g_camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-    camera.ProcessMouseScroll(yoffset);
+    g_camera.ProcessMouseScroll(yoffset);
 }

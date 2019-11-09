@@ -25,6 +25,7 @@ Some references:
 - [OpenGl Tutorial]
 - [Terminology]
 - [Geometry and Tesselation on GPU]
+- [OpenGL Mathematics]
 
 
 [Common Mistakes]:https://www.khronos.org/opengl/wiki/Common_Mistakes
@@ -47,3 +48,4 @@ Some references:
 [OpenGl Tutorial]:http://www.opengl-tutorial.org/
 [Terminology]:https://cognitivewaves.wordpress.com/opengl-terminology-demystified/
 [Geometry and Tesselation on GPU]:https://cgg.mff.cuni.cz/~pepca/lectures/pdf/hw-12-geomtess.en.pdf
+[OpenGL Mathematics]:https://glm.g-truc.net/0.9.1/api/a00006.html
