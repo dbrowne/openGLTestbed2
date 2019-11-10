@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "Cylinder.h"
 
 #define IMAGENAME "awesomeface.png"
 
@@ -105,10 +106,12 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
+    Cylinder xxx;
+    xxx.gen_vertices();
+//    Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
     xxx.gen_vertices();
     xxx.print_vertices();
-    xxx.print_indices();
+//    xxx.print_indices();
 
     float *vertices = xxx.get_vertices();
     float *axes_verts = ax.get_vertices();
@@ -264,7 +267,7 @@ int main()
         if (g_bottom_flag == 1) {
             vertices_to_render = total_vertices;
         } else {
-            if (xxx.get_bottom()) {
+            if (xxx.has_bottom()) {
                 vertices_to_render = total_vertices / 2;
             } else {
                 vertices_to_render = total_vertices;

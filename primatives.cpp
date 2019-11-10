@@ -203,10 +203,10 @@ void ::Polyg::gen_vertices() {
         sz = sz * 2;
         vertex_count = 2 * point_count;
         idx_offset = 3 * point_count;
-        has_bottom = true;
+        bottom = true;
     } else {
         vertex_count = point_count;
-        has_bottom = false;
+        bottom = false;
     }
 
     vertices = (float *) malloc(sz * sizeof(float));
@@ -217,7 +217,7 @@ void ::Polyg::gen_vertices() {
     vertex_size = sz;
 
     index_size = 3 * vertex_count;
-    indices = (unsigned int *) malloc(3 * vertex_count * sizeof(unsigned int));
+    indices = (unsigned int *) malloc(index_size * sizeof(unsigned int));
     if (!indices) {
         std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
         exit(-1);
@@ -432,6 +432,6 @@ int Polyg::get_vertex_count() {
     return vertex_count;
 }
 
-bool Polyg::get_bottom() {
-    return has_bottom;
+bool Polyg::has_bottom() {
+    return bottom;
 }

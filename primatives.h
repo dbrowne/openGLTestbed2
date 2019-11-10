@@ -73,7 +73,7 @@ private:
     int vertex_size;
     int vertex_count;
     int index_size;
-    bool has_bottom;
+    bool bottom;
 
     void set_vertex_color(int idx, int vtx);
 
@@ -101,7 +101,8 @@ public:
 
     Polyg(float rad, float pc, Color c1, float h);
 
-    bool get_bottom();
+    bool has_bottom();
+
 
     ~Polyg();
 
