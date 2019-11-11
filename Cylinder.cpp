@@ -157,7 +157,7 @@ float *Cylinder::get_vertices() {
     return vertices;
 }
 
-Cylinder::Cylinder(float r, float pc, float h) {
+Cylinder::Cylinder(float r, float r1, int pc, float h) {
     coords[0] = 0;
     coords[1] = 0;
     coords[2] = 0;
@@ -165,7 +165,24 @@ Cylinder::Cylinder(float r, float pc, float h) {
     point_count = pc;
     ra = r;
     rb = 0;
-    r1a = 1.0;
+    r1a = r1;
+    r1b = 0;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+    top = 1.0;
+    bottom = 1.0;
+}
+
+Cylinder::Cylinder(float r, int pc, float h) {
+    coords[0] = 0;
+    coords[1] = 0;
+    coords[2] = 0;
+    height = h;
+    point_count = pc;
+    ra = r;
+    rb = 0;
+    r1a = r;
     r1b = 0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);

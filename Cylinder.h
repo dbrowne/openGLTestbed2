@@ -44,11 +44,11 @@ public:
 
     ~Cylinder();
 
-    Cylinder(float r, float pc, float height);
+    Cylinder(float r, int pc, float height);
 
-    Cylinder(float r, float pc, float height, float x, float y, float z);
+    Cylinder(float r, int pc, float height, float x, float y, float z);
 
-    Cylinder(float r, float r1, float pc, float height);
+    Cylinder(float r, float r1, int pc, float h);
 
     float *get_vertices(void);
 

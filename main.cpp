@@ -106,7 +106,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Cylinder xxx;
+    Cylinder xxx(.5, 1, 72, .5);
 //        Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
 
     xxx.gen_vertices();
