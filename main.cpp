@@ -49,6 +49,8 @@ int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 1;
 int g_bottom_flag = 1;
+int g_size = 3;
+bool g_resize = false;
 
 int main()
 {
@@ -240,6 +242,15 @@ int main()
         ourShader.setInt("texflag", g_tex_flag);
         ourShader.use();
 
+        if (g_resize) {
+            g_resize = false;
+            xxx.set_point_count(g_size);
+            xxx.gen_vertices();
+            vertices = xxx.get_vertices();
+            total_vertices = xxx.get_vertex_count();
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
+        }
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
@@ -360,6 +371,18 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             default:
                 break;
         }
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {   //+
+        g_size += 1;
+        g_resize = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {   //+
+        g_size -= 1;
+        if (g_size < 3) {
+            g_size = 3;
+        }
+        g_resize = true;
     }
 
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {

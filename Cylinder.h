@@ -16,16 +16,16 @@ private:
     float r1a;
     float r1b;
     float height;
-    Color *color[3]{};
-//    float vertices[324];
-    float *vertices{};
-    unsigned int *indices{};
+    Color *color[3]{nullptr};
+    float *vertices{nullptr};
+    unsigned int *indices{nullptr};
     int vertex_size{};
     int vertex_count{};
     bool top;
     bool bottom;
     int point_count;
     int index_size{};
+    bool alloced = false;  // to allow for resizing
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -43,6 +43,8 @@ public:
     ~Cylinder();
 
     Cylinder(float r, int pc, float height);
+
+    void set_point_count(int pc);
 
     Cylinder(float r, int pc, float height, float x, float y, float z);
 

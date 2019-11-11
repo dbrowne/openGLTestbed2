@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 
+
 Cylinder::Cylinder() {
     coords[0] = 0;
     coords[1] = 0;
@@ -55,7 +56,12 @@ void Cylinder::gen_vertices() {
 
     vertex_size = sz;
 
-    vertices = (float *) malloc(sz * sizeof(float));
+    if (!alloced) {
+        vertices = (float *) malloc(sz * sizeof(float));
+        alloced = true;
+    } else {
+        vertices = (float *) realloc(vertices, sz * sizeof(float));
+    }
     if (!vertices) {
         std::cout << "Cylinder: Malloc failed. cannot allocate vertices\n";
         exit(-1);
@@ -154,6 +160,10 @@ Cylinder::~Cylinder() = default;
 
 float *Cylinder::get_vertices() {
     return vertices;
+}
+
+void Cylinder::set_point_count(int pc) {
+    point_count = pc;
 }
 
 Cylinder::Cylinder(float r, float r1, int pc, float h) {

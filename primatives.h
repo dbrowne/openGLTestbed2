@@ -20,7 +20,7 @@ private:
     float axes[3];
     Color axis_color[3];
     int symmetric;
-    float *vertices{};
+    float *vertices{nullptr};
     float point_count;
 
     void prt_ax(int offst, int sz);
