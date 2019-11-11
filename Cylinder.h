@@ -7,6 +7,7 @@
 
 #include "Color.h"
 
+
 class Cylinder {
 private:
     float coords[3];
@@ -36,7 +37,7 @@ private:
 
     void set_tex_pos(int idx, float x, float y);
 
-    void set_side(int idx, float *a, float *b, float *c, float *d);
+    void set_side(int idx, float *a, float *b, float *c, float *d, int offset);
 
 public:
     Cylinder();

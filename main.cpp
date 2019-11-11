@@ -107,8 +107,8 @@ int main()
     ax.set_symmetric(1);
     ax.gen_vertices();
     Cylinder xxx;
-    xxx.gen_vertices();
-//    Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
+//        Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
+
     xxx.gen_vertices();
     xxx.print_vertices();
 //    xxx.print_indices();
@@ -129,8 +129,8 @@ int main()
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * xxx.get_index_size(), indices, GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * xxx.get_index_size(), indices, GL_STATIC_DRAW);
     glCheckError();
 
     // Position attribute

@@ -27,9 +27,10 @@ void Cylinder::gen_vertices() {
     int offset;
     int bot_offset = 0;
     int top_offset = 0;
+    int side_offset = 0;
     int sz;
     int cnt = 0;
-    int idx;
+    int idx = 0;
     float start = 0.0;
     float x, y, z, x1, y1, z1;
     float incr;
@@ -41,8 +42,6 @@ void Cylinder::gen_vertices() {
     float c_point[3];
     float d_point[3];
 
-    float test_verts[36];
-
     bottom = true;
     top = true;
 
@@ -52,7 +51,7 @@ void Cylinder::gen_vertices() {
     top_offset = 3 * point_count * offset;
     sz = offset * vertex_count;
     bot_offset = top_offset + 6 * point_count * offset;
-    std::cout << sz << "\n";
+
 
 
     vertex_size = sz;
@@ -63,6 +62,9 @@ void Cylinder::gen_vertices() {
         exit(-1);
     }
 
+    for (int i = 0; i < sz; i++) {
+        vertices[i] = -1;
+    }
 
     index_size = 12 * vertex_count;
     indices = (unsigned int *) malloc(index_size * sizeof(unsigned int));
@@ -70,6 +72,8 @@ void Cylinder::gen_vertices() {
         std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
         exit(-1);
     }
+
+    incr = 2 * 3.1415967 / point_count;
 
     while (cntr < 2 * point_count) {
         if (cntr % 2 == 0) {
@@ -115,23 +119,27 @@ void Cylinder::gen_vertices() {
         } else {
             x = ra * cos(theta) + coords[0];
             y = ra * sin(theta) + coords[1];
+            z = coords[2] + height;
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
+
             x1 = r1a * cos(theta) + coords[0];   //bottom
             y1 = r1a * sin(theta) + coords[1];
             z1 = coords[2];
 
-            set_vertex(idx + top_offset, x1, y1, z1);
-            set_vertex_color(idx + top_offset, 2);
-            set_tex_pos(idx + top_offset, 1, 1);
+            set_vertex(idx + bot_offset, x1, y1, z1);
+            set_vertex_color(idx + bot_offset, 2);
+            set_tex_pos(idx + bot_offset, 1, 1);
             d_point[0] = x;
             d_point[1] = y;
             d_point[2] = z;
             c_point[0] = x1;
             c_point[1] = y1;
             c_point[2] = z1;
-            set_side(idx + top_offset, a_point, b_point, c_point, d_point);
+
+            set_side(side_offset + top_offset, a_point, b_point, c_point, d_point, offset);
+            side_offset += 6 * offset;
         }
         idx += offset;
         cntr++;
@@ -139,7 +147,6 @@ void Cylinder::gen_vertices() {
         theta += incr;
 
     }
-
 
 }
 
@@ -169,6 +176,7 @@ Cylinder::Cylinder(float r, float pc, float h) {
 }
 
 void ::Cylinder::set_vertex(int idx, float x1, float y1, float z1) {
+    std::cout << idx << "\n";
     vertices[idx] = x1;
     vertices[idx + 1] = y1;
     vertices[idx + 2] = z1;
@@ -186,24 +194,32 @@ void Cylinder::set_tex_pos(int idx, float x, float y) {
     vertices[idx + 8] = y;
 }
 
-void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d) {
+void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d, int offset) {
     set_vertex(idx, a);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 1);
+    idx += offset;
+
     set_vertex(idx, b);
     set_vertex_color(idx, 0);
     set_tex_pos(idx, 1, 1);
+    idx += offset;
+
     set_vertex(idx, c);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
+    idx += offset;
+
 
     set_vertex(idx, a);
     set_vertex_color(idx, 0);
     set_tex_pos(idx, 1, 1);
+    idx += offset;
 
     set_vertex(idx, c);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
+    idx += offset;
 
     set_vertex(idx, d);
     set_vertex_color(idx, 2);
@@ -211,6 +227,7 @@ void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d) {
 }
 
 void Cylinder::set_vertex(int idx, float *p) {
+    std::cout << idx << ":" << p[0] << "," << p[1] << "," << p[2] << "\n";
     vertices[idx] = p[0];
     vertices[idx + 1] = p[1];
     vertices[idx + 2] = p[2];
@@ -222,11 +239,7 @@ void Cylinder::print_vertices() {
     int cntr = 0;
     int vtx_cnt = 0;
     int pc = 0;
-    if (height != 0) {
-        pc = 2 * point_count;
-    } else {
-        pc = point_count;
-    }
+    pc = point_count * 4;
 
     for (int i = 0; i < pc; i++) {
         std::cout << vtx_cnt++ << ":  ";
