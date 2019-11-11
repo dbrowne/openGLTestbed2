@@ -25,7 +25,7 @@ private:
 
     void prt_ax(int offst, int sz);
 
-    const unsigned int vertex_count = 6;
+    unsigned int vertex_count = 0;
 
 
 public:

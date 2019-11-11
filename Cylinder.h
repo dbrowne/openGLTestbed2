@@ -10,7 +10,7 @@
 
 class Cylinder {
 private:
-    float coords[3];
+    float coords[3]{};
     float ra;
     float rb;
     float r1a;
@@ -20,14 +20,12 @@ private:
 //    float vertices[324];
     float *vertices{};
     unsigned int *indices{};
-    int vertex_size;
-    int vertex_count;
+    int vertex_size{};
+    int vertex_count{};
     bool top;
     bool bottom;
     int point_count;
-    int index_size;
-
-//    int test_index[36]={0,1,2,0,2,3,0,3,1,1,4,5,1,5,2,2,5,6,2,6,3,3,6,4,3,4,1,754,7,6,5,7,4,6};
+    int index_size{};
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -48,31 +46,35 @@ public:
 
     Cylinder(float r, int pc, float height, float x, float y, float z);
 
+    Cylinder(float r, float r1, int pc, float height, float x, float y, float z);
+
     Cylinder(float r, float r1, int pc, float h);
 
-    float *get_vertices(void);
+    float *get_vertices();
 
-    void gen_vertices(void);
+    void gen_vertices();
 
     void set_color(int idx, Color c);
 
-    bool has_top(void);
+    bool has_top();
 
-    bool has_bottom(void);
+    bool has_bottom();
 
-    bool check_indices(void);
+    bool check_indices();
 
     void print_vertices();
 
     void dump_vertex(int offset);
 
-    unsigned int *get_indices(void);
+    unsigned int *get_indices();
 
-    int get_vertex_count(void);
+    int get_vertex_count();
 
-    int get_vertex_size(void);
+    int get_vertex_size();
 
     int get_index_size();
+
+    float chk(float inp);
 
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;

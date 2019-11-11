@@ -3,7 +3,7 @@
 //
 
 #include "Cylinder.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 Cylinder::Cylinder() {
@@ -19,8 +19,8 @@ Cylinder::Cylinder() {
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
-    top = 1.0;
-    bottom = 1.0;
+    top = true;
+    bottom = true;
 }
 
 void Cylinder::gen_vertices() {
@@ -29,18 +29,16 @@ void Cylinder::gen_vertices() {
     int top_offset = 0;
     int side_offset = 0;
     int sz;
-    int cnt = 0;
     int idx = 0;
-    float start = 0.0;
     float x, y, z, x1, y1, z1;
     float incr;
     int cntr = 0;
     float theta = 0;
 
-    float a_point[3];
-    float b_point[3];
-    float c_point[3];
-    float d_point[3];
+    float a_point[3] = {0, 0, 0};
+    float b_point[3] = {0, 0, 0};
+    float c_point[3] = {0, 0, 0};
+    float d_point[3] = {0, 0, 0};
 
     bottom = true;
     top = true;
@@ -63,7 +61,7 @@ void Cylinder::gen_vertices() {
     }
 
     for (int i = 0; i < sz; i++) {
-        vertices[i] = -1;
+        vertices[i] = -99.0;
     }
 
     index_size = 12 * vertex_count;
@@ -73,7 +71,7 @@ void Cylinder::gen_vertices() {
         exit(-1);
     }
 
-    incr = 2 * 3.1415967 / point_count;
+    incr = 2.0 * 3.1415967 / point_count;
 
     while (cntr < 2 * point_count) {
         if (cntr % 2 == 0) {
@@ -81,12 +79,12 @@ void Cylinder::gen_vertices() {
                 theta -= incr;
             }
             // form top and bottom circles
-            x = ra * cos(theta) + coords[0];    //top
-            y = ra * sin(theta) + coords[1];
+            x = chk(ra * cos(theta) + coords[0]);    //top
+            y = chk(ra * sin(theta) + coords[1]);
             z = coords[2] + height;
 
-            x1 = r1a * cos(theta) + coords[0];   //bottom
-            y1 = r1a * sin(theta) + coords[1];
+            x1 = chk(r1a * cos(theta) + coords[0]);   //bottom
+            y1 = chk(r1a * sin(theta) + coords[1]);
             z1 = coords[2];
             //top center
             set_vertex(idx, coords[0], coords[1], z);
@@ -117,15 +115,15 @@ void Cylinder::gen_vertices() {
             b_point[1] = y1;
             b_point[2] = z1;
         } else {
-            x = ra * cos(theta) + coords[0];
-            y = ra * sin(theta) + coords[1];
+            x = chk(ra * cos(theta) + coords[0]);
+            y = chk(ra * sin(theta) + coords[1]);
             z = coords[2] + height;
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
 
-            x1 = r1a * cos(theta) + coords[0];   //bottom
-            y1 = r1a * sin(theta) + coords[1];
+            x1 = chk(r1a * cos(theta) + coords[0]);   //bottom
+            y1 = chk(r1a * sin(theta) + coords[1]);
             z1 = coords[2];
 
             set_vertex(idx + bot_offset, x1, y1, z1);
@@ -158,9 +156,9 @@ float *Cylinder::get_vertices() {
 }
 
 Cylinder::Cylinder(float r, float r1, int pc, float h) {
-    coords[0] = 0;
-    coords[1] = 0;
-    coords[2] = 0;
+    coords[0] = 0.0;
+    coords[1] = 0.0;
+    coords[2] = 0.0;
     height = h;
     point_count = pc;
     ra = r;
@@ -170,8 +168,8 @@ Cylinder::Cylinder(float r, float r1, int pc, float h) {
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
-    top = 1.0;
-    bottom = 1.0;
+    top = true;
+    bottom = true;
 }
 
 Cylinder::Cylinder(float r, int pc, float h) {
@@ -187,13 +185,12 @@ Cylinder::Cylinder(float r, int pc, float h) {
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
-    top = 1.0;
-    bottom = 1.0;
+    top = true;
+    bottom = true;
 
 }
 
 void ::Cylinder::set_vertex(int idx, float x1, float y1, float z1) {
-    std::cout << idx << "\n";
     vertices[idx] = x1;
     vertices[idx + 1] = y1;
     vertices[idx + 2] = z1;
@@ -228,23 +225,22 @@ void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d, int off
     idx += offset;
 
 
-    set_vertex(idx, a);
+    set_vertex(idx, c);
     set_vertex_color(idx, 0);
     set_tex_pos(idx, 1, 1);
     idx += offset;
 
-    set_vertex(idx, c);
+    set_vertex(idx, d);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
     idx += offset;
 
-    set_vertex(idx, d);
+    set_vertex(idx, a);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 1);
 }
 
 void Cylinder::set_vertex(int idx, float *p) {
-    std::cout << idx << ":" << p[0] << "," << p[1] << "," << p[2] << "\n";
     vertices[idx] = p[0];
     vertices[idx + 1] = p[1];
     vertices[idx + 2] = p[2];
@@ -290,6 +286,14 @@ void Cylinder::dump_vertex(int offset) {
     std::cout << "\n";
 }
 
+float Cylinder::chk(float inp) {
+    if (abs(inp) < 9.28108e-06) {
+        return 0.0;
+    } else {
+        return inp;
+    }
+
+}
 
 unsigned int *::Cylinder::get_indices() {
     return indices;

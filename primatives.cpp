@@ -194,18 +194,19 @@ void ::Polyg::gen_vertices() {
     int index_pos = 0;
     int bot_offset = 0;
     int idx_offset = 0;
+    z = 0;
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     sz = offset * point_count * 3;
-
+    vertex_count = 3 * point_count;
     if (height != 0) {
         bot_offset = sz;
         sz = sz * 2;
-        vertex_count = 2 * point_count;
+        vertex_count = 6 * point_count;
         idx_offset = 3 * point_count;
         bottom = true;
     } else {
-        vertex_count = point_count;
+        vertex_count = 3 * point_count;
         bottom = false;
     }
 
@@ -280,7 +281,7 @@ void ::Polyg::gen_vertices() {
     }
     indices[index_pos - 1] = 1;
 
-    if (z > 0) {
+    if (height > 0) {
         indices[index_size - 1] = 1;
     }
 }

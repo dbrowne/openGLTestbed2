@@ -41,8 +41,9 @@ bool firstMouse = true;
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
 float g_angle = 20.0f;
+float g_y = 0.0;
 
-const float POINT_COUNT = 3;
+
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -106,11 +107,11 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Cylinder xxx(.5, 1, 72, .5);
-//        Polyg xxx(1.0, POINT_COUNT, 1, -.5, .5, .125);
-
+//    Cylinder xxx;
+    Cylinder xxx(.65, 1.05, 70, .75);
+//        Polyg xxx(1.0, 36, 0, 0, .5, .25);
     xxx.gen_vertices();
-    xxx.print_vertices();
+//    xxx.print_vertices();
 //    xxx.print_indices();
 
     float *vertices = xxx.get_vertices();
@@ -119,6 +120,10 @@ int main()
     unsigned int *indices = xxx.get_indices();
     total_vertices = xxx.get_vertex_count();
 
+    std::cout << total_vertices << "\n";
+
+
+//    exit(0);
 
     unsigned int VBO, VAO, EBO, Axis_VAO, Axis_VBO;
     glGenVertexArrays(1, &VAO);
@@ -226,8 +231,6 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-
-
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -239,7 +242,7 @@ int main()
 
         //-------------------------------------------- perspective
         // create transformations
-        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
@@ -254,7 +257,7 @@ int main()
             glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
-            model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, g_y, 0.5f));
             ourShader.setMat4("model", model);
         } else {
             projection = glm::ortho(-(float) SCR_WIDTH, (float) SCR_WIDTH, -(float) SCR_HEIGHT, (float) SCR_HEIGHT,
@@ -277,8 +280,8 @@ int main()
         // render
         glBindVertexArray(
                 VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 3 * vertices_to_render);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glDrawArrays(GL_TRIANGLES, 0, vertices_to_render);
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(Axis_VAO);
@@ -379,8 +382,12 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
         g_angle += 1.5;
     }
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {}
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {}
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        g_y += .25;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        g_y -= .25;
+    }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
         g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
     }
