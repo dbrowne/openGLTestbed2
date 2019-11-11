@@ -1,9 +1,9 @@
 //
 // Created by Dwight J. Browne on 11/3/19.
-//@TODO:refactor for circle property
 //@TODO:Correct Triangle windings
 //@TODO:Add Test mode
 //@TODO:FIX index array
+//@TODO: Resize objects
 
 
 #ifndef TESTBED2_PRIMATIVES_H
@@ -25,7 +25,7 @@ private:
 
     void prt_ax(int offst, int sz);
 
-    unsigned int vertex_count = 0;
+    unsigned int vertex_count = 6;
 
 
 public:
