@@ -61,7 +61,9 @@ void Cylinder::gen_vertices() {
         vertices = (float *) malloc(sz * sizeof(float));
         alloced = true;
     } else {
-        vertices = (float *) realloc(vertices, sz * sizeof(float));
+        if (point_count > initial_point_count) {
+            vertices = (float *) realloc(vertices, sz * sizeof(float));
+        }
     }
     if (!vertices) {
         std::cout << "Cylinder: Malloc failed. cannot allocate vertices\n";
