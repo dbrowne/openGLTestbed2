@@ -46,9 +46,9 @@ public:
 
     void set_point_count(int pc);
 
-    Cylinder(float r, int pc, float height, float x, float y, float z);
+    Cylinder(float r, int pc, float h, float x, float y, float z);
 
-    Cylinder(float r, float r1, int pc, float height, float x, float y, float z);
+    Cylinder(float r, float r1, int pc, float h, float x, float y, float z);
 
     Cylinder(float r, float r1, int pc, float h);
 

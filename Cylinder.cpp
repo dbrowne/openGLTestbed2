@@ -183,6 +183,40 @@ Cylinder::Cylinder(float r, float r1, int pc, float h) {
     bottom = true;
 }
 
+Cylinder::Cylinder(float r, float r1, int pc, float h, float x, float y, float z) {
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+    height = h;
+    point_count = pc;
+    ra = r;
+    rb = 0;
+    r1a = r1;
+    r1b = 0;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+    top = true;
+    bottom = true;
+}
+
+
+Cylinder::Cylinder(float r, int pc, float h, float x, float y, float z) {
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+    height = h;
+    ra = r;
+    rb = 0;
+    r1a = r;
+    r1b = 0;
+    color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+    top = true;
+    bottom = true;
+}
+
 Cylinder::Cylinder(float r, int pc, float h) {
     coords[0] = 0;
     coords[1] = 0;
@@ -221,7 +255,7 @@ void Cylinder::set_tex_pos(int idx, float x, float y) {
 
 void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d, int offset) {
     set_vertex(idx, a);
-    set_vertex_color(idx, 2);
+    set_vertex_color(idx, 0);
     set_tex_pos(idx, 1, 1);
     idx += offset;
 
@@ -237,17 +271,17 @@ void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d, int off
 
 
     set_vertex(idx, c);
-    set_vertex_color(idx, 0);
-    set_tex_pos(idx, 1, 1);
-    idx += offset;
-
-    set_vertex(idx, d);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
     idx += offset;
 
-    set_vertex(idx, a);
+    set_vertex(idx, d);
     set_vertex_color(idx, 2);
+    set_tex_pos(idx, 1, 1);
+    idx += offset;
+
+    set_vertex(idx, a);
+    set_vertex_color(idx, 0);
     set_tex_pos(idx, 1, 1);
 }
 
