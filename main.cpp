@@ -32,7 +32,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 6.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -127,7 +127,7 @@ int main()
 
     for (int i = 0; i < MAX_ITEMS - 1; i++) {
         float h = .25;
-        xxx[i] = new Cylinder(.05, .25, 70, h, .2, -.5, -.5 + i * h);
+        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
         xxx[i]->gen_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
@@ -135,7 +135,7 @@ int main()
     }
     int idx = MAX_ITEMS - 1;
     float h = .25;
-    xxx[idx] = new Cylinder(.25, .25, 4, .5, .2, -.5, -.5 + idx * h);
+    xxx[idx] = new Cylinder(.25, .25, 6, .5, .2, -.5, -.5 + idx * h);
     xxx[idx]->gen_vertices();
     vertices[idx] = xxx[idx]->get_vertices();
     indices[idx] = xxx[idx]->get_indices();
