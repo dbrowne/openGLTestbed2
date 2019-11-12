@@ -27,8 +27,8 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1000;
+const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
@@ -51,12 +51,16 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 3;
 bool g_resize = false;
-
+const int MAX_ITEMS = 9;
 int main()
 {
+    int total_vertices[MAX_ITEMS];
+    int vertices_to_render[MAX_ITEMS];
+    unsigned int Axis_VAO, Axis_VBO;
+    unsigned int VBO[MAX_ITEMS];
+    unsigned int VAO[MAX_ITEMS];
+    unsigned int EBO[MAX_ITEMS];
 
-    int total_vertices;
-    int vertices_to_render;
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -97,8 +101,6 @@ int main()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-
-
     // build and compile our shader zprogram
     // ------------------------------------
     Shader ourShader("vertex.shader", "fragment.shader");
@@ -109,64 +111,71 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-//    Cylinder xxx;
-    Cylinder xxx(.65, 1.05, 70, .75, .2, -.5, -.5);
+    Cylinder *xxx[MAX_ITEMS];
+    float *vertices[MAX_ITEMS];
+    unsigned int *indices[MAX_ITEMS];
+
+//    Cylinder xxx(.65, 1.05, 70, .75, .2, -.5, -.5);
+
 //        Polyg xxx(1.0, 36, 0, 0, .5, .25);
-    xxx.gen_vertices();
+
+//    xxx.gen_vertices();
 //    xxx.print_vertices();
 //    xxx.print_indices();
+//    float *vertices = xxx.get_vertices();
+//    total_vertices = xxx.get_vertex_count();
 
-    float *vertices = xxx.get_vertices();
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        float h = .25;
+        xxx[i] = new Cylinder(.25, .05, 70, h, .2, -.5, -.5 + i * h);
+        xxx[i]->gen_vertices();
+        vertices[i] = xxx[i]->get_vertices();
+        indices[i] = xxx[i]->get_indices();
+        total_vertices[i] = xxx[i]->get_vertex_count();
+        std::cout << total_vertices[i] << "\n";
+    }
+
     float *axes_verts = ax.get_vertices();
 
-    unsigned int *indices = xxx.get_indices();
-    total_vertices = xxx.get_vertex_count();
-
-    std::cout << total_vertices << "\n";
-
-
-//    exit(0);
-
-    unsigned int VBO, VAO, EBO, Axis_VAO, Axis_VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        glGenVertexArrays(1, &VAO[i]);
+        glGenBuffers(1, &VBO[i]);
+        glGenBuffers(1, &EBO[i]);
+        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+        glBindVertexArray(VAO[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx[i]->get_vertex_size(), vertices[i], GL_STATIC_DRAW);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * xxx.get_index_size(), indices, GL_STATIC_DRAW);
-    glCheckError();
+        glCheckError();
+        // Position attribute
+        glVertexAttribPointer(0, xxx[i]->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (void *) 0);
+        glCheckError();
+        glEnableVertexAttribArray(0);
 
-    // Position attribute
-    glVertexAttribPointer(0, xxx.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                          (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float), (void *) 0);
-    glCheckError();
-    glEnableVertexAttribArray(0);
+        //color attribute
+        glVertexAttribPointer(1, xxx[i]->COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (void *) (xxx[i]->VERTEX_SIZE * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(1);
 
-    //color attribute
-    glVertexAttribPointer(1, xxx.COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                          (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
-                          (void *) (xxx.VERTEX_SIZE * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(1);
+        //texture attribute
+        glVertexAttribPointer(2, xxx[i]->TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (void *) ((xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE) * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(2);
 
-    //texture attribute
-    glVertexAttribPointer(2, xxx.TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-                          (xxx.VERTEX_SIZE + xxx.COLOR_SIZE + xxx.TEXTURE_SIZE) * sizeof(float),
-                          (void *) ((xxx.VERTEX_SIZE + xxx.COLOR_SIZE) * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(2);
+        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
-
+        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+        glBindVertexArray(0);
+    }
 
     //Axis
     glGenVertexArrays(1, &Axis_VAO);
@@ -220,9 +229,6 @@ int main()
     ourShader.use();
     ourShader.setInt("texture1", 0);
 
-
-
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
@@ -244,13 +250,17 @@ int main()
 
         if (g_resize) {
             g_resize = false;
-            xxx.set_point_count(g_size);
-            xxx.gen_vertices();
-            vertices = xxx.get_vertices();
-            total_vertices = xxx.get_vertex_count();
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx.get_vertex_size(), vertices, GL_STATIC_DRAW);
+            for (int i = 0; i < MAX_ITEMS; i++) {
+                xxx[i]->set_point_count(g_size);
+                xxx[i]->gen_vertices();
+                vertices[i] = xxx[i]->get_vertices();
+                total_vertices[i] = xxx[i]->get_vertex_count();
+                glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx[i]->get_vertex_size(), vertices[i],
+                             GL_STATIC_DRAW);
+            }
         }
+
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
@@ -276,30 +286,29 @@ int main()
             ourShader.setMat4("projection", projection);
         }
 
-
-        //----------------------------------------------
-        if (g_bottom_flag == 1) {
-            vertices_to_render = total_vertices;
-        } else {
-            if (xxx.has_bottom()) {
-                vertices_to_render = total_vertices / 2;
+        for (int i = 0; i < MAX_ITEMS; i++) {
+            //----------------------------------------------
+            if (g_bottom_flag == 1) {
+                vertices_to_render[i] = total_vertices[i];
             } else {
-                vertices_to_render = total_vertices;
+                if (xxx[i]->has_bottom()) {
+                    vertices_to_render[i] = total_vertices[i] / 2;
+                } else {
+                    vertices_to_render[i] = total_vertices[i];
+                }
             }
-        }
 
-        // render
-        glBindVertexArray(
-                VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, vertices_to_render);
+            // render
+            glBindVertexArray(VAO[i]);
+            glDrawArrays(GL_TRIANGLES, 0, vertices_to_render[i]);
 //        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
 
-        glBindVertexArray(Axis_VAO);
-        glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
+            glBindVertexArray(Axis_VAO);
+            glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
 
-        glCheckError();
-
+            glCheckError();
+        }
         // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -310,9 +319,10 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        glDeleteVertexArrays(1, &VAO[i]);
+        glDeleteBuffers(1, &VBO[i]);
+    }
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
