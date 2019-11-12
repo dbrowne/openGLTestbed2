@@ -51,7 +51,7 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 1;
 bool g_resize = false;
-const int MAX_ITEMS = 9;
+const int MAX_ITEMS = 7;
 int main()
 {
     int total_vertices[MAX_ITEMS];
@@ -273,8 +273,10 @@ int main()
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
+        GLint dims[4] = {0};
+        glGetIntegerv(GL_VIEWPORT, dims);
         if (g_perspective) {
-            glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT,
+            glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
                                                     0.1f, 100.0f);
             ourShader.setMat4("projection", projection);
             // camera/view transformation
@@ -287,7 +289,7 @@ int main()
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, g_y, 0.5f));
             ourShader.setMat4("model", model);
         } else {
-            projection = glm::ortho(-(float) SCR_WIDTH, (float) SCR_WIDTH, -(float) SCR_HEIGHT, (float) SCR_HEIGHT,
+            projection = glm::ortho(-(float) dims[2], (float) dims[2], -(float) dims[3], (float) dims[3],
                                     0.1f, 100.0f);   //this is a cheat for now
             ourShader.setMat4("projection", projection);
         }
@@ -420,10 +422,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        g_angle -= 1.5;
+        g_angle += 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        g_angle += 1.5;
+        g_angle -= 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
         g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -438,6 +440,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
+
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     GLint dims[4] = {0};
@@ -445,6 +448,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     GLint fbWidth = dims[2];
     GLint fbHeight = dims[3];
     glViewport(0, 0, fbWidth, fbHeight);
+
 }
 
 // glfw: whenever the mouse moves, this callback is called
