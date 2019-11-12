@@ -49,7 +49,7 @@ int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 1;
 int g_bottom_flag = 1;
-int g_size = 3;
+int g_size = 1;
 bool g_resize = false;
 const int MAX_ITEMS = 9;
 int main()
@@ -125,15 +125,21 @@ int main()
 //    float *vertices = xxx.get_vertices();
 //    total_vertices = xxx.get_vertex_count();
 
-    for (int i = 0; i < MAX_ITEMS; i++) {
+    for (int i = 0; i < MAX_ITEMS - 1; i++) {
         float h = .25;
-        xxx[i] = new Cylinder(.25, .05, 70, h, .2, -.5, -.5 + i * h);
+        xxx[i] = new Cylinder(.05, .25, 70, h, .2, -.5, -.5 + i * h);
         xxx[i]->gen_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
-        std::cout << total_vertices[i] << "\n";
     }
+    int idx = MAX_ITEMS - 1;
+    float h = .25;
+    xxx[idx] = new Cylinder(.25, .25, 4, .5, .2, -.5, -.5 + idx * h);
+    xxx[idx]->gen_vertices();
+    vertices[idx] = xxx[idx]->get_vertices();
+    indices[idx] = xxx[idx]->get_indices();
+    total_vertices[idx] = xxx[idx]->get_vertex_count();
 
     float *axes_verts = ax.get_vertices();
 
@@ -251,7 +257,7 @@ int main()
         if (g_resize) {
             g_resize = false;
             for (int i = 0; i < MAX_ITEMS; i++) {
-                xxx[i]->set_point_count(g_size);
+                xxx[i]->increment(g_size);
                 xxx[i]->gen_vertices();
                 vertices[i] = xxx[i]->get_vertices();
                 total_vertices[i] = xxx[i]->get_vertex_count();
@@ -384,14 +390,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {   //+
-        g_size += 1;
+        g_size = 1;
         g_resize = true;
     }
     if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {   //+
-        g_size -= 1;
-        if (g_size < 3) {
-            g_size = 3;
-        }
+        g_size = -1;
         g_resize = true;
     }
 

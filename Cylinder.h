@@ -26,6 +26,7 @@ private:
     int point_count;
     int index_size{};
     bool alloced = false;  // to allow for resizing
+    int initial_point_count;
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -44,6 +45,7 @@ public:
 
     Cylinder(float r, int pc, float height);
 
+    void increment(int int_val);
     void set_point_count(int pc);
 
     Cylinder(float r, int pc, float h, float x, float y, float z);

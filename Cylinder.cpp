@@ -14,6 +14,7 @@ Cylinder::Cylinder() {
     coords[2] = 0;
     height = 1;
     point_count = 3;
+    initial_point_count = point_count;
     ra = 1.0;
     rb = 0;
     r1a = 1.0;
@@ -162,6 +163,13 @@ float *Cylinder::get_vertices() {
     return vertices;
 }
 
+void Cylinder::increment(int int_val) {
+    point_count += int_val;
+    if (point_count < 3) {
+        point_count = initial_point_count;
+    }
+
+}
 void Cylinder::set_point_count(int pc) {
     point_count = pc;
 }
@@ -172,6 +180,7 @@ Cylinder::Cylinder(float r, float r1, int pc, float h) {
     coords[2] = 0.0;
     height = h;
     point_count = pc;
+    initial_point_count = point_count;
     ra = r;
     rb = 0;
     r1a = r1;
@@ -189,6 +198,7 @@ Cylinder::Cylinder(float r, float r1, int pc, float h, float x, float y, float z
     coords[2] = z;
     height = h;
     point_count = pc;
+    initial_point_count = point_count;
     ra = r;
     rb = 0;
     r1a = r1;
@@ -206,6 +216,8 @@ Cylinder::Cylinder(float r, int pc, float h, float x, float y, float z) {
     coords[1] = y;
     coords[2] = z;
     height = h;
+    point_count = pc;
+    initial_point_count = point_count;
     ra = r;
     rb = 0;
     r1a = r;
@@ -223,6 +235,7 @@ Cylinder::Cylinder(float r, int pc, float h) {
     coords[2] = 0;
     height = h;
     point_count = pc;
+    initial_point_count = point_count;
     ra = r;
     rb = 0;
     r1a = r;
