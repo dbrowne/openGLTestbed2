@@ -413,16 +413,17 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_camera.ProcessKeyboard(RIGHT, deltaTime * 10);
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        g_angle -= 1.5;
+        g_y -= .25;
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        g_angle += 1.5;
+        g_y += .25;
+
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        g_y += .25;
+        g_angle -= 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        g_y -= .25;
+        g_angle += 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
         g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
