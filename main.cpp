@@ -15,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "Cylinder.h"
+#include "ellipse.h"
 
 #define IMAGENAME "awesomeface.png"
 
@@ -51,7 +52,7 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 1;
 bool g_resize = false;
-const int MAX_ITEMS = 7;
+const int MAX_ITEMS = 1;
 int main()
 {
     int total_vertices[MAX_ITEMS];
@@ -111,7 +112,8 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Cylinder *xxx[MAX_ITEMS];
+    Ellipse *xxx[MAX_ITEMS];
+//    Cylinder *xxx[MAX_ITEMS];
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
 
@@ -125,21 +127,17 @@ int main()
 //    float *vertices = xxx.get_vertices();
 //    total_vertices = xxx.get_vertex_count();
 
-    for (int i = 0; i < MAX_ITEMS - 1; i++) {
+    for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
-        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
+        xxx[i] = new Ellipse;
+//        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
+//        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
         xxx[i]->gen_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
     }
-    int idx = MAX_ITEMS - 1;
-    float h = .25;
-    xxx[idx] = new Cylinder(.25, .25, 6, .5, .2, -.5, -.5 + idx * h);
-    xxx[idx]->gen_vertices();
-    vertices[idx] = xxx[idx]->get_vertices();
-    indices[idx] = xxx[idx]->get_indices();
-    total_vertices[idx] = xxx[idx]->get_vertex_count();
+
 
     float *axes_verts = ax.get_vertices();
 

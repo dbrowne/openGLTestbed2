@@ -19,12 +19,12 @@ private:
     Color *color[3]{nullptr};
     float *vertices{nullptr};
     unsigned int *indices{nullptr};
-    int vertex_size{};
-    int vertex_count{};
+    int vertex_size;
+    int vertex_count;
     bool top;
     bool bottom;
     int point_count;
-    int index_size{};
+    int index_size;
     bool alloced = false;  // to allow for resizing
     int initial_point_count;
 
@@ -53,6 +53,7 @@ public:
     Cylinder(float r, float r1, int pc, float h, float x, float y, float z);
 
     Cylinder(float r, float r1, int pc, float h);
+
 
     float *get_vertices();
 

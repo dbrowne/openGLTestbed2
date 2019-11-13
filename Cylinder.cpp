@@ -202,9 +202,9 @@ Cylinder::Cylinder(float r, float r1, int pc, float h, float x, float y, float z
     point_count = pc;
     initial_point_count = point_count;
     ra = r;
-    rb = 0;
+    rb = r;
     r1a = r1;
-    r1b = 0;
+    r1b = r1;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
@@ -221,9 +221,9 @@ Cylinder::Cylinder(float r, int pc, float h, float x, float y, float z) {
     point_count = pc;
     initial_point_count = point_count;
     ra = r;
-    rb = 0;
+    rb = r;
     r1a = r;
-    r1b = 0;
+    r1b = r;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
