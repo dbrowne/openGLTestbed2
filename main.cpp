@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Cylinder.h"
 #include "ellipse.h"
+#include "Parallelogram .h"
 
 #define IMAGENAME "awesomeface.png"
 
@@ -112,7 +113,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Ellipse *xxx[MAX_ITEMS];
+    Paralleogram *xxx[MAX_ITEMS];
 //    Cylinder *xxx[MAX_ITEMS];
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
@@ -129,10 +130,11 @@ int main()
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
-        xxx[i] = new Ellipse;
+        xxx[i] = new Paralleogram;
 //        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
         xxx[i]->gen_vertices();
+        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
@@ -420,10 +422,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        g_angle += 1.5;
+        g_angle -= 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        g_angle -= 1.5;
+        g_angle += 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
         g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);

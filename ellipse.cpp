@@ -11,8 +11,8 @@ Ellipse::Ellipse() {
     coords[1] = 0.0;
     coords[2] = 0.0;
     a = 1;
-    b = 0.125;
-    point_count = 36;
+    b = -0.25;
+    point_count = 18;
     initial_point_count = point_count;
     vertex_size = 0;
     vertex_count = 0;
@@ -22,6 +22,7 @@ Ellipse::Ellipse() {
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
 }
 
+Ellipse::~Ellipse() = default;
 
 void Ellipse::gen_vertices() {
     int offset;
@@ -57,7 +58,7 @@ void Ellipse::gen_vertices() {
         exit(-1);
     }
 
-    incr = 2.0 * 3.1415967 / point_count;
+    incr = mult * 3.1415967 / point_count;
     while (cntr < 2 * point_count) {
         if (cntr % 2 == 0) {
             if (theta > 0) {
@@ -133,4 +134,8 @@ unsigned int *::Ellipse::get_indices() {
 
 bool Ellipse::has_bottom() {
     return true;
+}
+
+void Ellipse::set_mult(float m) {
+    mult = m;
 }
