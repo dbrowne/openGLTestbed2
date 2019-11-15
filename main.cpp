@@ -30,7 +30,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 6.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 9.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -50,7 +50,10 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 1;
 bool g_resize = false;
-const int MAX_ITEMS = 1;
+const int MAX_ITEMS = 7;
+// lighting
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 int main()
 {
     int total_vertices[MAX_ITEMS];
@@ -73,7 +76,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Testbed2 with Camera", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Testbed2 with lighting", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -102,8 +105,9 @@ int main()
     glDepthRange(0.0f, 1.0f);
     // build and compile our shader zprogram
     // ------------------------------------
-    Shader ourShader("vertex.shader", "fragment.shader");
-
+    Shader ourShader("vertex.glsl", "fragment.glsl");
+    Shader lightingShader("color_vec.glsl", "color_frag.glsl");
+    Shader lampShader("lamp_vec.glsl", "lamp_frag.glsl");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -127,11 +131,11 @@ int main()
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
-        xxx[i] = new Paralleogram;
+        float theta = 10.0;
+        xxx[i] = new Paralleogram(theta * i, .25 * i, .5 * i, -exp(.2 * i), i * .1, exp(i * .1));
 //        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
         xxx[i]->gen_vertices();
-        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
@@ -231,6 +235,12 @@ int main()
 
     ourShader.use();
     ourShader.setInt("texture1", 0);
+
+
+    // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
 
     // render loop
     // -----------
@@ -405,13 +415,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        g_camera.ProcessKeyboard(FORWARD, deltaTime * 10);
+        g_camera.ProcessKeyboard(FORWARD, deltaTime * 20);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        g_camera.ProcessKeyboard(BACKWARD, deltaTime * 10);
+        g_camera.ProcessKeyboard(BACKWARD, deltaTime * 20);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        g_camera.ProcessKeyboard(LEFT, deltaTime * 10);
+        g_camera.ProcessKeyboard(LEFT, deltaTime * 20);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        g_camera.ProcessKeyboard(RIGHT, deltaTime * 10);
+        g_camera.ProcessKeyboard(RIGHT, deltaTime * 20);
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
         g_pitch += 1.5;

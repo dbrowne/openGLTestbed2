@@ -109,7 +109,7 @@ void Paralleogram::gen_vertices() {
 
     // lower left
     set_vertex(idx, coords[0], coords[1], coords[2]);
-    set_vertex_color(idx, 0);
+    set_vertex_color(idx, 1);
     set_tex_pos(idx, 0, 0);
 
 
