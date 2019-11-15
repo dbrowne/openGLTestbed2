@@ -24,10 +24,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-
 // settings
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
@@ -42,9 +38,9 @@ bool firstMouse = true;
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
-float g_angle = 15.0f;
-float g_y = 2.0;
-float g_x = 2.0;
+float g_angle = 20.0f;
+float g_yaw = 1.0;
+float g_pitch = 1.0;
 
 
 
@@ -287,7 +283,9 @@ int main()
             glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 
-            model = glm::rotate(model, glm::radians(g_angle), glm::vec3(g_x, g_y, 0.5f));
+            model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
+            model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
+            model = glm::rotate(model, glm::radians(g_pitch), glm::vec3(1, 0, 0));
             ourShader.setMat4("model", model);
         } else {
             projection = glm::ortho(-(float) dims[2], (float) dims[2], -(float) dims[3], (float) dims[3],
@@ -416,21 +414,28 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_camera.ProcessKeyboard(RIGHT, deltaTime * 10);
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        g_x -= .15 * sin(g_angle / 2);
-        g_y -= .15 * sin(g_angle / 2);
+        g_pitch += 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        g_x += .15;
+        g_pitch -= 1.5;
 
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        g_y -= .15;
+        g_yaw -= 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        g_x += .15;
+        g_yaw += 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_HOME) == GLFW_PRESS) {
         g_camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+        g_angle -= 1.0;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+        g_angle += 1.0;
     }
 
 
@@ -453,27 +458,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    g_camera.ProcessMouseMovement(xoffset, yoffset);
-}
 
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-    g_camera.ProcessMouseScroll(yoffset);
-}
+
