@@ -8,7 +8,7 @@
 
 Paralleogram::Paralleogram() {
     theta = 90;
-    a = 1;
+    a = 2;
     b = 2;
     coords[0] = 0;
     coords[1] = 0;
