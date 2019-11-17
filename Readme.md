@@ -23,6 +23,7 @@ Some references:
 - [Terminology]
 - [Geometry and Tesselation on GPU]
 - [OpenGL Mathematics]
+- [3D Computer Graphics]
 
 [Common Mistakes]:https://www.khronos.org/opengl/wiki/Common_Mistakes
 [Learn OpenGL]:https://learnopengl.com
@@ -45,3 +46,4 @@ Some references:
 [Terminology]:https://cognitivewaves.wordpress.com/opengl-terminology-demystified/
 [Geometry and Tesselation on GPU]:https://cgg.mff.cuni.cz/~pepca/lectures/pdf/hw-12-geomtess.en.pdf
 [OpenGL Mathematics]:https://glm.g-truc.net/0.9.1/api/a00006.html
+[3D Computer Graphics]:https://www.math.ucsd.edu/~sbuss/CourseWeb/Math155A_2019Winter/SecondEdDraft.pdf

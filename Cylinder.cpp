@@ -6,6 +6,7 @@
 #include "Cylinder.h"
 #include <cmath>
 #include <iostream>
+#include "Prim_base.h"
 
 
 Cylinder::Cylinder() {
@@ -42,12 +43,15 @@ void Cylinder::gen_vertices() {
     float b_point[3] = {0, 0, 0};
     float c_point[3] = {0, 0, 0};
     float d_point[3] = {0, 0, 0};
+    float v1[3], v2[3], v3[3];
+    float v1a[3], v2a[3], v3a[3];
+    int v1_idx, v2_idx, v3_idx;
 
     bottom = true;
     top = true;
 
 
-    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     vertex_count = 12 * point_count;
     top_offset = 3 * point_count * offset;
     sz = offset * vertex_count;
@@ -93,6 +97,7 @@ void Cylinder::gen_vertices() {
             y = chk(ra * sin(theta) + coords[1]);
             z = coords[2] + height;
 
+            v1_idx = idx;
             x1 = chk(r1a * cos(theta) + coords[0]);   //bottom
             y1 = chk(r1a * sin(theta) + coords[1]);
             z1 = coords[2];
@@ -101,13 +106,20 @@ void Cylinder::gen_vertices() {
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
 
+            v1[0] = coords[0];
+            v1[1] = coords[1];
+            v1[2] = z;
+
             // bottom center
             set_vertex(idx + bot_offset, coords[0], coords[1], coords[2]);
             set_vertex_color(idx + bot_offset, 0);
-            set_tex_pos(idx + bot_offset, 0.0, 0.0);
+            set_tex_pos(idx + bot_offset, 0, 0.0);
+            v2[0] = coords[0];
+            v2[1] = coords[1];
+            v2[2] = coords[2];
 
             idx += offset;
-
+            v2_idx = idx;
             //1st point on top
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 1);
@@ -130,8 +142,7 @@ void Cylinder::gen_vertices() {
             z = coords[2] + height;
             set_vertex(idx, x, y, z);
             set_vertex_color(idx, 2);
-            set_tex_pos(idx, 1, 0);
-
+            set_tex_pos(idx, 0, 1);
             x1 = chk(r1a * cos(theta) + coords[0]);   //bottom
             y1 = chk(r1a * sin(theta) + coords[1]);
             z1 = coords[2];
@@ -146,7 +157,25 @@ void Cylinder::gen_vertices() {
             c_point[1] = y1;
             c_point[2] = z1;
 
+
             set_side(side_offset + top_offset, a_point, b_point, c_point, d_point, offset);
+
+
+            Extra::gen_normal3(v1_idx, 9, v1, a_point, d_point, vertices);
+            Extra::gen_normal3(v2_idx, 9, a_point, d_point, v1, vertices);
+            Extra::gen_normal3(idx, 9, d_point, v1, a_point, vertices);
+
+            Extra::gen_normal3(v1_idx + bot_offset, 9, v2, c_point, b_point, vertices);
+            Extra::gen_normal3(v2_idx + bot_offset, 9, c_point, b_point, v2, vertices);
+            Extra::gen_normal3(idx + bot_offset, 9, b_point, v2, c_point, vertices);
+
+            //Sides
+            Extra::gen_normal3(side_offset + top_offset, 9, a_point, b_point, c_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + offset, 9, b_point, c_point, a_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + 2 * offset, 9, c_point, a_point, b_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + 3 * offset, 9, c_point, d_point, a_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + 4 * offset, 9, d_point, a_point, c_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + 5 * offset, 9, a_point, c_point, d_point, vertices);
             side_offset += 6 * offset;
         }
         idx += offset;
@@ -276,23 +305,23 @@ void Cylinder::set_side(int idx, float *a, float *b, float *c, float *d, int off
 
     set_vertex(idx, b);
     set_vertex_color(idx, 0);
-    set_tex_pos(idx, 1, 1);
+    set_tex_pos(idx, 1, 0);
     idx += offset;
 
     set_vertex(idx, c);
     set_vertex_color(idx, 1);
-    set_tex_pos(idx, 1, 1);
+    set_tex_pos(idx, 0, 0);
     idx += offset;
 
 
     set_vertex(idx, c);
     set_vertex_color(idx, 1);
-    set_tex_pos(idx, 1, 1);
+    set_tex_pos(idx, 0, 0);
     idx += offset;
 
     set_vertex(idx, d);
     set_vertex_color(idx, 2);
-    set_tex_pos(idx, 1, 1);
+    set_tex_pos(idx, 0, 1);
     idx += offset;
 
     set_vertex(idx, a);
@@ -307,8 +336,8 @@ void Cylinder::set_vertex(int idx, float *p) {
 }
 
 void Cylinder::print_vertices() {
-    std::cout << " #:    vertex:\t\tcolor:\t\ttex \n";
-    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex:\t\tnorm \n";
+    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     int cntr = 0;
     int vtx_cnt = 0;
     int pc = 0;
@@ -343,11 +372,15 @@ void Cylinder::dump_vertex(int offset) {
     for (int j = 7; j <= 8; j++) {
         std::cout << vertices[offset + j] << ", ";
     }
+    std::cout << ":\t\t";
+    for (int j = 9; j <= 11; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
     std::cout << "\n";
 }
 
 float Cylinder::chk(float inp) {
-    if (abs(inp) < 9.28108e-06) {
+    if (abs(inp) < 9.5e-06) {
         return 0.0;
     } else {
         return inp;

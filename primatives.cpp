@@ -5,6 +5,7 @@
 #include "primatives.h"
 #include <iostream>
 #include "Color.h"
+#include "Prim_base.h"
 
 Axes::Axes(float ax_len) {
 
@@ -16,6 +17,7 @@ Axes::Axes(float ax_len) {
     axes[0] = ax_len;
     axes[1] = ax_len;
     axes[2] = ax_len;
+    vertex_size = 0;
 
 
 }
@@ -41,7 +43,7 @@ void Axes::gen_vertices() {
     int sz;
     int cnt = 0;
     float start = 0.0;
-    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     sz = offset * point_count * 2;
     vertices = (float *) malloc(sz * sizeof(float));
     if (!vertices) {
@@ -194,9 +196,12 @@ void ::Polyg::gen_vertices() {
     int index_pos = 0;
     int bot_offset = 0;
     int idx_offset = 0;
+    float v1[3], v2[3], v3[3];
+    float v1a[3], v2a[3], v3a[3];
+    int v1_idx, v2_idx, v3_idx;
     z = 0;
 
-    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     sz = offset * point_count * 3;
     vertex_count = 3 * point_count;
     if (height != 0) {
@@ -224,6 +229,10 @@ void ::Polyg::gen_vertices() {
         exit(-1);
     }
 
+    for (int i = 0; i < sz; i++)
+        vertices[i] = -99;
+
+
     incr = 2 * PI / point_count;
     cntr = 0;
 
@@ -232,16 +241,25 @@ void ::Polyg::gen_vertices() {
             if (theta > 0) {
                 theta -= incr;
             }
-            x = radius * cos(theta) + coord[0];
-            y = radius * sin(theta) + coord[1];
+            x = Extra::chk(radius * cos(theta) + coord[0]);
+            y = Extra::chk(radius * sin(theta) + coord[1]);
 
             set_vertex(idx, coord[0], coord[1], coord[2] + height);
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
+            v1[0] = coord[0];
+            v1[1] = coord[1];
+            v1[2] = coord[2] + height;
+
+            v1_idx = idx;
             if (height != 0) {
                 set_vertex(idx + bot_offset, coord[0], coord[1], coord[2]);
                 set_vertex_color(idx + bot_offset, 0);
                 set_tex_pos(idx + bot_offset, 0.0, 0.0);
+                v1a[0] = coord[0];
+                v1a[1] = coord[1];
+                v1a[2] = coord[2];
+
                 indices[index_pos + idx_offset] = point_count + 1;
             }
             indices[index_pos++] = 0;
@@ -250,27 +268,54 @@ void ::Polyg::gen_vertices() {
             set_vertex(idx, x, y, coord[2]);
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
+            v2_idx = idx;
+            v2[0] = x;
+            v2[1] = y;
+            v2[2] = coord[2];
             index_cntr++;
             if (height != 0) {
                 set_vertex(idx + bot_offset, x, y, coord[2]);
                 set_vertex_color(idx + bot_offset, 1);
                 set_tex_pos(idx + bot_offset, 1, 1);
                 indices[index_pos + idx_offset] = index_cntr;
+                v2a[0] = x;
+                v2a[1] = y;
+                v2a[2] = coord[2];
             }
 
             indices[index_pos++] = index_cntr;
         } else {
-            x = radius * cos(theta) + coord[0];
-            y = radius * sin(theta) + coord[1];
+            x = Extra::chk(radius * cos(theta) + coord[0]);
+            y = Extra::chk(radius * sin(theta) + coord[1]);
             set_vertex(idx, x, y, coord[2]);
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
+            v3_idx = idx;
+            v3[0] = x;
+            v3[1] = y;
+            v3[2] = z;
+
             if (height != 0) {
                 set_vertex(idx + bot_offset, x, y, coord[2]);
                 set_vertex_color(idx + bot_offset, 2);
                 set_tex_pos(idx + bot_offset, 1, 1);
                 indices[index_pos + idx_offset] = index_cntr + 1;
+                v3a[0] = x;
+                v3a[1] = y;
+                v3[2] = coord[2];
             }
+
+            Extra::gen_normal3(v1_idx, 9, v2, v3, v1, vertices);
+            Extra::gen_normal3(v2_idx, 9, v3, v1, v2, vertices);
+            Extra::gen_normal3(v3_idx, 9, v1, v2, v3, vertices);
+
+            if (height != 0) {
+                Extra::gen_normal3(v1_idx + bot_offset, 9, v2a, v1a, v3a, vertices);
+                Extra::gen_normal3(v2_idx + bot_offset, 9, v1a, v3a, v2a, vertices);
+                Extra::gen_normal3(v3_idx + bot_offset, 9, v3a, v2a, v1a, vertices);
+
+            }
+
             indices[index_pos++] = index_cntr + 1;
         }
         idx += offset;
@@ -299,7 +344,7 @@ int Polyg::get_index_size() {
     return index_size;
 }
 
-void ::Polyg::set_vertex(int idx, float x1, float y1, float z1) {
+void Polyg::set_vertex(int idx, float x1, float y1, float z1) {
     vertices[idx] = x1;
     vertices[idx + 1] = y1;
     vertices[idx + 2] = z1;
@@ -362,8 +407,8 @@ void Polyg::set_color(Color c0, Color c1, Color c2) {
 
 
 void Polyg::print_vertices() {
-    std::cout << " #:    vertex:\t\tcolor:\t\ttex \n";
-    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex \t\tNormal\n";
+    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     int cntr = 0;
     int vtx_cnt = 0;
     int pc = 0;
@@ -402,6 +447,10 @@ void Polyg::dump_vertex(int offset) {
     for (int j = 7; j <= 8; j++) {
         std::cout << vertices[offset + j] << ", ";
     }
+    std::cout << ":\t\t";
+    for (int j = 9; j <= 11; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
     std::cout << "\n";
 }
 
@@ -436,3 +485,5 @@ int Polyg::get_vertex_count() {
 bool Polyg::has_bottom() {
     return bottom;
 }
+
+void Polyg::increment(int int_val) {}

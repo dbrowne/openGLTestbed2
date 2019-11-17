@@ -17,7 +17,7 @@
 #include "Cylinder.h"
 #include "ellipse.h"
 #include "Parallelogram .h"
-
+#include "LightCube.h"
 #define IMAGENAME "awesomeface.png"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -30,7 +30,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 9.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 19.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -50,15 +50,21 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 1;
 bool g_resize = false;
-const int MAX_ITEMS = 7;
+const int MAX_ITEMS = 1;
+int g_light = 1;
+
 // lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+float g_l_dist = 2;
+float g_l_zh = 0;
+float g_l_y = 0;
+glm::vec3 lightPos(g_l_dist * cos(g_l_zh), g_l_y, g_l_dist * sin(g_l_zh));
 
 int main()
 {
     int total_vertices[MAX_ITEMS];
     int vertices_to_render[MAX_ITEMS];
     unsigned int Axis_VAO, Axis_VBO;
+    unsigned int Light_VAO, Light_VBO;
     unsigned int VBO[MAX_ITEMS];
     unsigned int VAO[MAX_ITEMS];
     unsigned int EBO[MAX_ITEMS];
@@ -103,25 +109,30 @@ int main()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-    // build and compile our shader zprogram
+
+
+    // Load Shaders
     // ------------------------------------
     Shader ourShader("vertex.glsl", "fragment.glsl");
-    Shader lightingShader("color_vec.glsl", "color_frag.glsl");
-    Shader lampShader("lamp_vec.glsl", "lamp_frag.glsl");
+    Shader lightShader("lamp_vec.glsl", "lamp_frag.glsl");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
+    LightCube *Lc = new LightCube();
+
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Paralleogram *xxx[MAX_ITEMS];
-//    Cylinder *xxx[MAX_ITEMS];
+//    Paralleogram *xxx[MAX_ITEMS];
+    Cylinder *xxx[MAX_ITEMS];
+//    Polyg *xxx[MAX_ITEMS];
+
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
 
 //    Cylinder xxx(.65, 1.05, 70, .75, .2, -.5, -.5);
 
-//        Polyg xxx(1.0, 36, 0, 0, .5, .25);
+//        Polyg xxx(1.0, 3, 0, 0, .5, .25);
 
 //    xxx.gen_vertices();
 //    xxx.print_vertices();
@@ -129,17 +140,24 @@ int main()
 //    float *vertices = xxx.get_vertices();
 //    total_vertices = xxx.get_vertex_count();
 
+
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
         float theta = 10.0;
-        xxx[i] = new Paralleogram(theta * i, .25 * i, .5 * i, -exp(.2 * i), i * .1, exp(i * .1));
-//        xxx[i] = new Cylinder(.125, .25, 30, h, .2, -.5, -.5 + i * h);
+//        xxx[i] = new Paralleogram(theta * i, .25 * i, .5 * i, -exp(.2 * i), i * .1, exp(i * .1));
+        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
+//        xxx[i] = new Polyg(.5, 16, exp(.75 * i), -exp(.25 * i), i, 1.25);
+
         xxx[i]->gen_vertices();
+        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
     }
+
+//    std::cout <<"EXITING  at line "<<__LINE__<<"\n";
+//    exit(-1);
 
 
     float *axes_verts = ax.get_vertices();
@@ -157,24 +175,36 @@ int main()
         glCheckError();
         // Position attribute
         glVertexAttribPointer(0, xxx[i]->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
+                              sizeof(float),
                               (void *) 0);
         glCheckError();
         glEnableVertexAttribArray(0);
 
         //color attribute
         glVertexAttribPointer(1, xxx[i]->COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
+                              sizeof(float),
                               (void *) (xxx[i]->VERTEX_SIZE * sizeof(float)));
         glCheckError();
         glEnableVertexAttribArray(1);
 
         //texture attribute
         glVertexAttribPointer(2, xxx[i]->TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) * sizeof(float),
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
+                              sizeof(float),
                               (void *) ((xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE) * sizeof(float)));
         glCheckError();
         glEnableVertexAttribArray(2);
+
+        //normal attribute
+        glVertexAttribPointer(3, xxx[i]->NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
+                              sizeof(float),
+                              (void *) ((xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) *
+                                        sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(3);
 
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -187,7 +217,6 @@ int main()
     //Axis
     glGenVertexArrays(1, &Axis_VAO);
     glGenBuffers(1, &Axis_VBO);
-
     glBindVertexArray(Axis_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, Axis_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(axes_verts) * ax.get_vertex_size(), axes_verts, GL_STATIC_DRAW);
@@ -196,15 +225,25 @@ int main()
                           (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float), (void *) 0);
     glCheckError();
 
-
     //color attribute
     glVertexAttribPointer(1, ax.COLOR_SIZE, GL_FLOAT, GL_FALSE,
                           (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float),
                           (void *) (ax.VERTEX_SIZE * sizeof(float)));
     glCheckError();
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(0);
 
 
+    //LightCube
+    glGenVertexArrays(1, &Light_VAO);
+    glGenBuffers(1, &Light_VBO);
+    glBindVertexArray(Light_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, Light_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Lc->get_vertex_size(), Lc->get_vertices(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, Lc->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (Lc->VERTEX_SIZE + Lc->NORMAL_SIZE + Lc->TEXTURE_SIZE + Lc->COLOR_SIZE) * sizeof(float),
+                          (void *) 0);
+    glCheckError();
     glEnableVertexAttribArray(0);
 
 
@@ -235,12 +274,10 @@ int main()
 
     ourShader.use();
     ourShader.setInt("texture1", 0);
+    ourShader.setInt("lightFlag", g_light);
 
 
-    // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
+
 
     // render loop
     // -----------
@@ -258,7 +295,17 @@ int main()
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
+        ourShader.use();
         ourShader.setInt("texflag", g_tex_flag);
+        ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        g_l_zh = fmod(glfwGetTime(), 360.0);
+        lightPos[0] = g_l_dist * cos(g_l_zh);
+        lightPos[2] = g_l_dist * sin(g_l_zh);
+        lightPos[1] = g_l_y;
+
+        ourShader.setVec3("lightPos", lightPos);
+        ourShader.setInt("lightFlag", g_light);
         ourShader.use();
 
         if (g_resize) {
@@ -282,6 +329,8 @@ int main()
         ourShader.setInt("perspective", g_perspective);
         GLint dims[4] = {0};
         glGetIntegerv(GL_VIEWPORT, dims);
+
+
         if (g_perspective) {
             glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
                                                     0.1f, 100.0f);
@@ -292,11 +341,11 @@ int main()
             // calculate the model matrix for each object and pass it to shader before drawing
             glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
             model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
             model = glm::rotate(model, glm::radians(g_pitch), glm::vec3(1, 0, 0));
             ourShader.setMat4("model", model);
+
         } else {
             projection = glm::ortho(-(float) dims[2], (float) dims[2], -(float) dims[3], (float) dims[3],
                                     0.1f, 100.0f);   //this is a cheat for now
@@ -314,18 +363,34 @@ int main()
                     vertices_to_render[i] = total_vertices[i];
                 }
             }
-
             // render
+
             glBindVertexArray(VAO[i]);
             glDrawArrays(GL_TRIANGLES, 0, vertices_to_render[i]);
+
+        }
 //        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
 
+        // Axes
             glBindVertexArray(Axis_VAO);
             glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
 
+
+        // Light
+        lightShader.use();
+        lightShader.setMat4("projection", projection);
+        lightShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(.4f));
+        lightShader.setMat4("model", model);
+        glCheckError();
+        glBindVertexArray(Light_VAO);
+        glCheckError();
+        glDrawArrays(GL_TRIANGLES, 0, Lc->get_vertex_count());
             glCheckError();
-        }
+
         // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -398,6 +463,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             default:
                 break;
         }
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+        g_light *= -1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {   //+
