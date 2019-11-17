@@ -30,7 +30,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 19.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 9.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -289,7 +289,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // bind textures on corresponding texture units
@@ -383,15 +383,13 @@ int main()
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
         model = glm::translate(model, lightPos);
-//        std::cout<<lightPos[0]<<","<<lightPos[1]<<","<<lightPos[2]<<"\n";
-//        model = glm::translate(model, glm::vec3(-0.36, 0, 1.5));
-        model = glm::scale(model, glm::vec3(.1f));
+        model = glm::scale(model, glm::vec3(.05f));
         lightShader.setMat4("model", model);
         glCheckError();
         glBindVertexArray(Light_VAO);
         glCheckError();
         glDrawArrays(GL_TRIANGLES, 0, Lc->get_vertex_count());
-            glCheckError();
+        glCheckError();
 
         // glBindVertexArray(0); // no need to unbind it every time
 

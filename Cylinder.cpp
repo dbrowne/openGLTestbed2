@@ -75,7 +75,7 @@ void Cylinder::gen_vertices() {
     }
 
     for (int i = 0; i < sz; i++) {
-        vertices[i] = -99.0;
+        vertices[i] = 0;
     }
 
     index_size = 12 * vertex_count;
@@ -170,9 +170,10 @@ void Cylinder::gen_vertices() {
             Extra::gen_normal3(idx + bot_offset, 9, b_point, v2, c_point, vertices);
 
             //Sides
-            Extra::gen_normal3(side_offset + top_offset, 9, a_point, b_point, c_point, vertices);
-            Extra::gen_normal3(side_offset + top_offset + offset, 9, b_point, c_point, a_point, vertices);
-            Extra::gen_normal3(side_offset + top_offset + 2 * offset, 9, c_point, a_point, b_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset, 9, c_point, a_point, b_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + offset, 9, a_point, b_point, c_point, vertices);
+            Extra::gen_normal3(side_offset + top_offset + 2 * offset, 9, b_point, c_point, a_point, vertices);
+
             Extra::gen_normal3(side_offset + top_offset + 3 * offset, 9, c_point, d_point, a_point, vertices);
             Extra::gen_normal3(side_offset + top_offset + 4 * offset, 9, d_point, a_point, c_point, vertices);
             Extra::gen_normal3(side_offset + top_offset + 5 * offset, 9, a_point, c_point, d_point, vertices);

@@ -27,7 +27,7 @@ void main()
         }
     } else {
         // ambient
-        float ambientStrength = 0.1;
+        float ambientStrength = 0.01;
         vec3 ambient = ambientStrength * lightColor;
 
         // diffuse
@@ -35,8 +35,9 @@ void main()
         vec3 lightDir = normalize(lightPos - FragPos);
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * lightColor;
+        vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+        //        vec3 result = (ambient + diffuse) * objectColor;
 
-        vec3 result = (ambient + diffuse) * objectColor;
         FragColor = vec4(result, 1.0);
 
         if (texflag == 0){
