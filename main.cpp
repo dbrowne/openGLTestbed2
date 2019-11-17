@@ -54,7 +54,7 @@ const int MAX_ITEMS = 1;
 int g_light = 1;
 
 // lighting
-float g_l_dist = 2;
+float g_l_dist = 1;
 float g_l_zh = 0;
 float g_l_y = 0;
 glm::vec3 lightPos(g_l_dist * cos(g_l_zh), g_l_y, g_l_dist * sin(g_l_zh));
@@ -382,9 +382,9 @@ int main()
         view = glm::mat4(1.0f);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
-//        model = glm::mat4(1.0f);
-//        model = glm::translate(model, lightPos);
-        model = glm::translate(model, glm::vec3(.5, 0, .5));
+        model = glm::translate(model, lightPos);
+//        std::cout<<lightPos[0]<<","<<lightPos[1]<<","<<lightPos[2]<<"\n";
+//        model = glm::translate(model, glm::vec3(-0.36, 0, 1.5));
         model = glm::scale(model, glm::vec3(.1f));
         lightShader.setMat4("model", model);
         glCheckError();

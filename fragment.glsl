@@ -14,7 +14,7 @@ uniform vec3 objectColor;
 void main()
 {
 
-    if (lightFlag == 1){
+    if (lightFlag == -1){
 
         if (texflag == 0){
             FragColor = texture(texture1, TexCoord) * vec4(ourColor);
