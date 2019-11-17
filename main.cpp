@@ -339,7 +339,7 @@ int main()
             glm::mat4 view = g_camera.GetViewMatrix();
             ourShader.setMat4("view", view);
             // calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+            model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
             model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
@@ -379,11 +379,13 @@ int main()
 
         // Light
         lightShader.use();
+        view = glm::mat4(1.0f);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(.4f));
+//        model = glm::mat4(1.0f);
+//        model = glm::translate(model, lightPos);
+        model = glm::translate(model, glm::vec3(.5, 0, .5));
+        model = glm::scale(model, glm::vec3(.1f));
         lightShader.setMat4("model", model);
         glCheckError();
         glBindVertexArray(Light_VAO);
