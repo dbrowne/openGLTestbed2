@@ -24,7 +24,7 @@ CLEAN=rm -f $(EXE) *.o *.a
 endif
 
 # Dependencies
-main.o: main.cpp extra_funcs.h Camera.h Cylinder.h ellipse.h Parallelogram.h LightCube.h Camera.h khrplatform.h
+main.o: main.cpp extra_funcs.h Camera.h Cylinder.h ellipse.h Parallelogram.h LightCube.h Camera.h khrplatform.h Shader.h
 extra_funcs.o: extra_funcs.cpp extra_funcs.h
 Color.o: Color.cpp Color.h
 Cylinder.o: Cylinder.cpp Cylinder.h Prim_base.h extra_funcs.h

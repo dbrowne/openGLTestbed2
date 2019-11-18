@@ -145,7 +145,7 @@ int main()
         float h = .25;
         float theta = 10.0;
 //        xxx[i] = new Paralleogram(theta * i, .25 * i, .5 * i, -exp(.2 * i), i * .1, exp(i * .1));
-        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
+        xxx[i] = new Cylinder(1.125, 1.125, 16, 1, 0, 0, 0);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Polyg(.5, 16, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
