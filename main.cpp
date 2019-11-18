@@ -16,7 +16,7 @@
 #include "Camera.h"
 #include "Cylinder.h"
 #include "ellipse.h"
-#include "Parallelogram .h"
+#include "Parallelogram.h"
 #include "LightCube.h"
 #define IMAGENAME "awesomeface.png"
 
