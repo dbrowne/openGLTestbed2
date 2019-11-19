@@ -5,6 +5,7 @@
 #include "Parallelogram.h"
 #include <cmath>
 #include <iostream>
+#include "Prim_base.h"
 
 Paralleogram::Paralleogram() {
     theta = 90;
@@ -41,13 +42,14 @@ void Paralleogram::gen_vertices() {
     float cvt = 3.1415967 / 180.0;
     float ang = theta * cvt;
     int idx = 0;
+    float v1[3], v2[3], v3[3], v4[3], v5[3], v6[3];
 
     float x_offset = chk(b * cos(ang));
     float y_offset = chk(b * sin(ang));
     int offset;
     int sz;
     vertex_count = point_count;
-    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     sz = offset * vertex_count;
 
     vertex_size = sz;
@@ -74,43 +76,77 @@ void Paralleogram::gen_vertices() {
     indices[3] = 2;
     indices[4] = 3;
     indices[5] = 0;
+    v1[0] = coords[0];
+    v1[1] = coords[1];
+    v1[2] = coords[2];
+
+    v2[0] = coords[0] + a;
+    v2[1] = coords[1];
+    v2[2] = coords[2];
+
+    v3[0] = coords[0] + a + x_offset;
+    v3[1] = coords[1] + y_offset;
+    v3[2] = coords[2];
+
+
+    v4[0] = coords[0] + a + x_offset;
+    v4[1] = coords[1] + y_offset;
+    v4[2] = coords[2];
+
+    v5[0] = coords[0] + x_offset;
+    v5[1] = coords[1] + y_offset;
+    v5[2] = coords[2];
+
+    v6[0] = coords[0];
+    v6[1] = coords[1];
+    v6[2] = coords[2];
 
     //lower left corner:
-    set_vertex(idx, coords[0], coords[1], coords[2]);
+    set_vertex(idx, v1[0], v1[1], v1[2]);
     set_vertex_color(idx, 0);
     set_tex_pos(idx, 0, 0);
+    Extra::gen_normal3(idx, 9, v1, v2, v3, vertices);
+
     idx += offset;
 
     // lower right corner:
-    set_vertex(idx, coords[0] + a, coords[1], coords[2]);
+    set_vertex(idx, v2[0], v2[1], v2[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 0, 1);
+    Extra::gen_normal3(idx, 9, v2, v3, v1, vertices);
+
+
     idx += offset;
 
     // upper right corner:
-    set_vertex(idx, coords[0] + a + x_offset, coords[1] + y_offset, coords[2]);
+    set_vertex(idx, v3[0], v3[1], v3[2]);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 1);
+
+    Extra::gen_normal3(idx, 9, v3, v1, v2, vertices);
     idx += offset;
 
     // Triangle #2
 
     // upper right corner:
-    set_vertex(idx, coords[0] + a + x_offset, coords[1] + y_offset, coords[2]);
+    set_vertex(idx, v4[0], v4[1], v4[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
+    Extra::gen_normal3(idx, 9, v4, v5, v6, vertices);
     idx += offset;
     // Upper left corner:
 
-    set_vertex(idx, coords[0] + x_offset, coords[1] + y_offset, coords[2]);
+    set_vertex(idx, v5[0], v5[1], v5[2]);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 0);
+    Extra::gen_normal3(idx, 9, v5, v6, v4, vertices);
     idx += offset;
 
     // lower left
-    set_vertex(idx, coords[0], coords[1], coords[2]);
+    set_vertex(idx, v6[0], v6[1], v6[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 0, 0);
+    Extra::gen_normal3(idx, 9, v6, v4, v5, vertices);
 
 
 }
@@ -164,7 +200,7 @@ float Paralleogram::chk(float inp) {
 }
 
 void Paralleogram::print_vertices() {
-    std::cout << " #:    vertex:\t\tcolor:\t\ttex \n";
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex \t\tNormals\n";
     int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
     int cntr = 0;
     int vtx_cnt = 0;
@@ -198,6 +234,10 @@ void Paralleogram::dump_vertex(int offset) {
     }
     std::cout << ":\t\t";
     for (int j = 7; j <= 8; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+
+    for (int j = 9; j <= 11; j++) {
         std::cout << vertices[offset + j] << ", ";
     }
     std::cout << "\n";

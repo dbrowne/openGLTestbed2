@@ -58,6 +58,8 @@ public:
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
+    const int NORMAL_SIZE = 3;
+
 
 };
 

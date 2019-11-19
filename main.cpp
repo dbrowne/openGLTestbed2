@@ -123,9 +123,9 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-//    Paralleogram *xxx[MAX_ITEMS];
+    Paralleogram *xxx[MAX_ITEMS];
 //    Cylinder *xxx[MAX_ITEMS];
-    Polyg *xxx[MAX_ITEMS];
+//    Polyg *xxx[MAX_ITEMS];
 
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
@@ -143,11 +143,11 @@ int main()
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
-        float theta = 10.0;
-//        xxx[i] = new Paralleogram(theta * i, .25 * i, .5 * i, -exp(.2 * i), i * .1, exp(i * .1));
+        float theta = 90.0;
+        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
 //        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
-        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
+//        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
         xxx[i]->gen_vertices();
         xxx[i]->print_vertices();
