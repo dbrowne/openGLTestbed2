@@ -230,7 +230,7 @@ void ::Polyg::gen_vertices() {
     }
 
     for (int i = 0; i < sz; i++)
-        vertices[i] = -99;
+        vertices[i] = -1;
 
 
     incr = 2 * PI / point_count;
@@ -302,7 +302,7 @@ void ::Polyg::gen_vertices() {
                 indices[index_pos + idx_offset] = index_cntr + 1;
                 v3a[0] = x;
                 v3a[1] = y;
-                v3[2] = coord[2];
+                v3a[2] = coord[2];
             }
 
             Extra::gen_normal3(v1_idx, 9, v2, v3, v1, vertices);
@@ -310,9 +310,9 @@ void ::Polyg::gen_vertices() {
             Extra::gen_normal3(v3_idx, 9, v1, v2, v3, vertices);
 
             if (height != 0) {
-                Extra::gen_normal3(v1_idx + bot_offset, 9, v2a, v1a, v3a, vertices);
-                Extra::gen_normal3(v2_idx + bot_offset, 9, v1a, v3a, v2a, vertices);
-                Extra::gen_normal3(v3_idx + bot_offset, 9, v3a, v2a, v1a, vertices);
+                Extra::gen_normal3(v1_idx + bot_offset, 9, v1a, v3a, v2a, vertices);
+                Extra::gen_normal3(v2_idx + bot_offset, 9, v3a, v2a, v1a, vertices);
+                Extra::gen_normal3(v3_idx + bot_offset, 9, v2a, v1a, v3a, vertices);
 
             }
 
