@@ -12,13 +12,26 @@ Ellipse::Ellipse() {
     coords[1] = 0.0;
     coords[2] = 0.0;
     a = 1;
-    b = -0.25;
+    b = 0.25;
     point_count = 9;
     initial_point_count = point_count;
     vertex_size = 0;
     vertex_count = 0;
-
+    mult = 2.0;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+}
+
+Ellipse::Ellipse(float x, float y, float z, float a1, float b1, float m, int pc) {
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+    a = a1;
+    b = b1;
+    mult = m;
+    point_count = pc;
+    color[0] = new Color(1.0, 1.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
 }
@@ -96,9 +109,9 @@ void Ellipse::gen_vertices() {
             v3[2] = z;
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
-            Extra::gen_normal3(v1_idx, 9, v1, v3, v2, vertices);
-            Extra::gen_normal3(v2_idx, 9, v3, v2, v1, vertices);
-            Extra::gen_normal3(idx, 9, v2, v1, v3, vertices);
+            Extra::gen_normal3(v1_idx, 9, v1, v2, v3, vertices);
+            Extra::gen_normal3(v2_idx, 9, v2, v3, v1, vertices);
+            Extra::gen_normal3(idx, 9, v3, v1, v2, vertices);
         }
         idx += offset;
         cntr++;
@@ -164,7 +177,7 @@ void Ellipse::print_vertices() {
     int cntr = 0;
     int vtx_cnt = 0;
     int pc = 0;
-    pc = point_count * 4;
+    pc = point_count;
 
     for (int i = 0; i < pc; i++) {
         std::cout << vtx_cnt++ << ":  ";

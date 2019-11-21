@@ -1,5 +1,5 @@
 # FinalProject
-EXE=finalProject
+EXE=final
 
 # Main target
 all: $(EXE)
@@ -7,7 +7,7 @@ all: $(EXE)
 #  MinGW
 ifeq "$(OS)" "Windows_NT"
 CFLG=-O3 -Wall
-LIBS=-lglut32cu -lglu32 -lopengl32
+LIBS=-lglut32cu -lglu32 -lopengl32 -lglfw -ldl
 CLEAN=del *.exe *.o *.a
 else
 #  OSX
@@ -46,7 +46,7 @@ CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Paralle
 	g++ -c $(CFLG) $<
 
 #  Link
-finalProject:main.o CSCIx229.a
+final:main.o CSCIx229.a
 	g++ -O3 -o $@ $^   $(LIBS)
 
 #  Clean

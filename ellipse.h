@@ -21,7 +21,7 @@ private:
     int index_size;
     bool alloced = false;  // to allow for resizing
     int initial_point_count;
-    float mult = 2.0;
+    float mult;
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -35,6 +35,7 @@ public:
 
     ~Ellipse();
 
+    Ellipse(float x, float y, float z, float a1, float b1, float mult, int pc);
     void gen_vertices();
 
     float *get_vertices();
@@ -56,6 +57,7 @@ public:
     void dump_vertex(int offset);
 
     void print_vertices();
+
 
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;

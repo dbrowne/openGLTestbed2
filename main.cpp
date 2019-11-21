@@ -146,6 +146,8 @@ int main()
         float h = .25;
         float theta = 90.0;
         xxx[i] = new Ellipse;
+//        xxx[i] = new Ellipse(1,.5, .25,1, .25,2,16);
+
 //        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
 //        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
