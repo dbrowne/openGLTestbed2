@@ -5,6 +5,7 @@
 #include "ellipse.h"
 #include <iostream>
 #include <cmath>
+#include "Prim_base.h"
 
 Ellipse::Ellipse() {
     coords[0] = 0.0;
@@ -12,7 +13,7 @@ Ellipse::Ellipse() {
     coords[2] = 0.0;
     a = 1;
     b = -0.25;
-    point_count = 18;
+    point_count = 9;
     initial_point_count = point_count;
     vertex_size = 0;
     vertex_count = 0;
@@ -32,8 +33,10 @@ void Ellipse::gen_vertices() {
     int cntr = 0;
     float theta = 0;
     float incr;
+    float v1[3], v2[3], v3[3];
+    int v1_idx, v2_idx, v3_idx;
 
-    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     vertex_count = 3 * point_count;
     sz = offset * vertex_count;
 
@@ -69,19 +72,33 @@ void Ellipse::gen_vertices() {
             z = coords[2];
 
             set_vertex(idx, coords[0], coords[1], z);
+            v1_idx = idx;
+            v1[0] = coords[0];
+            v1[1] = coords[1];
+            v1[2] = coords[2];
             set_vertex_color(idx, 0);
             set_tex_pos(idx, 0.0, 0.0);
             idx += offset;
             set_vertex(idx, x, y, z);
+            v2[0] = x;
+            v2[1] = y;
+            v2[2] = z;
             set_vertex_color(idx, 1);
             set_tex_pos(idx, 1, 1);
+            v2_idx = idx;
         } else {
             x = a * cos(theta) + coords[0];
             y = b * sin(theta) + coords[1];
             z = coords[2];
             set_vertex(idx, x, y, z);
+            v3[0] = x;
+            v3[1] = y;
+            v3[2] = z;
             set_vertex_color(idx, 2);
             set_tex_pos(idx, 1, 0);
+            Extra::gen_normal3(v1_idx, 9, v1, v3, v2, vertices);
+            Extra::gen_normal3(v2_idx, 9, v3, v2, v1, vertices);
+            Extra::gen_normal3(idx, 9, v2, v1, v3, vertices);
         }
         idx += offset;
         cntr++;
@@ -138,4 +155,49 @@ bool Ellipse::has_bottom() {
 
 void Ellipse::set_mult(float m) {
     mult = m;
+}
+
+
+void Ellipse::print_vertices() {
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex:\t\tnorm \n";
+    int offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
+    int cntr = 0;
+    int vtx_cnt = 0;
+    int pc = 0;
+    pc = point_count * 4;
+
+    for (int i = 0; i < pc; i++) {
+        std::cout << vtx_cnt++ << ":  ";
+        dump_vertex(cntr);
+        cntr += offset;
+        std::cout << vtx_cnt++ << ":  ";
+        dump_vertex(cntr);
+        std::cout << vtx_cnt++ << ":  ";
+        cntr += offset;
+        dump_vertex(cntr);
+        std::cout << "\n";
+
+        cntr += offset;
+
+    }
+}
+
+void Ellipse::dump_vertex(int offset) {
+    for (int j = 0; j < 3; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+
+    std::cout << ":\t\t ";
+    for (int j = 3; j <= 6; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+    std::cout << ":\t\t";
+    for (int j = 7; j <= 8; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+    std::cout << ":\t\t";
+    for (int j = 9; j <= 11; j++) {
+        std::cout << vertices[offset + j] << ", ";
+    }
+    std::cout << "\n";
 }

@@ -53,9 +53,14 @@ public:
 
     void increment(int int_val);
 
+    void dump_vertex(int offset);
+
+    void print_vertices();
+
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
+    const int NORMAL_SIZE = 3;
 };
 
 #endif //TESTBED2_ELLIPSE_H
