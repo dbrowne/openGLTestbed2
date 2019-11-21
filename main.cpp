@@ -20,6 +20,8 @@
 #include "LightCube.h"
 #define IMAGENAME "awesomeface.png"
 
+#include "Sphere.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -123,6 +125,8 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
+    Sphere *yyy = new Sphere(1.2, 3, 2, false);
+    yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
 //    Cylinder *xxx[MAX_ITEMS];
@@ -154,7 +158,7 @@ int main()
 //        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
         xxx[i]->gen_vertices();
-        xxx[i]->print_vertices();
+//        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
@@ -383,7 +387,8 @@ int main()
 
         // Light
         lightShader.use();
-        view = glm::mat4(1.0f);
+//        view = glm::mat4(1.0f);
+//        projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],.1f, 100.0f);
         lightShader.setMat4("projection", projection);
         lightShader.setMat4("view", view);
         model = glm::translate(model, lightPos);
