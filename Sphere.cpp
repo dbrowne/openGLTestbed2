@@ -99,15 +99,20 @@ void Sphere::printSelf() const {
             << "TexCoord Count: " << getTexCoordCount() << std::endl;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Delete buffers
+///////////////////////////////////////////////////////////////////////////////
+void Sphere::deletebuffers() {
+    glDeleteVertexArrays(1, &sphere_vao);
+    glDeleteBuffers(1, &sphere_vbo);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // draw a sphere in VertexArray mode
 // OpenGL RC must be set before calling it
 ///////////////////////////////////////////////////////////////////////////////
-void Sphere::draw() const {
+void Sphere::draw() {
     // interleaved array
-    unsigned int sphere_vao;
-    unsigned int sphere_vbo;
 
 
     glGenVertexArrays(1, &sphere_vao);
@@ -226,7 +231,7 @@ void Sphere::drawLines(const float lineColor[4]) const {
 // draw a sphere surfaces and lines on top of it
 // the caller must set the line width before call this
 ///////////////////////////////////////////////////////////////////////////////
-void Sphere::drawWithLines(const float lineColor[4]) const {
+void Sphere::drawWithLines(const float lineColor[4]) {
     glEnable(GL_POLYGON_OFFSET_FILL);
     glPolygonOffset(1.0, 1.0f); // move polygon backward
     this->draw();
@@ -491,21 +496,28 @@ void Sphere::buildVerticesFlat() {
                 // put quad vertices: v1-v2-v3-v4
                 addVertex(v1.x, v1.y, v1.z);
                 addVertex(v2.x, v2.y, v2.z);
-//                addVertex(v3.x, v3.y, v3.z);
                 addVertex(v4.x, v4.y, v4.z);
-//                addVertex(v4.x, v4.y, v4.z);
 
+                addVertex(v4.x, v4.y, v4.z);
+                addVertex(v3.x, v3.y, v3.z);
+                addVertex(v1.x, v1.y, v1.z);
 
                 addColors(color2);
                 addColors(color);
                 addColors(color1);
-//                addColors(color1);
+                addColors(color1);
+                addColors(color);
+                addColors(color2);
 
                 // put tex coords of quad
                 addTexCoord(v1.s, v1.t);
                 addTexCoord(v2.s, v2.t);
-//                addTexCoord(v3.s, v3.t);
                 addTexCoord(v4.s, v4.t);
+
+                addTexCoord(v4.s, v4.t);
+                addTexCoord(v3.s, v3.t);
+                addTexCoord(v1.s, v1.t);
+
 
                 // put normal
                 n = computeFaceNormal(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v4.x, v4.y, v4.z);
@@ -513,6 +525,13 @@ void Sphere::buildVerticesFlat() {
                 {
                     addNormal(n[0], n[1], n[2]);
                 }
+
+                n = computeFaceNormal(v4.x, v4.y, v4.z, v3.x, v3.y, v3.z, v1.x, v1.y, v1.z);
+                for (k = 0; k < 3; ++k)  // same normals for 4 vertices
+                {
+                    addNormal(n[0], n[1], n[2]);
+                }
+
 
                 // put indices of quad (2 triangles)
                 addIndices(index, index + 1, index + 2);

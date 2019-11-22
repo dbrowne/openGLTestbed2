@@ -25,6 +25,8 @@ public:
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
+    unsigned int sphere_vao;
+    unsigned int sphere_vbo;
 
     // ctor/dtor
     Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, bool smooth = true);
@@ -37,6 +39,8 @@ public:
     int getSectorCount() const { return sectorCount; }
 
     int getStackCount() const { return stackCount; }
+
+    void deletebuffers();
 
     void set(float radius, int sectorCount, int stackCount, bool smooth = true);
 
@@ -95,10 +99,10 @@ public:
     int getInterleavedStride() const { return interleavedStride; }   //
     const float *getInterleavedVertices() const { return interleavedVertices.data(); }
 
-    // draw in VertexArray mode
-    void draw() const;                                  // draw surface
+    // draw in VertexArray modes[
+    void draw();                                  // draw surface
     void drawLines(const float lineColor[4]) const;     // draw lines only
-    void drawWithLines(const float lineColor[4]) const; // draw surface and lines
+    void drawWithLines(const float lineColor[4]); // draw surface and lines
 
     // debug
     void printSelf() const;
