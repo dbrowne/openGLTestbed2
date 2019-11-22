@@ -53,6 +53,8 @@ public:
 
     unsigned int getNormalCount() const { return (unsigned int) normals.size() / 3; }
 
+    unsigned int getColorCount() const { return (unsigned int) colors.size() / 4; }
+
     unsigned int getTexCoordCount() const { return (unsigned int) texCoords.size() / 2; }
 
     unsigned int getIndexCount() const { return (unsigned int) indices.size(); }
@@ -71,7 +73,7 @@ public:
 
     unsigned int getLineIndexSize() const { return (unsigned int) lineIndices.size() * sizeof(unsigned int); }
 
-    unsigned int getColorCount() const { return (unsigned int) colors.size() * sizeof(float); }
+
 
     const float *getVertices() const { return vertices.data(); }
 
@@ -90,7 +92,7 @@ public:
     unsigned int getInterleavedVertexSize() const {
         return (unsigned int) interleavedVertices.size() * sizeof(float);
     }    // # of bytes
-    int getInterleavedStride() const { return interleavedStride; }   // should be 32 bytes
+    int getInterleavedStride() const { return interleavedStride; }   //
     const float *getInterleavedVertices() const { return interleavedVertices.data(); }
 
     // draw in VertexArray mode
@@ -101,7 +103,11 @@ public:
     // debug
     void printSelf() const;
 
+    void dumpInterleaved();
 
+    float *outVertices{nullptr};
+    int outVertices_count = 0;
+    int outVertices_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 protected:
 
 private:
@@ -125,6 +131,7 @@ private:
     void addColors(Color c);
 
     void addIndices(unsigned int i1, unsigned int i2, unsigned int i3);
+
 
     std::vector<float> computeFaceNormal(float x1, float y1, float z1,
                                          float x2, float y2, float z2,

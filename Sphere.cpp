@@ -19,8 +19,10 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+#include "glad.h"
 #include <GLFW/glfw3.h>
 #include "Sphere.h"
+#include "extra_funcs.h"
 
 
 // constants //////////////////////////////////////////////////////////////////
@@ -31,7 +33,7 @@ const int MIN_STACK_COUNT = 2;
 ///////////////////////////////////////////////////////////////////////////////
 // ctor
 ///////////////////////////////////////////////////////////////////////////////
-Sphere::Sphere(float radius, int sectors, int stacks, bool smooth) : interleavedStride(32) {
+Sphere::Sphere(float radius, int sectors, int stacks, bool smooth) : interleavedStride(96) {
     set(radius, sectors, stacks, smooth);
 }
 
@@ -85,16 +87,16 @@ void Sphere::setSmooth(bool smooth) {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::printSelf() const {
     std::cout << "===== Sphere =====\n"
-              << "        Radius: " << radius << "\n"
-              << "  Sector Count: " << sectorCount << "\n"
-              << "   Stack Count: " << stackCount << "\n"
-              << "Smooth Shading: " << (smooth ? "true" : "false") << "\n"
-              << "Triangle Count: " << getTriangleCount() << "\n"
-              << "   Index Count: " << getIndexCount() << "\n"
-              << "  Vertex Count: " << getVertexCount() << "\n"
-              << "  Normal Count: " << getNormalCount() << "\n"
-              << "  colors Count:" << getColorCount() << "\n"
-              << "TexCoord Count: " << getTexCoordCount() << std::endl;
+            << "        Radius: " << radius << "\n"
+            << "  Sector Count: " << sectorCount << "\n"
+            << "   Stack Count: " << stackCount << "\n"
+            << "Smooth Shading: " << (smooth ? "true" : "false") << "\n"
+            << "Triangle Count: " << getTriangleCount() << "\n"
+            << "   Index Count: " << getIndexCount() << "\n"
+            << "  Vertex Count: " << getVertexCount() << "\n"
+            << "  Normal Count: " << getNormalCount() << "\n"
+            << "  colors Count: " << getColorCount() << "\n"
+            << "TexCoord Count: " << getTexCoordCount() << std::endl;
 }
 
 
@@ -104,21 +106,99 @@ void Sphere::printSelf() const {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::draw() const {
     // interleaved array
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glVertexPointer(3, GL_FLOAT, interleavedStride, &interleavedVertices[0]);
-    glNormalPointer(GL_FLOAT, interleavedStride, &interleavedVertices[3]);
-    glTexCoordPointer(2, GL_FLOAT, interleavedStride, &interleavedVertices[6]);
+    unsigned int sphere_vao;
+    unsigned int sphere_vbo;
 
-    glDrawElements(GL_TRIANGLES, (unsigned int) indices.size(), GL_UNSIGNED_INT, indices.data());
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glGenVertexArrays(1, &sphere_vao);
+    glGenBuffers(1, &sphere_vbo);
+    glBindVertexArray(sphere_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, sphere_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(outVertices) * outVertices_count * outVertices_stride, outVertices,
+                 GL_STATIC_DRAW);
+    glCheckError();
+    // position attribute
+    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (outVertices_stride) * sizeof(float),
+                          (void *) 0);
+    glEnableVertexAttribArray(0);
+    glCheckError();
+    //color attribute
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                          (outVertices_stride) * sizeof(float),
+                          (void *) (VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(1);
+
+
+
+    //texture attribute
+    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                          (outVertices_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    //Normal attribute
+    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                          (outVertices_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(sphere_vao);
+
+    glCheckError();
+    glDrawArrays(GL_TRIANGLES, 0, outVertices_count);
+    glCheckError();
+
+//    glVertexPointer(3, GL_FLOAT, interleavedStride, &interleavedVertices[0]);
+//    glNormalPointer(GL_FLOAT, interleavedStride, &interleavedVertices[3]);
+//    glTexCoordPointer(2, GL_FLOAT, interleavedStride, &interleavedVertices[6]);
+//
+//    glDrawElements(GL_TRIANGLES, (unsigned int) indices.size(), GL_UNSIGNED_INT, indices.data());
+//
+//    glDisableClientState(GL_VERTEX_ARRAY);
+//    glDisableClientState(GL_NORMAL_ARRAY);
+//    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// debug interleaved vertices
+//
+///////////////////////////////////////////////////////////////////////////////
 
+void ::Sphere::dumpInterleaved() {
+    std::size_t i;
+
+    std::cout << " #:    vertex:\t\tcolor:\t\ttex:\t\tnorm \n";
+    int offset = outVertices_stride;
+    std::size_t count = interleavedVertices.size();
+    std::cout << "# of interleavedVertices :" << interleavedVertices.size() << "\n";
+    std::cout << "sizeof interleavedVertices :" << sizeof(interleavedVertices) << "sizeof Float " << sizeof(float)
+              << "\n";
+    for (i = 0; i < count; i += offset) {
+        std::cout << "#" << i << " :";
+        std::cout << interleavedVertices[i] << ", ";
+        std::cout << interleavedVertices[i + 1] << ", ";
+        std::cout << interleavedVertices[i + 2] << ", ";
+        //color
+        std::cout << interleavedVertices[i + 3] << ", ";
+        std::cout << interleavedVertices[i + 4] << ", ";
+        std::cout << interleavedVertices[i + 5] << ", ";
+        std::cout << interleavedVertices[i + 6] << ", ";
+        //texture
+        std::cout << interleavedVertices[i + 7] << ", ";
+        std::cout << interleavedVertices[i + 8] << ", ";
+        //normals
+        std::cout << interleavedVertices[i + 9] << ", ";
+        std::cout << interleavedVertices[i + 10] << ", ";
+        std::cout << interleavedVertices[i + 11] << "\n";
+
+
+    }
+
+}
 ///////////////////////////////////////////////////////////////////////////////
 // draw lines only
 // the caller must set the line width before call this
@@ -213,7 +293,7 @@ void Sphere::buildVerticesSmooth() {
     float sectorStep = 2 * PI / sectorCount;
     float stackStep = PI / stackCount;
     float sectorAngle, stackAngle;
-    Color color(0, 1, 1, 1);
+    Color color(.4, .7, .2, 1);
 
     for (int i = 0; i <= stackCount; ++i) {
         stackAngle = PI / 2 - i * stackStep;        // starting from pi/2 to -pi/2
@@ -379,6 +459,9 @@ void Sphere::buildVerticesFlat() {
                 addVertex(v1.x, v1.y, v1.z);
                 addVertex(v2.x, v2.y, v2.z);
                 addVertex(v3.x, v3.y, v3.z);
+                addColors(color);
+                addColors(color2);
+                addColors(color1);
 
                 // put tex coords of triangle
                 addTexCoord(v1.s, v1.t);
@@ -409,6 +492,11 @@ void Sphere::buildVerticesFlat() {
                 addVertex(v2.x, v2.y, v2.z);
                 addVertex(v3.x, v3.y, v3.z);
                 addVertex(v4.x, v4.y, v4.z);
+
+                addColors(color2);
+                addColors(color);
+                addColors(color1);
+                addColors(color1);
 
                 // put tex coords of quad
                 addTexCoord(v1.s, v1.t);
@@ -449,7 +537,8 @@ void Sphere::buildVerticesFlat() {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::buildInterleavedVertices() {
     std::vector<float>().swap(interleavedVertices);
-
+    int yyy;
+    int malloc_size;
     std::size_t i, j, k;
     std::size_t count = vertices.size();
     for (i = 0, j = 0, k = 0; i < count; i += 3, j += 2, k += 4) {
@@ -465,9 +554,14 @@ void Sphere::buildInterleavedVertices() {
         interleavedVertices.push_back(normals[i]);
         interleavedVertices.push_back(normals[i + 1]);
         interleavedVertices.push_back(normals[i + 2]);
-
-
     }
+    yyy = interleavedVertices.size();
+    outVertices = (float *) malloc(yyy * sizeof(float));
+    outVertices_count = yyy / outVertices_stride;
+    for (i = 0; i < yyy; i++) {
+        outVertices[i] = interleavedVertices[i];
+    }
+    std::cout << "\n";
 }
 
 

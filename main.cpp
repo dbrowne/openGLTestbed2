@@ -380,6 +380,11 @@ int main()
 //        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 //        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
 
+
+        // sphere
+        yyy->draw();
+
+
         // Axes
             glBindVertexArray(Axis_VAO);
             glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
