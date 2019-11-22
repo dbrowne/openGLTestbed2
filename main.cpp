@@ -125,7 +125,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(1.2, 3, 2, false);
+    Sphere *yyy = new Sphere(1.2, 3, 3, false);
     yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
@@ -383,6 +383,7 @@ int main()
 
         // sphere
         yyy->draw();
+
 
 
         // Axes
