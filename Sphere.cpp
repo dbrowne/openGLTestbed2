@@ -10,6 +10,7 @@
 //  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
 // CREATED: 2017-11-01
 // UPDATED: 2018-12-13
+// MODIFIED By Dwight Browne to present vertor array
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
@@ -278,6 +279,7 @@ void Sphere::clearArrays() {
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// Skipped for now
 // build vertices of sphere with smooth shading using parametric equation
 // x = r * cos(u) * cos(v)
 // y = r * cos(u) * sin(v)
@@ -370,7 +372,7 @@ void Sphere::buildVerticesSmooth() {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::buildVerticesFlat() {
     const float PI = 3.1415926f;
-    Color color(1, 0, 0, 1);
+    Color color(1, 1, 1, 1);
     Color color1(0, 1, 0, 1);
     Color color2(0, 0, 1, 1);
     // tmp vertex definition (x,y,z,s,t)

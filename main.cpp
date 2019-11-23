@@ -125,8 +125,8 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(1.2, 72, 18, false);
-    yyy->printSelf();
+    Sphere *yyy = new Sphere(1.2, 36, 36, false);
+//    yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
 //    Cylinder *xxx[MAX_ITEMS];
