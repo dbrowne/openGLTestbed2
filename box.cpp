@@ -96,16 +96,7 @@ void Box::gen_vertices() {
         vpa = sides[i]->get_vertices();
         std::memcpy(&vertices[offset], vpa, vx_size * sizeof(float));
         offset += vx_size;
-//        sides[i]->print_vertices();
     }
-
-//    for (int i=0; i<vertex_size; i++){
-//        std::cout<<vertices[i]<<",";
-//        if (i!=0 && i%12==0){
-//            std::cout <<"\n";
-//        }
-//    }
-//    std::cout<<"\n";
 
     vertex_count = 36;
 
