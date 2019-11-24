@@ -5,6 +5,12 @@
 #include "Prim_base.h"
 
 // this is based on Song Ho Ahn'  Sphere.cpp
+
+void Extra::set_v(float *in, float *out) {
+    for (int i = 0; i < 3; i++) {
+        out[i] = in[i];
+    }
+}
 void Extra::gen_normal3(int idx, int offset, float *v1, float *v2, float *v3, float *out) {
     const float EPSILON = 0.000001f;
 

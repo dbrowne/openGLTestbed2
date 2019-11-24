@@ -1,48 +1,44 @@
 //
-// Created by Dwight J. Browne on 11/13/19.
+// Created by Dwight J. Browne on 11/23/19.
 //
 
-#ifndef TESTBED2_PARALLELOGRAM_H
-#define TESTBED2_PARALLELOGRAM_H
+#ifndef TESTBED2_BOX_H
+#define TESTBED2_BOX_H
 
-#import "Color.h"
+#include "Parallelogram.h"
+#include "Color.h"
+#include "Prim_base.h"
 
-class Paralleogram {
+class Box {
 private:
     Color *color[3]{nullptr};
     float coords[3]{};
     float *vertices{nullptr};
-    unsigned int *indices{nullptr};
     float theta;
     float a;
     float b;
-    int point_count = 6;
+    float height;
+    float point_count;
     int vertex_size;
     int vertex_count;
     int index_size;
     bool bottom = true;
-    float wind = 1;
-    bool have_vertices = false;
-    static float vv[6][3];
+
 
     void set_vertex(int idx, float x1, float y1, float z1);
+
     void set_vertex_color(int idx, int vtx);
+
     void set_tex_pos(int idx, float x, float y);
+
     float chk(float inp);
 
-    void set_point(int idx, float *v);
-
 public:
-    Paralleogram();
+    Box();
 
-    ~Paralleogram();
+    ~Box();
 
-    Paralleogram(float angle, float side1, float side2, float x, float y, float z);
-
-    Paralleogram(float angle, float side1, float side2, float x, float y, float z, float w);
-
-    Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w);
-
+    Box(float angle, float side1, float side2, float h, float x, float y, float z);
 
     float *get_vertices();
 
@@ -52,7 +48,7 @@ public:
 
     int get_vertex_size();
 
-    void gen_vertices();
+    int gen_vertices();
 
     bool has_bottom();
 
@@ -62,15 +58,15 @@ public:
 
     void dump_vertex(int offset);
 
-    static float *get_point(int idx);
-
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
 
+private:
+    void set_v(float *in, float *out);
+
 
 };
 
-#endif //TESTBED2_PARALLELOGRAM_H
-
+#endif //TESTBED2_BOX_H

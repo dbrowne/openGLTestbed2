@@ -12,6 +12,7 @@ namespace Extra {
 
     void gen_normal2(int idx, int offset, float *v1, float *v2, float *out);
 
+    void set_v(float *in, float *out);
     float chk(float inp);
 }
 
