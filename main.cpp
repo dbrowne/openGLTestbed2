@@ -61,6 +61,7 @@ int g_light = 1;
 float g_l_dist = 1;
 float g_l_zh = 0;
 float g_l_y = 0;
+int g_light_flag = 1;
 glm::vec3 lightPos(g_l_dist * cos(g_l_zh), g_l_y, g_l_dist * sin(g_l_zh));
 
 int main()
@@ -311,7 +312,9 @@ int main()
         ourShader.setInt("texflag", g_tex_flag);
         ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        g_l_zh = fmod(glfwGetTime(), 360.0);
+        if (g_light_flag == 1) {
+            g_l_zh = fmod(glfwGetTime(), 360.0);
+        }
         lightPos[0] = g_l_dist * cos(g_l_zh);
         lightPos[2] = g_l_dist * sin(g_l_zh);
         lightPos[1] = g_l_y;
@@ -469,6 +472,22 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
                 break;
 
         }
+
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        g_light_flag *= -1;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
+        g_l_zh -= .1;
+        g_l_zh = fmod(g_l_zh, 360.0);
+        std::cout << g_l_zh;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
+        g_l_zh += .1;
+        g_l_zh = fmod(g_l_zh, 360.0);
 
     }
 

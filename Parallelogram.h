@@ -21,7 +21,7 @@ private:
     int vertex_count;
     int index_size;
     bool bottom = true;
-    float wind = 1;
+    bool wind = true;
     bool have_vertices = false;
     float vv[6][3];
 
@@ -40,7 +40,7 @@ public:
 
     Paralleogram(float angle, float side1, float side2, float x, float y, float z);
 
-    Paralleogram(float angle, float side1, float side2, float x, float y, float z, float w);
+    Paralleogram(float angle, float side1, float side2, float x, float y, float z, bool w);
 
     Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w);
 

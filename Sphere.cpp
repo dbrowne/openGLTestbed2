@@ -34,7 +34,9 @@ const int MIN_STACK_COUNT = 2;
 ///////////////////////////////////////////////////////////////////////////////
 // ctor
 ///////////////////////////////////////////////////////////////////////////////
-Sphere::Sphere(float radius, int sectors, int stacks, bool smooth) : interleavedStride(96) {
+Sphere::Sphere(float radius, int sectors, int stacks, bool ext) : interleavedStride(96) {
+    smooth = false;
+    exterior = ext;
     set(radius, sectors, stacks, smooth);
 }
 
@@ -52,9 +54,9 @@ void Sphere::set(float radius, int sectors, int stacks, bool smooth) {
         this->sectorCount = MIN_STACK_COUNT;
     this->smooth = smooth;
 
-    if (smooth)
-        buildVerticesSmooth();
-    else
+//    if (smooth)
+//        buildVerticesSmooth();
+//    else
         buildVerticesFlat();
 }
 
@@ -242,7 +244,12 @@ void Sphere::drawWithLines(const float lineColor[4]) {
     drawLines(lineColor);
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
+// set to interior lighting
+///////////////////////////////////////////////////////////////////////////////
+void Sphere::setInterior() {
+    exterior = false;
+}
 ///////////////////////////////////////////////////////////////////////////////
 // update vertex positions only
 ///////////////////////////////////////////////////////////////////////////////
@@ -450,7 +457,12 @@ void Sphere::buildVerticesFlat() {
                 n = computeFaceNormal(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v4.x, v4.y, v4.z);
                 for (k = 0; k < 3; ++k)  // same normals for 3 vertices
                 {
-                    addNormal(n[0], n[1], n[2]);
+                    if (exterior) {
+                        addNormal(n[0], n[1], n[2]);
+                    } else {
+                        addNormal(-1.0 * n[0], -1.0 * n[1], -1.0 * n[2]);
+
+                    }
                 }
 
                 // put indices of 1 triangle
@@ -480,7 +492,11 @@ void Sphere::buildVerticesFlat() {
                 n = computeFaceNormal(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
                 for (k = 0; k < 3; ++k)  // same normals for 3 vertices
                 {
-                    addNormal(n[0], n[1], n[2]);
+                    if (exterior) {
+                        addNormal(n[0], n[1], n[2]);
+                    } else {
+                        addNormal(-1.0 * n[0], -1.0 * n[1], -1.0 * n[2]);
+                    }
                 }
 
                 // put indices of 1 triangle
@@ -525,13 +541,23 @@ void Sphere::buildVerticesFlat() {
                 n = computeFaceNormal(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v4.x, v4.y, v4.z);
                 for (k = 0; k < 3; ++k)  // same normals for 4 vertices
                 {
-                    addNormal(n[0], n[1], n[2]);
+                    if (exterior) {
+                        addNormal(n[0], n[1], n[2]);
+                    } else {
+                        addNormal(-1.0 * n[0], -1.0 * n[1], -1.0 * n[2]);
+
+                    }
                 }
 
                 n = computeFaceNormal(v4.x, v4.y, v4.z, v3.x, v3.y, v3.z, v1.x, v1.y, v1.z);
                 for (k = 0; k < 3; ++k)  // same normals for 4 vertices
                 {
-                    addNormal(n[0], n[1], n[2]);
+                    if (exterior) {
+                        addNormal(n[0], n[1], n[2]);
+                    } else {
+                        addNormal(-1.0 * n[0], -1.0 * n[1], -1.0 * n[2]);
+
+                    }
                 }
 
 

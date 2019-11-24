@@ -54,7 +54,7 @@ void Box::gen_vertices() {
     int offset = 0;
 
 
-    sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], -1); //back
+    sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], false); //back
     sides[0]->gen_vertices();
     sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height); //Front
     sides[1]->gen_vertices();
@@ -74,10 +74,10 @@ void Box::gen_vertices() {
         va[3][i] = vpa[i];
         vb[3][i] = vpb[i];
     }
-    sides[2] = new Paralleogram(va[3], va[2], vb[2], vb[3], 1); //top
-    sides[3] = new Paralleogram(va[0], va[1], vb[1], vb[0], 1); //bottom
-    sides[4] = new Paralleogram(va[1], vb[1], vb[2], va[2], 1); //right side
-    sides[5] = new Paralleogram(va[0], vb[0], vb[3], va[3], 1); //left side
+    sides[2] = new Paralleogram(va[3], va[2], vb[2], vb[3], true); //top
+    sides[3] = new Paralleogram(va[0], va[1], vb[1], vb[0], false); //bottom
+    sides[4] = new Paralleogram(va[1], vb[1], vb[2], va[2], true); //right side
+    sides[5] = new Paralleogram(va[0], vb[0], vb[3], va[3], true); //left side
 
     for (int i = 2; i < 6; i++) {
         sides[i]->gen_vertices();

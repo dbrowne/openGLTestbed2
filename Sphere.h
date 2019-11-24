@@ -29,7 +29,7 @@ public:
     unsigned int sphere_vbo;
 
     // ctor/dtor
-    Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, bool smooth = true);
+    Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, bool ext = true);
 
     ~Sphere() {}
 
@@ -51,6 +51,8 @@ public:
     void setStackCount(int stackCount);
 
     void setSmooth(bool smooth);
+
+    void setInterior();
 
     // for vertex data
     unsigned int getVertexCount() const { return (unsigned int) vertices.size() / 3; }
@@ -136,6 +138,7 @@ private:
 
     void addIndices(unsigned int i1, unsigned int i2, unsigned int i3);
 
+    bool exterior;    // exterior lighing or interior lighing
 
     std::vector<float> computeFaceNormal(float x1, float y1, float z1,
                                          float x2, float y2, float z2,

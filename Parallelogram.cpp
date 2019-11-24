@@ -50,7 +50,7 @@ Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float
 }
 
 
-Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float y, float z, float w) {
+Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float y, float z, bool w) {
     theta = angle;
     a = side1;
     b = side2;
@@ -160,16 +160,24 @@ void Paralleogram::gen_vertices() {
     set_vertex(idx, v1[0], v1[1], v1[2]);
     set_vertex_color(idx, 0);
     set_tex_pos(idx, 0, 0);
-    Extra::gen_normal3(idx, 9, v1, v2, v3, vertices);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v1, v2, v3, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v3, v2, v1, vertices);
 
+    }
     idx += offset;
 
     // lower right corner:
     set_vertex(idx, v2[0], v2[1], v2[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 0, 1);
-    Extra::gen_normal3(idx, 9, v2, v3, v1, vertices);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v2, v3, v1, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v1, v3, v2, vertices);
 
+    }
 
     idx += offset;
 
@@ -177,8 +185,12 @@ void Paralleogram::gen_vertices() {
     set_vertex(idx, v3[0], v3[1], v3[2]);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 1);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v3, v1, v2, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v2, v1, v3, vertices);
 
-    Extra::gen_normal3(idx, 9, v3, v1, v2, vertices);
+    }
     idx += offset;
 
     // Triangle #2
@@ -187,22 +199,36 @@ void Paralleogram::gen_vertices() {
     set_vertex(idx, v4[0], v4[1], v4[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 1, 1);
-    Extra::gen_normal3(idx, 9, v4, v5, v6, vertices);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v4, v5, v6, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v6, v5, v4, vertices);
+
+    }
     idx += offset;
     // Upper left corner:
 
     set_vertex(idx, v5[0], v5[1], v5[2]);
     set_vertex_color(idx, 2);
     set_tex_pos(idx, 1, 0);
-    Extra::gen_normal3(idx, 9, v5, v6, v4, vertices);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v5, v6, v4, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v4, v6, v5, vertices);
+
+    }
     idx += offset;
 
     // lower left
     set_vertex(idx, v6[0], v6[1], v6[2]);
     set_vertex_color(idx, 1);
     set_tex_pos(idx, 0, 0);
-    Extra::gen_normal3(idx, 9, v6, v4, v5, vertices);
+    if (wind) {
+        Extra::gen_normal3(idx, 9, v6, v4, v5, vertices);
+    } else {
+        Extra::gen_normal3(idx, 9, v5, v4, v6, vertices);
 
+    }
 
 }
 
