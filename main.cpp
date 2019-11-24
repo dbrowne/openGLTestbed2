@@ -128,7 +128,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(12.2, 36, 36, false);
+    Sphere *yyy = new Sphere(24.2, 36, 36, false);
 //    yyy->printSelf();
 //    Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
@@ -163,7 +163,7 @@ int main()
 
         xxx[i] = new Box;
         xxx[i]->gen_vertices();
-        xxx[i]->print_vertices();
+//        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
@@ -389,7 +389,7 @@ int main()
 
 
         // sphere
-        yyy->draw();
+//        yyy->draw();
 
 
 

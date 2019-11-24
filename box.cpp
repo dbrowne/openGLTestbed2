@@ -24,6 +24,7 @@ Box::Box(float angle, float side1, float side2, float h, float x, float y, float
     theta = angle;
     a = side1;
     b = side2;
+
     height = h;
     coords[0] = x;
     coords[1] = y;
@@ -52,10 +53,12 @@ void Box::gen_vertices() {
     int vx_size = 0;
     float *vpa, *vpb;
     int offset = 0;
-
+    int side_count = 6;
 
     sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], false); //back
     sides[0]->gen_vertices();
+//    sides[0]->print_vertices();
+
     sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height); //Front
     sides[1]->gen_vertices();
 
@@ -84,7 +87,7 @@ void Box::gen_vertices() {
     }
 
 
-    vx_size = sides[0]->get_vertex_size();
+    vx_size = sides[1]->get_vertex_size();
     vertex_size = 6 * vx_size;
     vertices = (float *) malloc(sizeof(float) * vertex_size);
     if (vertices == nullptr) {
@@ -92,13 +95,13 @@ void Box::gen_vertices() {
         exit(-1);
     }
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < side_count; i++) {
         vpa = sides[i]->get_vertices();
         std::memcpy(&vertices[offset], vpa, vx_size * sizeof(float));
         offset += vx_size;
     }
 
-    vertex_count = 36;
+    vertex_count = 6 * side_count;
 
 }
 
