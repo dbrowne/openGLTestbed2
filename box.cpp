@@ -3,7 +3,7 @@
 //
 
 #include "box.h"
-
+#include <iostream>
 
 Box::Box() {
     //unit cube
@@ -33,9 +33,8 @@ Box::Box(float angle, float side1, float side2, float h, float x, float y, float
     color[0] = new Color(1, 1, 0, 1);
 }
 
+void Box::gen_vertices() {
 
-int Box::gen_vertices() {
-    Paralleogram *sides[6] = {};
     float va[4][3], vb[4][3]; // this represents the vertices of the two sides that will form the edges
     // va4........va3       Front para
     // va1........va2
@@ -50,11 +49,15 @@ int Box::gen_vertices() {
     // right side = vb2,va2, va3, vb3
     // left side = vb1, va1, va4, vb4
 
-
+    int vx_size = 0;
     float *vpa, *vpb;
+    int offset = 0;
+
 
     sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], -1); //back
+    sides[0]->gen_vertices();
     sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height); //Front
+    sides[1]->gen_vertices();
 
     for (int i = 0; i < 3; i++) {
         vpa = sides[1]->get_point(i);
@@ -65,39 +68,73 @@ int Box::gen_vertices() {
         }
     }
 
-    vpa = sides[1]->get_point(5);
-    vpb = sides[0]->get_point(5);
+    vpa = sides[1]->get_point(4);
+    vpb = sides[0]->get_point(4);
     for (int i = 0; i < 3; i++) {
         va[3][i] = vpa[i];
         vb[3][i] = vpb[i];
     }
     sides[2] = new Paralleogram(va[3], va[2], vb[2], vb[3], 1); //top
-    sides[3] = new Paralleogram(vb[0], vb[1], va[1], va[0], 1); //bottom
-    sides[4] = new Paralleogram(vb[1], va[1], va[2], vb[2], 1); //right side
-    sides[5] = new Paralleogram(vb[0], va[0], va[3], vb[3], 1); //left side
+    sides[3] = new Paralleogram(va[0], va[1], vb[1], vb[0], 1); //bottom
+    sides[4] = new Paralleogram(va[1], vb[1], vb[2], va[2], 1); //right side
+    sides[5] = new Paralleogram(va[0], vb[0], vb[3], va[3], 1); //left side
+
+    for (int i = 2; i < 6; i++) {
+        sides[i]->gen_vertices();
+    }
 
 
+    vx_size = sides[0]->get_vertex_size();
+    vertex_size = 6 * vx_size;
+    vertices = (float *) malloc(sizeof(float) * vertex_size);
+    if (vertices == nullptr) {
+        std::cout << "Box::gen_vertices:  cannot allocate memory \n";
+        exit(-1);
+    }
 
+    for (int i = 0; i < 6; i++) {
+        vpa = sides[i]->get_vertices();
+        std::memcpy(&vertices[offset], vpa, vx_size * sizeof(float));
+        offset += vx_size;
+//        sides[i]->print_vertices();
+    }
 
+//    for (int i=0; i<vertex_size; i++){
+//        std::cout<<vertices[i]<<",";
+//        if (i!=0 && i%12==0){
+//            std::cout <<"\n";
+//        }
+//    }
+//    std::cout<<"\n";
 
+    vertex_count = 36;
 
 }
 
-int Box::get_vertex_count() {}
+int Box::get_vertex_count() {
 
-float *Box::get_vertices() {}
 
-int Box::get_vertex_size() {}
+    return (vertex_count);
 
-unsigned int *Box::get_indices() {}
+}
+
+float *Box::get_vertices() {
+    return vertices;
+}
+
+int Box::get_vertex_size() {
+    return (vertex_size);
+}
+
+unsigned int *Box::get_indices() {
+    return nullptr;
+}
 
 void Box::dump_vertex(int offset) {}
 
 bool Box::has_bottom() { return true; }
 
 void Box::increment(int int_val) {}
-
-float Box::chk(float inp) {}
 
 void Box::set_vertex(int idx, float x1, float y1, float z1) {}
 
@@ -107,4 +144,10 @@ Box::~Box() = default;
 
 void Box::set_vertex_color(int idx, int vtx) {
 
+}
+
+void Box::print_vertices() {
+    for (int i = 0; i < 6; i++) {
+        sides[i]->print_vertices();
+    }
 }

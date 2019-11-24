@@ -18,7 +18,9 @@
 #include "ellipse.h"
 #include "Parallelogram.h"
 #include "LightCube.h"
+#include "box.h"
 #define IMAGENAME "awesomeface.png"
+
 
 #include "Sphere.h"
 
@@ -125,12 +127,13 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(1.2, 36, 36, false);
+    Sphere *yyy = new Sphere(12.2, 36, 36, false);
 //    yyy->printSelf();
-    Ellipse *xxx[MAX_ITEMS];
+//    Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
 //    Cylinder *xxx[MAX_ITEMS];
 //    Polyg *xxx[MAX_ITEMS];
+    Box *xxx[MAX_ITEMS];
 
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
@@ -149,7 +152,7 @@ int main()
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
         float theta = 90.0;
-        xxx[i] = new Ellipse;
+//        xxx[i] = new Ellipse;
 //        xxx[i] = new Ellipse(1,.5, .25,1, .25,2,16);
 
 //        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
@@ -157,8 +160,9 @@ int main()
 //        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
+        xxx[i] = new Box;
         xxx[i]->gen_vertices();
-//        xxx[i]->print_vertices();
+        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();

@@ -23,7 +23,8 @@ private:
     bool bottom = true;
     float wind = 1;
     bool have_vertices = false;
-    static float vv[6][3];
+    float vv[6][3];
+
 
     void set_vertex(int idx, float x1, float y1, float z1);
     void set_vertex_color(int idx, int vtx);
@@ -62,7 +63,7 @@ public:
 
     void dump_vertex(int offset);
 
-    static float *get_point(int idx);
+    float *get_point(int idx);
 
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;

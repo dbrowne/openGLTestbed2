@@ -23,7 +23,7 @@ private:
     int vertex_count;
     int index_size;
     bool bottom = true;
-
+    Paralleogram *sides[6] = {};
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -31,7 +31,6 @@ private:
 
     void set_tex_pos(int idx, float x, float y);
 
-    float chk(float inp);
 
 public:
     Box();
@@ -48,7 +47,7 @@ public:
 
     int get_vertex_size();
 
-    int gen_vertices();
+    void gen_vertices();
 
     bool has_bottom();
 
