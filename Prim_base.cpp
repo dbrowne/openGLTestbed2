@@ -2,6 +2,7 @@
 // Created by Dwight J. Browne on 11/15/19.
 //
 
+#include <iostream>
 #include "Prim_base.h"
 
 // this is based on Song Ho Ahn'  Sphere.cpp
@@ -63,5 +64,89 @@ float Extra::chk(float inp) {
     } else {
         return inp;
     }
+
+}
+
+void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride, int vert_size) {
+    glm::mat4 Model = glm::mat4(1.);
+    glm::vec3 rot_axis;
+    int cntr = 0;
+    int offset = 0;
+    int pos = 0;
+
+    glm::vec4 cds = glm::vec4(1.);
+    glm::vec4 xxx;
+    switch (axis) {
+        case 0:
+            rot_axis = glm::vec3(1, 0, 0);
+            break;
+        case 1:
+            rot_axis = glm::vec3(0, 1, 0);
+            break;
+        case 2:
+            rot_axis = glm::vec3(0, 0, 1);
+            break;
+        default:
+            std::cout << "bad axis rotation  exiting at " << __LINE__ << "\n";
+            break;
+    }
+
+    Model = glm::rotate(Model, glm::radians(angle), rot_axis);
+
+    while (cntr < vert_size) {
+        pos = cntr;
+        cds[0] = verts[pos];
+        cds[1] = verts[pos + 1];
+        cds[2] = verts[pos + 2];
+        cds[3] = 1.0;
+        xxx = Model * cds;
+        verts[pos] = xxx[0];
+        verts[pos + 1] = xxx[1];
+        verts[pos + 2] = xxx[2];
+        pos += offset2;
+        cds[0] = verts[pos];
+        cds[1] = verts[pos + 1];
+        cds[2] = verts[pos + 2];
+        cds[3] = 1.0;
+        xxx = Model * cds;
+        verts[pos] = cds[0];
+        verts[pos + 1] = cds[1];
+        verts[pos + 2] = cds[2];
+
+        cntr += stride;
+
+
+    }
+}
+
+void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int vert_size) {
+    glm::mat4 identity = glm::mat4(1, 0, 0, 0,
+                                   0, 1, 0, 0,
+                                   0, 0, 1, 0,
+                                   0, 0, 0, 1);
+    glm::mat4 Model = glm::translate(identity, tr);
+    std::cout << glm::to_string(Model) << std::endl;
+
+    glm::vec4 cds = glm::vec4(1.);
+    glm::vec4 xxx;
+    int pos;
+    int cntr = 0;
+
+    while (cntr < vert_size) {
+        pos = cntr;
+        cds[0] = verts[pos];
+        cds[1] = verts[pos + 1];
+        cds[2] = verts[pos + 2];
+        cds[3] = 1.0;
+        std::cout << glm::to_string(cds) << std::endl;
+        xxx = Model * cds;
+        std::cout << glm::to_string(xxx) << std::endl;
+        verts[pos] = xxx[0];
+        verts[pos + 1] = xxx[1];
+        verts[pos + 2] = xxx[2];
+        cntr += stride;
+
+    }
+
 
 }

@@ -135,6 +135,7 @@ int main()
     Cylinder *cc = new Cylinder(1.5, 18, 2, 0, 0, 0);
     cc->gen_vertices();
     cc->rotate(0, 90.0);
+    cc->translate(glm::vec3(0., 3., -2.));
     Box *bb = new Box(90, 1, 3, .25, -.5, 0, -.01);
     bb->gen_vertices();
 

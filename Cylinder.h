@@ -6,7 +6,7 @@
 #define TESTBED2_CYLINDER_H
 
 #include "Color.h"
-
+#include <glm/vec3.hpp>
 
 class Cylinder {
 private:
@@ -59,6 +59,7 @@ public:
 
     void rotate(int axis, float angle);
 
+    void translate(glm::vec3 offset);
 
     float *get_vertices();
 

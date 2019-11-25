@@ -9,9 +9,7 @@
 #include "Prim_base.h"
 #include "glad.h"
 #include "extra_funcs.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
+
 
 Cylinder::Cylinder() {
     coords[0] = 0;
@@ -460,58 +458,13 @@ void Cylinder::draw() {
 }
 
 void Cylinder::rotate(int axis, float angle) {
-    glm::mat4 Model = glm::mat4(1.);
-    glm::vec3 rot_axis;
-    int cntr = 0;
-    int offset = 0;
-    int pos = 0;
-    int offset2 = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
-    glm::vec4 cds = glm::vec4(1.);
-    glm::vec4 xxx;
-    switch (axis) {
-        case 0:
-            rot_axis = glm::vec3(1, 0, 0);
-            break;
-        case 1:
-            rot_axis = glm::vec3(0, 1, 0);
-            break;
-        case 2:
-            rot_axis = glm::vec3(0, 0, 1);
-            break;
-        default:
-            std::cout << "bad axis rotation  exiting at " << __LINE__ << "\n";
-            break;
-    }
 
-    Model = glm::rotate(Model, glm::radians(angle), rot_axis);
+    Extra::rotate(axis, angle, vertices,
+                  VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE, vertex_stride, vertex_size);
 
+}
 
-    std::cout << glm::to_string(xxx) << "\n";
-
-    while (cntr < vertex_size) {
-        pos = cntr;
-        cds[0] = vertices[pos];
-        cds[1] = vertices[pos + 1];
-        cds[2] = vertices[pos + 2];
-        cds[3] = 1.0;
-        xxx = Model * cds;
-        vertices[pos] = xxx[0];
-        vertices[pos + 1] = xxx[1];
-        vertices[pos + 2] = xxx[2];
-        pos += offset2;
-        cds[0] = vertices[pos];
-        cds[1] = vertices[pos + 1];
-        cds[2] = vertices[pos + 2];
-        cds[3] = 1.0;
-        xxx = Model * cds;
-        vertices[pos] = cds[0];
-        vertices[pos + 1] = cds[1];
-        vertices[pos + 2] = cds[2];
-
-        cntr += vertex_stride;
-
-
-    }
-
-
+void Cylinder::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
 }
