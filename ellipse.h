@@ -38,6 +38,9 @@ public:
     Ellipse(float x, float y, float z, float a1, float b1, float mult, int pc);
     void gen_vertices();
 
+    void set_color(Color c, int idx);
+
+    void set_color(float r, float g, float b, float a, int idx);
     float *get_vertices();
 
     int get_vertex_count();
@@ -58,6 +61,7 @@ public:
 
     void print_vertices();
 
+    float *get_coords();
 
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;

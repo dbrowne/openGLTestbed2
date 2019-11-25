@@ -54,8 +54,8 @@ int g_perspective = 1;
 int g_bottom_flag = 1;
 int g_size = 1;
 bool g_resize = false;
-const int MAX_ITEMS = 1;
-int g_light = 1;
+const int MAX_ITEMS = 4;
+int g_light = 0;
 
 // lighting
 float g_l_dist = 1;
@@ -131,10 +131,14 @@ int main()
     ax.set_symmetric(1);
     ax.gen_vertices();
     Sphere *yyy = new Sphere(24.2, 36, 36, true);
+
+
+    Box *bb = new Box(90, 1, 3, .25, -.5, 0, -.01);
+    bb->gen_vertices();
 //    yyy->printSelf();
-//    Ellipse *xxx[MAX_ITEMS];
+    Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
-    Cylinder *xxx[MAX_ITEMS];
+//    Cylinder *xxx[MAX_ITEMS];
 //    Polyg *xxx[MAX_ITEMS];
 //    Box *xxx[MAX_ITEMS];
 
@@ -156,11 +160,17 @@ int main()
         float h = .25;
         float theta = 90.0;
 //        xxx[i] = new Ellipse;
-//        xxx[i] = new Ellipse(1,.5, .25,1, .25,2,16);
+        if (i < 2) {
+            xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 16);
+            xxx[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 16);
+            xxx[i + 2]->set_color(.25, 1, .75, .4, 1);
+            xxx[i + 2]->set_color(.5, 0, .5, .9, 0);
+            xxx[i + 2]->set_color(1, 1, .5, .9, 2);
+        }
 
 //        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
 //        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
-        xxx[i] = new Cylinder(.25, .5, 16, 4, 1, 1, 1);
+//        xxx[i] = new Cylinder(.25, .5, 16, 4, 1, 1, 1);
 //        xxx[i] = new Cylinder(.25, .15, .25, 8, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
@@ -418,7 +428,8 @@ int main()
 
 
         // sphere
-        yyy->draw();
+//        yyy->draw();
+        bb->draw();
 
 
 
@@ -457,6 +468,7 @@ int main()
         glDeleteBuffers(1, &VBO[i]);
     }
     yyy->deletebuffers();
+    bb->delete_buffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();

@@ -3,8 +3,9 @@
 //
 
 #include "box.h"
+#include "glad.h"
 #include <iostream>
-
+#include "extra_funcs.h"
 Box::Box() {
     //unit cube
     theta = 90;
@@ -35,6 +36,8 @@ Box::Box(float angle, float side1, float side2, float h, float x, float y, float
 }
 
 void Box::gen_vertices() {
+
+    vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 
     float va[4][3], vb[4][3]; // this represents the vertices of the two sides that will form the edges
     // va4........va3       Front para
@@ -145,3 +148,54 @@ void Box::print_vertices() {
         sides[i]->print_vertices();
     }
 }
+
+void Box::delete_buffers() {
+    glDeleteVertexArrays(1, &box_vao);
+    glDeleteBuffers(1, &box_vbo);
+}
+
+void Box::draw() {
+
+    glGenVertexArrays(1, &box_vao);
+    glGenBuffers(1, &box_vbo);
+    glBindVertexArray(box_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, box_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+                 GL_STATIC_DRAW);
+    glCheckError();
+    // position attribute
+    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) 0);
+    glEnableVertexAttribArray(0);
+    glCheckError();
+    //color attribute
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) (VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(1);
+
+
+
+    //texture attribute
+    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    //Normal attribute
+    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(box_vao);
+
+    glCheckError();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+    glCheckError();
+
+};

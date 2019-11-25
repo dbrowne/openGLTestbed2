@@ -21,7 +21,6 @@
 #include <iomanip>
 #include <cmath>
 #include "glad.h"
-#include <GLFW/glfw3.h>
 #include "Sphere.h"
 #include "extra_funcs.h"
 
@@ -115,7 +114,6 @@ void Sphere::deletebuffers() {
 // OpenGL RC must be set before calling it
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::draw() {
-    // interleaved array
 
 
     glGenVertexArrays(1, &sphere_vao);

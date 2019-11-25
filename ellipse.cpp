@@ -140,6 +140,10 @@ void Ellipse::set_vertex_color(int idx, int vtx) {
     vertices[idx + 6] = color[vtx]->a;
 }
 
+float *Ellipse::get_coords() {
+    return coords;
+}
+
 void Ellipse::set_tex_pos(int idx, float x, float y) {
     vertices[idx + 7] = x;
     vertices[idx + 8] = y;
@@ -193,6 +197,14 @@ void Ellipse::print_vertices() {
         cntr += offset;
 
     }
+}
+
+// could make this a little better but time is not on my side
+void Ellipse::set_color(float r, float g, float b, float a, int idx) {
+    color[idx]->r = r;
+    color[idx]->g = g;
+    color[idx]->b = b;
+    color[idx]->a = a;
 }
 
 void Ellipse::dump_vertex(int offset) {

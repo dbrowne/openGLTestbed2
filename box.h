@@ -24,7 +24,9 @@ private:
     int index_size;
     bool bottom = true;
     Paralleogram *sides[6] = {};
-
+    unsigned int box_vao;
+    unsigned int box_vbo;
+    int vertex_stride = 0;
     void set_vertex(int idx, float x1, float y1, float z1);
 
     void set_vertex_color(int idx, int vtx);
@@ -57,10 +59,14 @@ public:
 
     void dump_vertex(int offset);
 
+    void delete_buffers();
+
     const int VERTEX_SIZE = 3;
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
+
+    void draw();
 
 private:
     void set_v(float *in, float *out);
