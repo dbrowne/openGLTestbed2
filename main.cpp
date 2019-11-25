@@ -63,6 +63,8 @@ float g_l_zh = 0;
 float g_l_y = 0;
 int g_light_flag = 1;
 glm::vec3 lightPos(g_l_dist * cos(g_l_zh), g_l_y, g_l_dist * sin(g_l_zh));
+glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
+
 
 int main()
 {
@@ -128,13 +130,13 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(24.2, 36, 36, false);
+    Sphere *yyy = new Sphere(24.2, 36, 36, true);
 //    yyy->printSelf();
 //    Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
-//    Cylinder *xxx[MAX_ITEMS];
+    Cylinder *xxx[MAX_ITEMS];
 //    Polyg *xxx[MAX_ITEMS];
-    Box *xxx[MAX_ITEMS];
+//    Box *xxx[MAX_ITEMS];
 
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
@@ -158,10 +160,11 @@ int main()
 
 //        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
 //        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
-//        xxx[i] = new Cylinder(.25, .15, .25,.25, 8, h, .2, -.5, -.5 + i * h);
+        xxx[i] = new Cylinder(.25, .5, 16, 4, 1, 1, 1);
+//        xxx[i] = new Cylinder(.25, .15, .25, 8, h, .2, -.5, -.5 + i * h);
 //        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
 
-        xxx[i] = new Box;
+//        xxx[i] = new Box;
         xxx[i]->gen_vertices();
 //        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
@@ -291,7 +294,6 @@ int main()
 
 
 
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
@@ -308,10 +310,14 @@ int main()
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
+        glCheckError();
         ourShader.use();
         ourShader.setInt("texflag", g_tex_flag);
         ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("lightColor2", 1.0f, .25f, .25f);
+        ourShader.setInt("material.diffuse", 0);
+        ourShader.setInt("material.specular", 1);
         if (g_light_flag == 1) {
             g_l_zh = fmod(glfwGetTime(), 360.0);
         }
@@ -319,9 +325,31 @@ int main()
         lightPos[2] = g_l_dist * sin(g_l_zh);
         lightPos[1] = g_l_y;
 
+        lightPos2[0] = g_l_dist * sin(g_l_zh + 45);
+        lightPos2[1] = g_l_dist * cos(g_l_zh);
+        lightPos2[2] = g_l_y;
+
         ourShader.setVec3("lightPos", lightPos);
         ourShader.setInt("lightFlag", g_light);
-        ourShader.use();
+
+        ourShader.setVec3("lightPos2", lightPos2);
+        ourShader.setVec3("spotLight.position", lightPos2);
+        ourShader.setVec3("viewPos", g_camera.Position);
+
+        ourShader.setVec3("spotLight.direction", lightPos2);
+        ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(.5f)));
+        ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(.05f)));
+
+        ourShader.setFloat("spotLight.constant", .050f);
+        ourShader.setFloat("spotLight.linear", 0.01);
+        ourShader.setFloat("spotLight.quadratic", 0.0032);
+
+        ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+        ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+        ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+
+        ourShader.setFloat("material.shininess", 32.0f);
+
 
         if (g_resize) {
             g_resize = false;
@@ -345,6 +373,7 @@ int main()
         GLint dims[4] = {0};
         glGetIntegerv(GL_VIEWPORT, dims);
 
+        glCheckError();
 
         if (g_perspective) {
             glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
@@ -389,7 +418,7 @@ int main()
 
 
         // sphere
-//        yyy->draw();
+        yyy->draw();
 
 
 
@@ -505,7 +534,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-        g_light *= -1;
+        g_light += 1;
+        g_light %= 3;
     }
 
     if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {   //+
