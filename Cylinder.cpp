@@ -7,7 +7,11 @@
 #include <cmath>
 #include <iostream>
 #include "Prim_base.h"
-
+#include "glad.h"
+#include "extra_funcs.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 Cylinder::Cylinder() {
     coords[0] = 0;
@@ -52,6 +56,7 @@ void Cylinder::gen_vertices() {
 
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
+    vertex_stride = offset;
     vertex_count = 12 * point_count;
     top_offset = 3 * point_count * offset;
     sz = offset * vertex_count;
@@ -409,3 +414,104 @@ bool Cylinder::has_bottom() {
     return bottom;
 }
 
+void Cylinder::draw() {
+    glGenVertexArrays(1, &cyl_vao);
+    glGenBuffers(1, &cyl_vbo);
+    glBindVertexArray(cyl_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, cyl_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+                 GL_STATIC_DRAW);
+    glCheckError();
+    // position attribute
+    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) 0);
+    glEnableVertexAttribArray(0);
+    glCheckError();
+    //color attribute
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) (VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(1);
+
+
+
+    //texture attribute
+    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    //Normal attribute
+    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(cyl_vao);
+
+    glCheckError();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+    glCheckError();
+
+}
+
+void Cylinder::rotate(int axis, float angle) {
+    glm::mat4 Model = glm::mat4(1.);
+    glm::vec3 rot_axis;
+    int cntr = 0;
+    int offset = 0;
+    int pos = 0;
+    int offset2 = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
+    glm::vec4 cds = glm::vec4(1.);
+    glm::vec4 xxx;
+    switch (axis) {
+        case 0:
+            rot_axis = glm::vec3(1, 0, 0);
+            break;
+        case 1:
+            rot_axis = glm::vec3(0, 1, 0);
+            break;
+        case 2:
+            rot_axis = glm::vec3(0, 0, 1);
+            break;
+        default:
+            std::cout << "bad axis rotation  exiting at " << __LINE__ << "\n";
+            break;
+    }
+
+    Model = glm::rotate(Model, glm::radians(angle), rot_axis);
+
+
+    std::cout << glm::to_string(xxx) << "\n";
+
+    while (cntr < vertex_size) {
+        pos = cntr;
+        cds[0] = vertices[pos];
+        cds[1] = vertices[pos + 1];
+        cds[2] = vertices[pos + 2];
+        cds[3] = 1.0;
+        xxx = Model * cds;
+        vertices[pos] = xxx[0];
+        vertices[pos + 1] = xxx[1];
+        vertices[pos + 2] = xxx[2];
+        pos += offset2;
+        cds[0] = vertices[pos];
+        cds[1] = vertices[pos + 1];
+        cds[2] = vertices[pos + 2];
+        cds[3] = 1.0;
+        xxx = Model * cds;
+        vertices[pos] = cds[0];
+        vertices[pos + 1] = cds[1];
+        vertices[pos + 2] = cds[2];
+
+        cntr += vertex_stride;
+
+
+    }
+
+
+}

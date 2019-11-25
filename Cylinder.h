@@ -27,6 +27,9 @@ private:
     int index_size;
     bool alloced = false;  // to allow for resizing
     int initial_point_count;
+    unsigned int cyl_vao;
+    unsigned int cyl_vbo;
+    int vertex_stride;
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -54,11 +57,14 @@ public:
 
     Cylinder(float r, float r1, int pc, float h);
 
+    void rotate(int axis, float angle);
+
 
     float *get_vertices();
 
     void gen_vertices();
 
+    void draw();
     void set_color(int idx, Color c);
 
     bool has_top();

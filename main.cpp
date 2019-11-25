@@ -132,9 +132,12 @@ int main()
     ax.gen_vertices();
     Sphere *yyy = new Sphere(24.2, 36, 36, true);
 
-
+    Cylinder *cc = new Cylinder(1.5, 18, 2, 0, 0, 0);
+    cc->gen_vertices();
+    cc->rotate(0, 90.0);
     Box *bb = new Box(90, 1, 3, .25, -.5, 0, -.01);
     bb->gen_vertices();
+
 //    yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
 //    Paralleogram *xxx[MAX_ITEMS];
@@ -429,7 +432,8 @@ int main()
 
         // sphere
 //        yyy->draw();
-        bb->draw();
+//        bb->draw();
+        cc->draw();
 
 
 
