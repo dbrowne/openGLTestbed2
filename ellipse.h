@@ -6,6 +6,8 @@
 #define TESTBED2_ELLIPSE_H
 
 #include "Color.h"
+#include <glm/vec3.hpp>
+#include "extra_funcs.h"
 
 class Ellipse {
 private:
@@ -51,6 +53,10 @@ public:
 
     int get_index_size();
 
+    void rotate(int axis, float angle);
+
+    void translate(glm::vec3 offset);
+
     unsigned int *get_indices();
 
     bool has_bottom();
@@ -67,6 +73,7 @@ public:
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
+    int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 };
 
 #endif //TESTBED2_ELLIPSE_H

@@ -17,7 +17,7 @@
 
 #include <vector>
 #include "Color.h"
-
+#include <glm/vec3.hpp>
 class Sphere {
 public:
     // Constants
@@ -27,6 +27,7 @@ public:
     const int NORMAL_SIZE = 3;
     unsigned int sphere_vao;
     unsigned int sphere_vbo;
+    int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 
     // ctor/dtor
     Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, bool ext = true);
@@ -54,6 +55,9 @@ public:
 
     void setInterior();
 
+    void translate(glm::vec3 offset);
+
+    void rotate(int axis, float angle);
     // for vertex data
     unsigned int getVertexCount() const { return (unsigned int) vertices.size() / 3; }
 
@@ -155,6 +159,7 @@ private:
     std::vector<float> colors;
     std::vector<unsigned int> indices;
     std::vector<unsigned int> lineIndices;
+    int vertex_size;
 
     // interleaved
     std::vector<float> interleavedVertices;

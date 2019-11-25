@@ -6,6 +6,7 @@
 #define TESTBED2_PARALLELOGRAM_H
 
 #import "Color.h"
+#include <glm/vec3.hpp>
 
 class Paralleogram {
 private:
@@ -20,6 +21,7 @@ private:
     int vertex_size;
     int vertex_count;
     int index_size;
+
     bool bottom = true;
     bool wind = true;
     bool have_vertices = false;
@@ -45,6 +47,10 @@ public:
     Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w);
 
 
+    void rotate(int axis, float angle);
+
+    void translate(glm::vec3 offset);
+
     float *get_vertices();
 
     unsigned int *get_indices();
@@ -69,7 +75,7 @@ public:
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
-
+    int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 
 };
 

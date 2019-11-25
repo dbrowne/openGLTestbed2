@@ -125,7 +125,7 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
                                    0, 0, 1, 0,
                                    0, 0, 0, 1);
     glm::mat4 Model = glm::translate(identity, tr);
-    std::cout << glm::to_string(Model) << std::endl;
+//    std::cout << glm::to_string(Model) << std::endl;
 
     glm::vec4 cds = glm::vec4(1.);
     glm::vec4 xxx;
@@ -138,9 +138,9 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;
-        std::cout << glm::to_string(cds) << std::endl;
+//        std::cout << glm::to_string(cds) << std::endl;
         xxx = Model * cds;
-        std::cout << glm::to_string(xxx) << std::endl;
+//        std::cout << glm::to_string(xxx) << std::endl;
         verts[pos] = xxx[0];
         verts[pos + 1] = xxx[1];
         verts[pos + 2] = xxx[2];

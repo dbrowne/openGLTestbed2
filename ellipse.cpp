@@ -226,3 +226,13 @@ void Ellipse::dump_vertex(int offset) {
     }
     std::cout << "\n";
 }
+
+void Ellipse::rotate(int axis, float angle) {
+    Extra::rotate(axis, angle, vertices,
+                  VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE, vertex_stride, vertex_size);
+}
+
+void Ellipse::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
+}

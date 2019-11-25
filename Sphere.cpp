@@ -23,6 +23,7 @@
 #include "glad.h"
 #include "Sphere.h"
 #include "extra_funcs.h"
+#include "Prim_base.h"
 
 
 // constants //////////////////////////////////////////////////////////////////
@@ -609,7 +610,8 @@ void Sphere::buildInterleavedVertices() {
     for (i = 0; i < yyy; i++) {
         outVertices[i] = interleavedVertices[i];
     }
-    std::cout << "\n";
+    vertex_size = yyy;
+
 }
 
 
@@ -698,4 +700,15 @@ std::vector<float> Sphere::computeFaceNormal(float x1, float y1, float z1,  // v
     }
 
     return normal;
+}
+
+
+void Sphere::translate(glm::vec3 offset) {
+    Extra::translate(offset, outVertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
+}
+
+void Sphere::rotate(int axis, float angle) {
+    Extra::rotate(axis, angle, outVertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                  vertex_stride, vertex_size);
 }

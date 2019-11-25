@@ -323,3 +323,13 @@ void Paralleogram::dump_vertex(int offset) {
     }
     std::cout << "\n";
 }
+
+void Paralleogram::rotate(int axis, float angle) {
+    Extra::rotate(axis, angle, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                  vertex_stride, vertex_size);
+}
+
+void Paralleogram::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
+}

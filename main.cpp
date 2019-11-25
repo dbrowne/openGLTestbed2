@@ -131,11 +131,13 @@ int main()
     ax.set_symmetric(1);
     ax.gen_vertices();
     Sphere *yyy = new Sphere(24.2, 36, 36, true);
+    Sphere *yy = new Sphere(1.5, 36, 36, true);
+    Sphere *ey1 = new Sphere(.5, 72, 18, true);
 
-    Cylinder *cc = new Cylinder(1.5, 18, 2, 0, 0, 0);
+    Cylinder *cc = new Cylinder(1.5, 1.25, 36, 4, 0, 0, 0);
     cc->gen_vertices();
     cc->rotate(0, 90.0);
-    cc->translate(glm::vec3(0., 3., -2.));
+    cc->translate(glm::vec3(0., 3., -.85));
     Box *bb = new Box(90, 1, 3, .25, -.5, 0, -.01);
     bb->gen_vertices();
 
@@ -165,8 +167,8 @@ int main()
         float theta = 90.0;
 //        xxx[i] = new Ellipse;
         if (i < 2) {
-            xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 16);
-            xxx[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 16);
+            xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 32);
+            xxx[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 32);
             xxx[i + 2]->set_color(.25, 1, .75, .4, 1);
             xxx[i + 2]->set_color(.5, 0, .5, .9, 0);
             xxx[i + 2]->set_color(1, 1, .5, .9, 2);
@@ -185,6 +187,17 @@ int main()
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
     }
+    xxx[0]->rotate(2, 20);
+    xxx[1]->rotate(2, -20);
+    xxx[2]->rotate(2, -20);
+    xxx[3]->rotate(2, 20);
+    xxx[1]->translate(glm::vec3(0, 1.05, 0));
+    xxx[0]->translate(glm::vec3(0, 1.05, 0));
+
+    yy->translate(glm::vec3(0, 3.5, -.85));
+    ey1->rotate(0, 90);
+    ey1->rotate(1, 15);
+    ey1->translate(glm::vec3(1, 4, -2));
 
 //    std::cout <<"EXITING  at line "<<__LINE__<<"\n";
 //    exit(-1);
@@ -435,6 +448,8 @@ int main()
 //        yyy->draw();
 //        bb->draw();
         cc->draw();
+        yy->draw();
+        ey1->draw();
 
 
 
@@ -473,6 +488,7 @@ int main()
         glDeleteBuffers(1, &VBO[i]);
     }
     yyy->deletebuffers();
+    yy->deletebuffers();
     bb->delete_buffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
