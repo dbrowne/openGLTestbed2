@@ -199,3 +199,13 @@ void Box::draw() {
     glCheckError();
 
 };
+
+void Box::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
+}
+
+void Box::rotate(int axis, float angle) {
+    Extra::rotate(axis, angle, vertices,
+                  VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE, vertex_stride, vertex_size);
+}

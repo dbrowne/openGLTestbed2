@@ -43,7 +43,7 @@ bool firstMouse = true;
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
-float g_angle = 20.0f;
+float g_angle = 95.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
 
@@ -127,13 +127,16 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     LightCube *Lc = new LightCube();
-
+    Color *c[3];
+    c[0] = new Color(0, 0, 1, 1);
+    c[1] = new Color(0, 1, 1, 1);
+    c[2] = new Color(1, 0, 0, 1);
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(24.2, 36, 36, true);
-    Sphere *yy = new Sphere(1.5, 36, 36, true);
-    Color *c[3];
+    Sphere *yyy = new Sphere(24.2, 36, 36, false, c);
+
+    Sphere *yy = new Sphere(1.5, 72, 72, true);
     c[0] = new Color(0, 0, 1, 1);
     c[1] = new Color(.5, .5, 1, 1);
     c[2] = new Color(.8, .5, 1, 1);
@@ -155,12 +158,28 @@ int main()
     ey2->rotate(0, 105);
     ey2->rotate(1, -15);
     ey2->translate(glm::vec3(-1, 4, .45));
-    Box *bb = new Box(90, 1, 3, .125, -.5, 0, -.01);
+    Box *bb = new Box(90, 2, .25, .0625, 0, 0, 0);
     bb->gen_vertices();
+    bb->translate(glm::vec3(-1, 5, -1.25));
+    Box *bb2 = new Box(90, 2, .25, .0625, 0, 0, 0);
+    bb2->gen_vertices();
+    bb2->translate(glm::vec3(-1, 5, -1.75));
+
+    Box *bb3 = new Box(90, .25, .0625, .5, 0, 0, 0);
+    bb3->gen_vertices();
+    bb3->rotate(0, 180);
+    bb3->rotate(2, 90);
+    bb3->translate(glm::vec3(-1.05, 5, -1.25));
 
 
+    Box *bb4 = new Box(90, .25, .0625, .5625, 0, 0, 0);
+    bb4->gen_vertices();
+    bb4->rotate(0, 180);
+    bb4->rotate(2, 90);
+    bb4->translate(glm::vec3(1., 5, -1.1875));
 
-    Cylinder *cc = new Cylinder(1.5, 1.25, 36, 4, 0, 0, 0);
+
+    Cylinder *cc = new Cylinder(1.5, 1.125, 36, 4, 0, 0, 0);
     cc->gen_vertices();
     cc->rotate(0, 90.0);
     cc->translate(glm::vec3(0., 3., -.85));
@@ -469,8 +488,8 @@ int main()
 
 
         // sphere
-//        yyy->draw();
-//        bb->draw();
+        yyy->draw();
+        bb->draw();
         cc->draw();
         yy->draw();
         ey1->draw();
@@ -478,7 +497,9 @@ int main()
         for (int i = 0; i < cyl_count; i++) {
             tail_segments[i]->draw();
         }
-
+        bb2->draw();
+        bb3->draw();
+        bb4->draw();
         // Axes
             glBindVertexArray(Axis_VAO);
             glDrawArrays(GL_LINES, 0, ax.get_vertex_count());

@@ -66,6 +66,10 @@ public:
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
 
+    void rotate(int axis, float angle);
+
+    void translate(glm::vec3 offset);
+
     void draw();
 
 private:
