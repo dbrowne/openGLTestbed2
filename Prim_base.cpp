@@ -95,7 +95,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
 
     while (cntr < vert_size) {
         pos = cntr;
-        cds[0] = verts[pos];
+        cds[0] = verts[pos]; // rotate xyz
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;
@@ -104,7 +104,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
         verts[pos + 1] = xxx[1];
         verts[pos + 2] = xxx[2];
         pos += offset2;
-        cds[0] = verts[pos];
+        cds[0] = verts[pos];     // Rotate normals
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;

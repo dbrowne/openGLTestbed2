@@ -21,6 +21,7 @@
 #include "box.h"
 #define IMAGENAME "awesomeface.png"
 
+#include "Color.h"
 
 #include "Sphere.h"
 
@@ -132,7 +133,13 @@ int main()
     ax.gen_vertices();
     Sphere *yyy = new Sphere(24.2, 36, 36, true);
     Sphere *yy = new Sphere(1.5, 36, 36, true);
-    Sphere *ey1 = new Sphere(.5, 72, 18, true);
+    Color *c[3];
+    c[0] = new Color(0, 0, 1, 1);
+    c[1] = new Color(.5, .5, 1, 1);
+    c[2] = new Color(.8, .5, 1, 1);
+
+    Sphere *ey1 = new Sphere(.5, 72, 18, true, c);
+    Sphere *ey2 = new Sphere(.5, 72, 18, true, c);
 
     Cylinder *cc = new Cylinder(1.5, 1.25, 36, 4, 0, 0, 0);
     cc->gen_vertices();
@@ -195,9 +202,13 @@ int main()
     xxx[0]->translate(glm::vec3(0, 1.05, 0));
 
     yy->translate(glm::vec3(0, 3.5, -.85));
-    ey1->rotate(0, 90);
+    ey1->rotate(0, 105);
     ey1->rotate(1, 15);
-    ey1->translate(glm::vec3(1, 4, -2));
+    ey1->translate(glm::vec3(1, 4, .45));
+
+    ey2->rotate(0, 105);
+    ey2->rotate(1, -15);
+    ey2->translate(glm::vec3(-1, 4, .45));
 
 //    std::cout <<"EXITING  at line "<<__LINE__<<"\n";
 //    exit(-1);
@@ -450,6 +461,7 @@ int main()
         cc->draw();
         yy->draw();
         ey1->draw();
+        ey2->draw();
 
 
 

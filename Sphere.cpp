@@ -37,8 +37,24 @@ const int MIN_STACK_COUNT = 2;
 Sphere::Sphere(float radius, int sectors, int stacks, bool ext) : interleavedStride(96) {
     smooth = false;
     exterior = ext;
+    vertex_color[0] = new Color(.3, 1, .3, 1);
+    vertex_color[1] = new Color(0, 1, 0, 1);
+    vertex_color[2] = new Color(1, 1, .3, 1);
+
     set(radius, sectors, stacks, smooth);
 }
+
+
+Sphere::Sphere(float radius, int sectors, int stacks, bool ext, Color **colors) {
+    smooth = false;
+    exterior = ext;
+    for (int i = 0; i < 3; i++) {
+        vertex_color[i] = new Color(colors[i]->r, colors[i]->g, colors[i]->b, colors[i]->a);
+    }
+    set(radius, sectors, stacks, smooth);
+
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,6 +75,7 @@ void Sphere::set(float radius, int sectors, int stacks, bool smooth) {
 //    else
         buildVerticesFlat();
 }
+
 
 void Sphere::setRadius(float radius) {
     this->radius = radius;
@@ -328,7 +345,7 @@ void Sphere::buildVerticesSmooth() {
             ny = y * lengthInv;
             nz = z * lengthInv;
             addNormal(nx, ny, nz);
-            addColors(color);
+//            addColors(color);
             // vertex tex coord between [0, 1]
             s = (float) j / sectorCount;
             t = (float) i / stackCount;
@@ -378,9 +395,6 @@ void Sphere::buildVerticesSmooth() {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::buildVerticesFlat() {
     const float PI = 3.1415926f;
-    Color color(1, 1, 1, 1);
-    Color color1(0, 1, 0, 1);
-    Color color2(0, 0, 1, 1);
     // tmp vertex definition (x,y,z,s,t)
     struct Vertex {
         float x, y, z, s, t;
@@ -442,9 +456,9 @@ void Sphere::buildVerticesFlat() {
                 addVertex(v1.x, v1.y, v1.z);
                 addVertex(v2.x, v2.y, v2.z);
                 addVertex(v4.x, v4.y, v4.z);
-                addColors(color);
-                addColors(color1);
-                addColors(color2);
+                addColors(vertex_color[0]);
+                addColors(vertex_color[1]);
+                addColors(vertex_color[2]);
 //                addColors(color1);
 
                 // put tex coords of triangle
@@ -478,9 +492,9 @@ void Sphere::buildVerticesFlat() {
                 addVertex(v1.x, v1.y, v1.z);
                 addVertex(v2.x, v2.y, v2.z);
                 addVertex(v3.x, v3.y, v3.z);
-                addColors(color);
-                addColors(color2);
-                addColors(color1);
+                addColors(vertex_color[0]);
+                addColors(vertex_color[1]);
+                addColors(vertex_color[2]);
 
                 // put tex coords of triangle
                 addTexCoord(v1.s, v1.t);
@@ -519,12 +533,12 @@ void Sphere::buildVerticesFlat() {
                 addVertex(v3.x, v3.y, v3.z);
                 addVertex(v1.x, v1.y, v1.z);
 
-                addColors(color2);
-                addColors(color);
-                addColors(color1);
-                addColors(color1);
-                addColors(color);
-                addColors(color2);
+                addColors(vertex_color[0]);
+                addColors(vertex_color[1]);
+                addColors(vertex_color[2]);
+                addColors(vertex_color[2]);
+                addColors(vertex_color[1]);
+                addColors(vertex_color[0]);
 
                 // put tex coords of quad
                 addTexCoord(v1.s, v1.t);
@@ -646,11 +660,11 @@ void Sphere::addTexCoord(float s, float t) {
 ///////////////////////////////////////////////////////////////////////////////
 // add single Color to array
 ///////////////////////////////////////////////////////////////////////////////
-void Sphere::addColors(Color c) {
-    colors.push_back(c.r);
-    colors.push_back(c.g);
-    colors.push_back(c.b);
-    colors.push_back(c.a);
+void Sphere::addColors(Color *c) {
+    colors.push_back(c->r);
+    colors.push_back(c->g);
+    colors.push_back(c->b);
+    colors.push_back(c->a);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,10 @@ public:
     int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 
     // ctor/dtor
+
     Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, bool ext = true);
+
+    Sphere(float radius, int sectorCount, int stackCount, bool ext, Color **colors);
 
     ~Sphere() {}
 
@@ -138,7 +141,7 @@ private:
 
     void addTexCoord(float s, float t);
 
-    void addColors(Color c);
+    void addColors(Color *c);
 
     void addIndices(unsigned int i1, unsigned int i2, unsigned int i3);
 
@@ -153,6 +156,7 @@ private:
     int sectorCount;                        // longitude, # of slices
     int stackCount;                         // latitude, # of stacks
     bool smooth;
+    Color *vertex_color[3];
     std::vector<float> vertices;
     std::vector<float> normals;
     std::vector<float> texCoords;
