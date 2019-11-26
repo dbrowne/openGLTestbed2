@@ -69,6 +69,7 @@ float Extra::chk(float inp) {
 
 void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride, int vert_size) {
     glm::mat4 Model = glm::mat4(1.);
+    glm::mat4 Modit;
     glm::vec3 rot_axis;
     int cntr = 0;
     int offset = 0;
@@ -92,7 +93,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
     }
 
     Model = glm::rotate(Model, glm::radians(angle), rot_axis);
-
+    Modit = glm::inverseTranspose(Model);
     while (cntr < vert_size) {
         pos = cntr;
         cds[0] = verts[pos]; // rotate xyz
@@ -108,10 +109,11 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;
-        xxx = Model * cds;
-        verts[pos] = cds[0];
-        verts[pos + 1] = cds[1];
-        verts[pos + 2] = cds[2];
+
+        xxx = Modit * cds;
+        verts[pos] = xxx[0];
+        verts[pos + 1] = xxx[1];
+        verts[pos + 2] = xxx[2];
 
         cntr += stride;
 

@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 
 namespace Extra {
     void gen_normal3(int idx, int offset, float *v1, float *v2, float *v3, float *out);

@@ -148,12 +148,12 @@ int main()
 
     Sphere *ey1 = new Sphere(.5, 72, 18, true, c);
     Sphere *ey2 = new Sphere(.5, 72, 18, true, c);
-//    ey1->rotate(0, 105);
-//    ey1->rotate(1, 15);
+    ey1->rotate(0, 105);
+    ey1->rotate(1, 15);
     ey1->translate(glm::vec3(1, 4, .45));
 
-//    ey2->rotate(0, 105);
-//    ey2->rotate(1, -15);
+    ey2->rotate(0, 105);
+    ey2->rotate(1, -15);
     ey2->translate(glm::vec3(-1, 4, .45));
     Box *bb = new Box(90, 1, 3, .125, -.5, 0, -.01);
     bb->gen_vertices();
