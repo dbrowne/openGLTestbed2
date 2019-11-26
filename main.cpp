@@ -35,7 +35,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 9.0f));
+Camera g_camera(glm::vec3(0.0f, 0.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -59,7 +59,7 @@ const int MAX_ITEMS = 4;
 int g_light = 0;
 
 // lighting
-float g_l_dist = 1;
+float g_l_dist = 7;
 float g_l_zh = 0;
 float g_l_y = 0;
 int g_light_flag = 1;
@@ -137,16 +137,35 @@ int main()
     c[0] = new Color(0, 0, 1, 1);
     c[1] = new Color(.5, .5, 1, 1);
     c[2] = new Color(.8, .5, 1, 1);
+    int cyl_count = 6;
+    Cylinder *tail_segments[cyl_count];
+    for (int i = 0; i < cyl_count; i++) {
+        tail_segments[i] = new Cylinder(1.25, 1, 36, 2, 0, 0, 0);
+        tail_segments[i]->gen_vertices();
+        tail_segments[i]->rotate(0, 90);
+        tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
+    }
 
     Sphere *ey1 = new Sphere(.5, 72, 18, true, c);
     Sphere *ey2 = new Sphere(.5, 72, 18, true, c);
+//    ey1->rotate(0, 105);
+//    ey1->rotate(1, 15);
+    ey1->translate(glm::vec3(1, 4, .45));
+
+//    ey2->rotate(0, 105);
+//    ey2->rotate(1, -15);
+    ey2->translate(glm::vec3(-1, 4, .45));
+    Box *bb = new Box(90, 1, 3, .125, -.5, 0, -.01);
+    bb->gen_vertices();
+
+
 
     Cylinder *cc = new Cylinder(1.5, 1.25, 36, 4, 0, 0, 0);
     cc->gen_vertices();
     cc->rotate(0, 90.0);
     cc->translate(glm::vec3(0., 3., -.85));
-    Box *bb = new Box(90, 1, 3, .25, -.5, 0, -.01);
-    bb->gen_vertices();
+
+
 
 //    yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
@@ -202,13 +221,7 @@ int main()
     xxx[0]->translate(glm::vec3(0, 1.05, 0));
 
     yy->translate(glm::vec3(0, 3.5, -.85));
-    ey1->rotate(0, 105);
-    ey1->rotate(1, 15);
-    ey1->translate(glm::vec3(1, 4, .45));
 
-    ey2->rotate(0, 105);
-    ey2->rotate(1, -15);
-    ey2->translate(glm::vec3(-1, 4, .45));
 
 //    std::cout <<"EXITING  at line "<<__LINE__<<"\n";
 //    exit(-1);
@@ -462,8 +475,9 @@ int main()
         yy->draw();
         ey1->draw();
         ey2->draw();
-
-
+        for (int i = 0; i < cyl_count; i++) {
+            tail_segments[i]->draw();
+        }
 
         // Axes
             glBindVertexArray(Axis_VAO);
