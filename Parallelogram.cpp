@@ -34,8 +34,26 @@ Paralleogram::Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(0.0, 1.0, 0.0, 1.0);
     color[2] = new Color(1.0, .5, 1.0, 1.0);
-
+    wind = w;
 }
+
+
+Paralleogram::Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w, Color **colors) {
+    have_vertices = true;
+    set_point(0, vx1);
+    set_point(1, vx2);
+    set_point(2, vx3);
+    set_point(3, vx3);
+    set_point(4, vx4);
+    set_point(5, vx1);
+
+    for (int i = 0; i < 3; i++) {
+        color[i] = new Color(colors[i]->r, colors[i]->g, colors[i]->b, colors[i]->a);
+    }
+    wind = w;
+}
+
+
 Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float y, float z) {
     theta = angle;
     a = side1;
@@ -63,6 +81,22 @@ Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float
     color[2] = new Color(0.0, 0.0, 1.0, 1.0);
     wind = w;
 }
+
+
+Paralleogram::Paralleogram(float angle, float side1, float side2, float x, float y, float z, bool w, Color **colors) {
+    theta = angle;
+    a = side1;
+    b = side2;
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+    point_count = 6;
+    for (int i = 0; i < 3; i++) {
+        color[i] = new Color(colors[i]->r, colors[i]->g, colors[i]->b, colors[i]->a);
+    }
+    wind = w;
+}
+
 
 void Paralleogram::increment(int int_val) {}
 

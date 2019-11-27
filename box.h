@@ -41,6 +41,9 @@ public:
 
     Box(float angle, float side1, float side2, float h, float x, float y, float z);
 
+    Box(float angle, float side1, float side2, float h, float x, float y, float z, Color **colors);
+
+
     float *get_vertices();
 
     unsigned int *get_indices();

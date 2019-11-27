@@ -17,8 +17,24 @@ Box::Box() {
     coords[1] = 0;
     coords[2] = 0;
     color[0] = new Color(1, 0, 0, 1);
-    color[0] = new Color(1, 1, 1, 1);
-    color[0] = new Color(0, 0, 1, 1);
+    color[1] = new Color(1, 1, 1, 1);
+    color[2] = new Color(0, 0, 1, 1);
+}
+
+
+Box::Box(float angle, float side1, float side2, float h, float x, float y, float z, Color **colors) {
+    theta = angle;
+    a = side1;
+    b = side2;
+
+    height = h;
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+
+    for (int i = 0; i < 3; i++) {
+        color[i] = new Color(colors[i]->r, colors[i]->g, colors[i]->b, colors[i]->a);
+    }
 }
 
 Box::Box(float angle, float side1, float side2, float h, float x, float y, float z) {
@@ -31,8 +47,8 @@ Box::Box(float angle, float side1, float side2, float h, float x, float y, float
     coords[1] = y;
     coords[2] = z;
     color[0] = new Color(1, 0, 1, 1);
-    color[0] = new Color(0, 1, 1, 1);
-    color[0] = new Color(1, 1, 0, 1);
+    color[1] = new Color(0, 1, 1, 1);
+    color[2] = new Color(1, 1, 0, 1);
 }
 
 void Box::gen_vertices() {
@@ -58,11 +74,11 @@ void Box::gen_vertices() {
     int offset = 0;
     int side_count = 6;
 
-    sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], false); //back
+    sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], false, color); //back
     sides[0]->gen_vertices();
 //    sides[0]->print_vertices();
 
-    sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height); //Front
+    sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height, true, color); //Front
     sides[1]->gen_vertices();
 
     for (int i = 0; i < 3; i++) {
@@ -80,10 +96,10 @@ void Box::gen_vertices() {
         va[3][i] = vpa[i];
         vb[3][i] = vpb[i];
     }
-    sides[2] = new Paralleogram(va[3], va[2], vb[2], vb[3], true); //top
-    sides[3] = new Paralleogram(va[0], va[1], vb[1], vb[0], false); //bottom
-    sides[4] = new Paralleogram(va[1], vb[1], vb[2], va[2], true); //right side
-    sides[5] = new Paralleogram(va[0], vb[0], vb[3], va[3], true); //left side
+    sides[2] = new Paralleogram(va[3], va[2], vb[2], vb[3], true, color); //top
+    sides[3] = new Paralleogram(va[0], va[1], vb[1], vb[0], false, color); //bottom
+    sides[4] = new Paralleogram(va[1], vb[1], vb[2], va[2], true, color); //right side
+    sides[5] = new Paralleogram(va[0], vb[0], vb[3], va[3], true, color); //left side
 
     for (int i = 2; i < 6; i++) {
         sides[i]->gen_vertices();

@@ -136,7 +136,11 @@ int main()
     ax.gen_vertices();
     Sphere *yyy = new Sphere(24.2, 36, 36, false, c);
 
-    Sphere *yy = new Sphere(1.5, 72, 72, true);
+    c[0] = new Color(0, 0, 1, 1);
+    c[1] = new Color(1, 1, .02, 1);
+    c[2] = new Color(0, 1, 0, 1);
+
+    Sphere *yy = new Sphere(1.5, 72, 72, true, c);
     c[0] = new Color(0, 0, 1, 1);
     c[1] = new Color(.5, .5, 1, 1);
     c[2] = new Color(.8, .5, 1, 1);
@@ -158,25 +162,41 @@ int main()
     ey2->rotate(0, 105);
     ey2->rotate(1, -15);
     ey2->translate(glm::vec3(-1, 4, .45));
+
+
+    float y_off = 4.95;
     Box *bb = new Box(90, 2, .25, .0625, 0, 0, 0);
     bb->gen_vertices();
-    bb->translate(glm::vec3(-1, 5, -1.25));
+    bb->translate(glm::vec3(-1, y_off, -1.25));
+
     Box *bb2 = new Box(90, 2, .25, .0625, 0, 0, 0);
     bb2->gen_vertices();
-    bb2->translate(glm::vec3(-1, 5, -1.75));
+    bb2->translate(glm::vec3(-1, y_off, -1.75));
 
     Box *bb3 = new Box(90, .25, .0625, .5, 0, 0, 0);
     bb3->gen_vertices();
+
     bb3->rotate(0, 180);
     bb3->rotate(2, 90);
-    bb3->translate(glm::vec3(-1.05, 5, -1.25));
+    bb3->translate(glm::vec3(-1, y_off, -1.1875));
 
 
     Box *bb4 = new Box(90, .25, .0625, .5625, 0, 0, 0);
     bb4->gen_vertices();
     bb4->rotate(0, 180);
     bb4->rotate(2, 90);
-    bb4->translate(glm::vec3(1., 5, -1.1875));
+    bb4->translate(glm::vec3(1., y_off, -1.1875));
+
+    c[0] = new Color(0, 0, 0, 1);
+    c[1] = new Color(0, 0, 0, 1);
+    c[2] = new Color(0, 0, 0, 1);
+
+    Box *back = new Box(90, 2, .5625, .005, 0, 0, 0, c);
+    back->gen_vertices();
+    back->rotate(0, -90);
+    back->translate(glm::vec3(-1, y_off, -1.1875));
+
+
 
 
     Cylinder *cc = new Cylinder(1.5, 1.125, 36, 4, 0, 0, 0);
@@ -500,6 +520,8 @@ int main()
         bb2->draw();
         bb3->draw();
         bb4->draw();
+        back->draw();
+
         // Axes
             glBindVertexArray(Axis_VAO);
             glDrawArrays(GL_LINES, 0, ax.get_vertex_count());

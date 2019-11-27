@@ -44,7 +44,11 @@ public:
 
     Paralleogram(float angle, float side1, float side2, float x, float y, float z, bool w);
 
+    Paralleogram(float angle, float side1, float side2, float x, float y, float z, bool w, Color **colors);
+
     Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w);
+
+    Paralleogram(float *vx1, float *vx2, float *vx3, float *vx4, float w, Color **colors);
 
 
     void rotate(int axis, float angle);
