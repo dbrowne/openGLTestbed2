@@ -254,6 +254,7 @@ int main()
 
     float *vertices[MAX_ITEMS];
 
+
     for (int i = 0; i < MAX_ITEMS; i++) {
         if (i < 2) {
             xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 32);
@@ -265,7 +266,6 @@ int main()
 
         xxx[i]->gen_vertices();
         vertices[i] = xxx[i]->get_vertices();
-        indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
     }
     xxx[0]->rotate(2, 20);
