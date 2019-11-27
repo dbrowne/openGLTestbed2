@@ -258,8 +258,6 @@ int main()
 
 
     for (int i = 0; i < MAX_ITEMS; i++) {
-        float h = .25;
-        float theta = 90.0;
         if (i < 2) {
             xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 32);
             xxx[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 32);
