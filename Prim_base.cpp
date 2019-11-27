@@ -72,7 +72,6 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
     glm::mat4 Modit;
     glm::vec3 rot_axis;
     int cntr = 0;
-    int offset = 0;
     int pos = 0;
 
     glm::vec4 cds = glm::vec4(1.);
@@ -89,6 +88,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
             break;
         default:
             std::cout << "bad axis rotation  exiting at " << __LINE__ << "\n";
+            exit(-1);
             break;
     }
 

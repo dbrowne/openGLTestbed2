@@ -34,6 +34,8 @@ LightCube.o: LightCube.cpp LightCube.h
 Parallelogram.o: Parallelogram.cpp Parallelogram.h
 Prim_base.o: Prim_base.cpp Prim_base.h
 primatives.o: primatives.cpp primatives.h Color.h Prim_base.h extra_funcs.h
+Sphere.o: Sphere.cpp Sphere.h
+box.o: box.cpp box.h
 
 #  Create archive
 CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o

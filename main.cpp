@@ -253,9 +253,6 @@ int main()
 
 
     float *vertices[MAX_ITEMS];
-    unsigned int *indices[MAX_ITEMS];
-
-
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         if (i < 2) {

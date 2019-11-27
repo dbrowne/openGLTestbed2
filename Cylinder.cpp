@@ -47,7 +47,8 @@ void Cylinder::gen_vertices() {
     float d_point[3] = {0, 0, 0};
     float v1[3], v2[3], v3[3];
     float v1a[3], v2a[3], v3a[3];
-    int v1_idx, v2_idx, v3_idx;
+    int v1_idx = 0;
+    int v2_idx = 0;
 
     bottom = true;
     top = true;
