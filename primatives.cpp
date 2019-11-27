@@ -201,6 +201,7 @@ void ::Polyg::gen_vertices() {
     float v1a[3], v2a[3], v3a[3];
     int v1_idx = 0;
     int v2_idx = 0;
+    int v3_idx = 0;
     z = 0;
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;

@@ -47,7 +47,7 @@ void Ellipse::gen_vertices() {
     float theta = 0;
     float incr;
     float v1[3], v2[3], v3[3];
-    int v1_id = 0;
+    int v1_idx = 0;
     int v2_idx = 0;
 
     offset = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
