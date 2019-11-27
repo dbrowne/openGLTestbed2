@@ -15,9 +15,11 @@ Dragonfly::Dragonfly() {
     c[1] = new Color(0, 1, 1, 1);
     c[2] = new Color(1, 0, 0, 1);
 
-    Sphere *yy = new Sphere(1.5, 72, 72, true, c);
-    yy->translate(glm::vec3(0, 3.5, -.85));
-    vertex_size += yy->getInterleavedVertexSize();
+    // HEAD
+    head = new Sphere(1.5, 72, 72, true, c);
+    head->translate(glm::vec3(0, 3.5, -.85));
+    vertex_size += head->getInterleavedVertexSize();
+
 
     c[0]->r = 0;
     c[0]->g = 0;
@@ -28,9 +30,12 @@ Dragonfly::Dragonfly() {
     c[2]->r = .8;
     c[2]->g = .5;
     c[2]->b = 1;
-    int cyl_count = 6;
-    Cylinder *tail_segments[cyl_count];
-    for (int i = 0; i < cyl_count; i++) {
+
+
+    //TAIL SEGMENT
+
+
+    for (int i = 0; i < tail_segment_count; i++) {
         tail_segments[i] = new Cylinder(1.25, 1, 36, 2, 0, 0, 0);
         tail_segments[i]->gen_vertices();
         vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
@@ -232,8 +237,85 @@ Dragonfly::Dragonfly() {
 
 Dragonfly::~Dragonfly() {}
 
-void Dragonfly::draw() {}
+//void Dragonfly::draw() {
+//    if (first) {
+//        build();
+//
+//
+//        glGenVertexArrays(1, &VAO);
+//        glGenBuffers(1, &VBO);
+//        glBindVertexArray(VAO);
+//        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * stride, vertices, GL_STATIC_DRAW);
+//        glCheckError();
+//        // position attribute
+//        glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+//                              (stride) * sizeof(float),
+//                              (void *) 0);
+//        glEnableVertexAttribArray(0);
+//        glCheckError();
+//        //color attribute
+//        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+//                              (stride) * sizeof(float),
+//                              (void *) (VERTEX_SIZE * sizeof(float)));
+//        glCheckError();
+//        glEnableVertexAttribArray(1);
+//        //texture attribute
+//        glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+//                              (stride) * sizeof(float),
+//                              (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+//        glCheckError();
+//        glEnableVertexAttribArray(2);
+//        //Normal attribute
+//        glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+//                              (stride) * sizeof(float),
+//                              (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+//
+//        glCheckError();
+//        glEnableVertexAttribArray(3);
+//        first = false;
+//    }
+//
+//    glBindVertexArray(VAO);
+//
+//    glCheckError();
+//    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+//    glCheckError();
+//
+//}
 
-void Dragonfly::translate(glm::vec3 offset) {}
+//void Dragonfly::build() {
+//    int curr_size = vertex_size;
+//    int offset =0;
+//    int sz =0;
+//    int seg_size=0;
+//    float *ptr;
+//    vertices = (float *)malloc(vertex_size);
+//    if(!vertices){
+//        std::cout<<"Cannot malloc! "<<__LINE__<<"\n";
+//        exit(-1);
+//    }
+//    // Head
+//    ptr = head->get_vertices();
+//    sz = head->getInterleavedVertexSize();
+//    memcpy (&vertices[offset],ptr,sz);
+//    vertex_count += head->outVertices_count;
+//    offset +=sz;
+//
+//    for (int i = 0; i < 1; i++) {
+//          sz= tail_segments[i]->get_vertex_size() * sizeof(float);
+//          ptr = tail_segments[i]->get_vertices();
+//          memcpy (&vertices[offset], ptr,sz);
+//          vertex_count += tail_segments[i]->get_vertex_count();
+//          offset +=sz;
+//    }
+//
+//    translate(glm::vec3(2,3,3));
+//
+//}
+void Dragonfly::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     stride, vertex_count * stride);
+}
 
 void Dragonfly::rotate(int axis, float angle) {}

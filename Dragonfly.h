@@ -17,10 +17,22 @@
 class Dragonfly {
 private:
     float *vertices{};
-    int vertex_size;
-    int vertex_count;
+    int vertex_size = 0;
+    int vertex_count = 0;
     unsigned int VAO;
     unsigned int VBO;
+    bool first = true;
+
+    void build();
+
+    Sphere *head;
+    const int VERTEX_SIZE = 3;
+    const int COLOR_SIZE = 4;
+    const int TEXTURE_SIZE = 2;
+    const int NORMAL_SIZE = 3;
+    int stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
+    static const int tail_segment_count = 6;
+    Cylinder *tail_segments[tail_segment_count];
 
 public:
     Dragonfly();

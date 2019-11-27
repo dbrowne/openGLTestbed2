@@ -140,7 +140,7 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;
-//        std::cout << glm::to_string(cds) << std::endl;
+//        std::cout <<cntr<<"," <<glm::to_string(cds) <<", ";
         xxx = Model * cds;
 //        std::cout << glm::to_string(xxx) << std::endl;
         verts[pos] = xxx[0];
@@ -150,5 +150,5 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
 
     }
 
-
+//    std::cout<<"------------------------------------------\n";
 }

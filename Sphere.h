@@ -87,7 +87,7 @@ public:
     unsigned int getLineIndexSize() const { return (unsigned int) lineIndices.size() * sizeof(unsigned int); }
 
 
-
+    float *get_vertices();
     const float *getVertices() const { return vertices.data(); }
 
     const float *getNormals() const { return normals.data(); }

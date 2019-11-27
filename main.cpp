@@ -19,6 +19,7 @@
 #include "box.h"
 #define IMAGENAME "awesomeface.png"
 
+#include "Dragonfly.h"
 #include "Color.h"
 
 #include "Sphere.h"
@@ -82,12 +83,12 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Testbed2 with lighting", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dwight Browne Final project", nullptr, nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -126,6 +127,10 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
+
+    Dragonfly *dfly = new Dragonfly();
+
+
     Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
 
 
@@ -588,6 +593,8 @@ int main()
         for (int i = 0; i < TEETH; i++) {
             teeth[i]->draw();
         }
+
+//        dfly->draw();
 
         // Axes
         ax.draw();

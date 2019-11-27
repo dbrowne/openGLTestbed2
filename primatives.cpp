@@ -95,7 +95,6 @@ void Axes::draw() {
         glCheckError();
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(0);
-    } else {
         first = false;
     }
 

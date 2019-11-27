@@ -5,6 +5,7 @@
 #ifndef TESTBED2_ELLIPSE_H
 #define TESTBED2_ELLIPSE_H
 
+#include "glad.h"
 #include "Color.h"
 #include <glm/vec3.hpp>
 #include "extra_funcs.h"
@@ -24,6 +25,9 @@ private:
     bool alloced = false;  // to allow for resizing
     int initial_point_count;
     float mult;
+    bool first = true;
+    unsigned int VAO;
+    unsigned int VBO;
 
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -39,6 +43,8 @@ public:
 
     Ellipse(float x, float y, float z, float a1, float b1, float mult, int pc);
     void gen_vertices();
+
+    void draw();
 
     void set_color(Color c, int idx);
 

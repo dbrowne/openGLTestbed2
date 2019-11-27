@@ -449,6 +449,8 @@ void Cylinder::draw() {
     glCheckError();
     glEnableVertexAttribArray(3);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
     glBindVertexArray(cyl_vao);
 
     glCheckError();
