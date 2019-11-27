@@ -5,7 +5,7 @@
 #ifndef TESTBED2_PARALLELOGRAM_H
 #define TESTBED2_PARALLELOGRAM_H
 
-#import "Color.h"
+#include "Color.h"
 #include <glm/vec3.hpp>
 
 class Paralleogram {
