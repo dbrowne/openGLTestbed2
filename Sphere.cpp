@@ -601,7 +601,6 @@ void Sphere::buildVerticesFlat() {
 void Sphere::buildInterleavedVertices() {
     std::vector<float>().swap(interleavedVertices);
     int yyy;
-    int malloc_size;
     std::size_t i, j, k;
     std::size_t count = vertices.size();
     for (i = 0, j = 0, k = 0; i < count; i += 3, j += 2, k += 4) {
@@ -621,7 +620,7 @@ void Sphere::buildInterleavedVertices() {
     yyy = interleavedVertices.size();
     outVertices = (float *) malloc(yyy * sizeof(float));
     outVertices_count = yyy / outVertices_stride;
-    for (i = 0; i < yyy; i++) {
+    for (int i = 0; i < yyy; i++) {
         outVertices[i] = interleavedVertices[i];
     }
     vertex_size = yyy;
