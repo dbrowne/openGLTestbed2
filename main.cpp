@@ -43,7 +43,7 @@ bool firstMouse = true;
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
-float g_angle = 95.0f;
+float g_angle = 45.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
 
@@ -155,7 +155,7 @@ int main()
     c[2]->g = .5;
     c[2]->b = 1;
 
-
+    yy->translate(glm::vec3(0, 3.5, -.85));
     int cyl_count = 6;
     Cylinder *tail_segments[cyl_count];
     for (int i = 0; i < cyl_count; i++) {
@@ -199,9 +199,15 @@ int main()
     bb4->rotate(2, 90);
     bb4->translate(glm::vec3(1., y_off, -1.1875));
 
-    c[0] = new Color(0, 0, 0, 1);
-    c[1] = new Color(0, 0, 0, 1);
-    c[2] = new Color(0, 0, 0, 1);
+    c[0]->r = 0;
+    c[0]->g = 0;
+    c[0]->b = 0;
+    c[1]->r = 0;
+    c[1]->g = 0;
+    c[1]->b = 0;
+    c[2]->r = 0;
+    c[2]->g = 0;
+    c[2]->b = 0;
 
     Box *back = new Box(90, 2, .5625, .005, 0, 0, 0, c);
     back->gen_vertices();
@@ -348,9 +354,6 @@ int main()
     xxx[3]->rotate(2, 20);
     xxx[1]->translate(glm::vec3(0, 1.05, 0));
     xxx[0]->translate(glm::vec3(0, 1.05, 0));
-
-    yy->translate(glm::vec3(0, 3.5, -.85));
-
 
 
     float *axes_verts = ax.get_vertices();
