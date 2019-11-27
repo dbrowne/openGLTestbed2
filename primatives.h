@@ -24,9 +24,11 @@ private:
     int symmetric;
     float *vertices{nullptr};
     float point_count;
-
+    unsigned int VAO;
+    unsigned int VBO;
     void prt_ax(int offst, int sz);
 
+    bool first = true;
     unsigned int vertex_count = 6;
 
 
@@ -38,6 +40,8 @@ public:
     void set_axis_color(int axis, Color c);
 
     void set_axis_len(int axis, float axis_len);
+
+    void draw();
 
     void print_vertices();
 
@@ -53,7 +57,7 @@ public:
     const int TEXTURE_SIZE = 0;
     const int NORMAL_SIZE = 0;
     int vertex_size;
-
+    int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
     unsigned int get_vertex_count();
 
     int get_vertex_size();

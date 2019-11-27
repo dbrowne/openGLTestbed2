@@ -36,9 +36,10 @@ Prim_base.o: Prim_base.cpp Prim_base.h
 primatives.o: primatives.cpp primatives.h Color.h Prim_base.h extra_funcs.h
 Sphere.o: Sphere.cpp Sphere.h
 box.o: box.cpp box.h
+Dragonfly.o: Dragonfly.cpp Dragonfly.h
 
 #  Create archive
-CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o Sphere.o box.o
+CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o Sphere.o box.o Dragonfly.o
 	ar -rcs $@ $^
 
 # Compile rules

@@ -12,11 +12,9 @@
 #include "extra_funcs.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "Cylinder.h"
 #include "ellipse.h"
-#include "Parallelogram.h"
 #include "LightCube.h"
 #include "box.h"
 #define IMAGENAME "awesomeface.png"
@@ -38,7 +36,6 @@ const unsigned int SCR_HEIGHT = 1000;
 Camera g_camera(glm::vec3(0.0f, 0.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
 
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
@@ -356,7 +353,7 @@ int main()
     xxx[0]->translate(glm::vec3(0, 1.05, 0));
 
 
-    float *axes_verts = ax.get_vertices();
+//    float *axes_verts = ax.get_vertices();
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         glGenVertexArrays(1, &VAO[i]);
@@ -408,25 +405,6 @@ int main()
         // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
         glBindVertexArray(0);
     }
-
-    //Axis
-    glGenVertexArrays(1, &Axis_VAO);
-    glGenBuffers(1, &Axis_VBO);
-    glBindVertexArray(Axis_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, Axis_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(axes_verts) * ax.get_vertex_size(), axes_verts, GL_STATIC_DRAW);
-    // Position attribute
-    glVertexAttribPointer(0, ax.VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                          (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float), (void *) 0);
-    glCheckError();
-
-    //color attribute
-    glVertexAttribPointer(1, ax.COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                          (ax.VERTEX_SIZE + ax.COLOR_SIZE + ax.TEXTURE_SIZE) * sizeof(float),
-                          (void *) (ax.VERTEX_SIZE * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(0);
 
 
     //LightCube
@@ -592,9 +570,6 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, vertices_to_render[i]);
 
         }
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//        glDrawElements(GL_TRIANGLES, xxx.get_vertex_count(), GL_UNSIGNED_INT, 0);
-
 
         // sphere
         yyy->draw();
@@ -615,9 +590,7 @@ int main()
         }
 
         // Axes
-            glBindVertexArray(Axis_VAO);
-            glDrawArrays(GL_LINES, 0, ax.get_vertex_count());
-
+        ax.draw();
 
         // Light
         lightShader.use();
@@ -628,6 +601,7 @@ int main()
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(.05f));
         lightShader.setMat4("model", model);
+
         glCheckError();
         glBindVertexArray(Light_VAO);
         glCheckError();

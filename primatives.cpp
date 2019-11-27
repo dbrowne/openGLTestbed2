@@ -76,6 +76,36 @@ void Axes::gen_vertices() {
     vertex_size = offset * vertex_count;
 }
 
+void Axes::draw() {
+    if (first) {
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_size, vertices, GL_STATIC_DRAW);
+        // Position attribute
+        glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                              (VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float), (void *) 0);
+        glCheckError();
+
+        //color attribute
+        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                              (VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float),
+                              (void *) (VERTEX_SIZE * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(0);
+    } else {
+        first = false;
+    }
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_LINES, 0, vertex_count);
+
+
+}
+
+
 void Axes::print_vertices() {
     int cnt = 0;
     int sz = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
