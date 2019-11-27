@@ -358,58 +358,6 @@ int main()
     xxx[0]->translate(glm::vec3(0, 1.05, 0));
 
 
-//    float *axes_verts = ax.get_vertices();
-
-    for (int i = 0; i < MAX_ITEMS; i++) {
-        glGenVertexArrays(1, &VAO[i]);
-        glGenBuffers(1, &VBO[i]);
-        glGenBuffers(1, &EBO[i]);
-        // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-        glBindVertexArray(VAO[i]);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx[i]->get_vertex_size(), vertices[i], GL_STATIC_DRAW);
-
-        glCheckError();
-        // Position attribute
-        glVertexAttribPointer(0, xxx[i]->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
-                              sizeof(float),
-                              (void *) 0);
-        glCheckError();
-        glEnableVertexAttribArray(0);
-
-        //color attribute
-        glVertexAttribPointer(1, xxx[i]->COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
-                              sizeof(float),
-                              (void *) (xxx[i]->VERTEX_SIZE * sizeof(float)));
-        glCheckError();
-        glEnableVertexAttribArray(1);
-
-        //texture attribute
-        glVertexAttribPointer(2, xxx[i]->TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
-                              sizeof(float),
-                              (void *) ((xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE) * sizeof(float)));
-        glCheckError();
-        glEnableVertexAttribArray(2);
-
-        //normal attribute
-        glVertexAttribPointer(3, xxx[i]->NORMAL_SIZE, GL_FLOAT, GL_FALSE,
-                              (xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE + xxx[i]->NORMAL_SIZE) *
-                              sizeof(float),
-                              (void *) ((xxx[i]->VERTEX_SIZE + xxx[i]->COLOR_SIZE + xxx[i]->TEXTURE_SIZE) *
-                                        sizeof(float)));
-        glCheckError();
-        glEnableVertexAttribArray(3);
-
-        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-        glBindVertexArray(0);
-    }
 
 
     //LightCube
@@ -513,18 +461,7 @@ int main()
         ourShader.setFloat("material.shininess", 32.0f);
 
 
-        if (g_resize) {
-            g_resize = false;
-            for (int i = 0; i < MAX_ITEMS; i++) {
-                xxx[i]->increment(g_size);
-                xxx[i]->gen_vertices();
-                vertices[i] = xxx[i]->get_vertices();
-                total_vertices[i] = xxx[i]->get_vertex_count();
-                glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx[i]->get_vertex_size(), vertices[i],
-                             GL_STATIC_DRAW);
-            }
-        }
+
 
         //-------------------------------------------- perspective
         // create transformations
@@ -558,24 +495,10 @@ int main()
             ourShader.setMat4("projection", projection);
         }
 
+
         for (int i = 0; i < MAX_ITEMS; i++) {
-            //----------------------------------------------
-            if (g_bottom_flag == 1) {
-                vertices_to_render[i] = total_vertices[i];
-            } else {
-                if (xxx[i]->has_bottom()) {
-                    vertices_to_render[i] = total_vertices[i] / 2;
-                } else {
-                    vertices_to_render[i] = total_vertices[i];
-                }
-            }
-            // render
-
-            glBindVertexArray(VAO[i]);
-            glDrawArrays(GL_TRIANGLES, 0, vertices_to_render[i]);
-
+            xxx[i]->draw();
         }
-
         // sphere
         yyy->draw();
         bb->draw();
