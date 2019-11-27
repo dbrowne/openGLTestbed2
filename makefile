@@ -38,7 +38,7 @@ Sphere.o: Sphere.cpp Sphere.h
 box.o: box.cpp box.h
 
 #  Create archive
-CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o
+CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o Sphere.o box.o
 	ar -rcs $@ $^
 
 # Compile rules

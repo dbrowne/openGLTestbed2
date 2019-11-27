@@ -79,7 +79,7 @@ void Axes::gen_vertices() {
 void Axes::print_vertices() {
     int cnt = 0;
     int sz = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE;
-    for (int i = 0; i < vertex_count; i++) {
+    for (unsigned int i = 0; i < vertex_count; i++) {
         prt_ax(cnt, sz);
         cnt += 7;
     }
