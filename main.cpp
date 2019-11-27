@@ -218,7 +218,7 @@ int main()
 
     Ellipse *xxx[MAX_ITEMS];
 
-    int TEETH = 9;
+    int TEETH = 20;
     Polyg *teeth[TEETH];
     float t_z = -1.70;
     float t_y = 5.0;
@@ -265,8 +265,65 @@ int main()
     teeth[8] = new Polyg(.06, 36, .28);
     teeth[8]->gen_vertices();
     teeth[8]->rotate(0, -31);
-    teeth[8]->translate(glm::vec3(-.83, t_y + t_y * sin(-20), t_z));
+    teeth[8]->translate(glm::vec3(-.83, t_y, t_z));
 
+    teeth[9] = new Polyg(.06, 36, .28);
+    teeth[9]->gen_vertices();
+    teeth[9]->rotate(0, 187);
+    teeth[9]->translate(glm::vec3(-.6, t_y, t_z + .5));
+
+    teeth[10] = new Polyg(.06, 36, .28);
+    teeth[10]->gen_vertices();
+    teeth[10]->rotate(0, 197);
+    teeth[10]->translate(glm::vec3(-.4, t_y, t_z + .5));
+
+    teeth[11] = new Polyg(.06, 36, .28);
+    teeth[11]->gen_vertices();
+    teeth[11]->rotate(0, 205);
+    teeth[11]->translate(glm::vec3(-.32, t_y, t_z + .5));
+
+    teeth[12] = new Polyg(.06, 36, .28);
+    teeth[12]->gen_vertices();
+    teeth[12]->rotate(0, 190);
+    teeth[12]->translate(glm::vec3(-.20, t_y, t_z + .5));
+
+
+    teeth[13] = new Polyg(.06, 36, .28);
+    teeth[13]->gen_vertices();
+    teeth[13]->rotate(0, 211);
+    teeth[13]->translate(glm::vec3(-.02, t_y, t_z + .5));
+
+    teeth[14] = new Polyg(.06, 36, .28);
+    teeth[14]->gen_vertices();
+    teeth[14]->rotate(0, 180);
+    teeth[14]->translate(glm::vec3(.16, t_y, t_z + .5));
+
+    teeth[15] = new Polyg(.06, 36, .28);
+    teeth[15]->gen_vertices();
+    teeth[15]->rotate(0, 187);
+    teeth[15]->translate(glm::vec3(.27, t_y, t_z + .5));
+
+
+    teeth[16] = new Polyg(.06, 36, .28);
+    teeth[16]->gen_vertices();
+    teeth[16]->rotate(0, 195);
+    teeth[16]->translate(glm::vec3(.35, t_y, t_z + .5));
+
+    teeth[17] = new Polyg(.06, 36, .28);
+    teeth[17]->gen_vertices();
+    teeth[17]->rotate(0, 175);
+    teeth[17]->translate(glm::vec3(.56, t_y, t_z + .5));
+
+
+    teeth[18] = new Polyg(.06, 36, .28);
+    teeth[18]->gen_vertices();
+    teeth[18]->rotate(0, 195);
+    teeth[18]->translate(glm::vec3(.69, t_y, t_z + .5));
+
+    teeth[19] = new Polyg(.06, 36, .28);
+    teeth[19]->gen_vertices();
+    teeth[19]->rotate(0, 175);
+    teeth[19]->translate(glm::vec3(.85, t_y, t_z + .5));
 
 
     float *vertices[MAX_ITEMS];
