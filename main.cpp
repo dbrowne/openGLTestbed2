@@ -130,7 +130,7 @@ int main()
 
     Dragonfly *dfly = new Dragonfly();
 
-
+    dfly->translate(glm::vec3(3, 4.5, -5));
     Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
 
 
@@ -517,7 +517,7 @@ int main()
             teeth[i]->draw();
         }
 
-//        dfly->draw();
+        dfly->draw();
 
         // Axes
         ax.draw();

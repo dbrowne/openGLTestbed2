@@ -6,10 +6,9 @@
 
 Dragonfly::Dragonfly() {
     vertex_size = 0;
-    const int WING_COUNT = 4;
+
     Color *c[3];
-    Ellipse *wings[WING_COUNT];
-    const int TEETH = 20;
+
 
     c[0] = new Color(0, 0, 1, 1);
     c[1] = new Color(0, 1, 1, 1);
@@ -43,9 +42,9 @@ Dragonfly::Dragonfly() {
         tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
     }
 
-    Sphere *ey1 = new Sphere(.5, 72, 18, true, c);
+    ey1 = new Sphere(.5, 72, 18, true, c);
     vertex_size += ey1->getInterleavedVertexSize();
-    Sphere *ey2 = new Sphere(.5, 72, 18, true, c);
+    ey2 = new Sphere(.5, 72, 18, true, c);
     vertex_size += ey2->getInterleavedVertexSize();
 
     ey1->rotate(0, 105);
@@ -56,30 +55,31 @@ Dragonfly::Dragonfly() {
     ey2->rotate(1, -15);
     ey2->translate(glm::vec3(-1, 4, .45));
 
+    //mouth
     float y_off = 4.95;
-    Box *bb = new Box(90, 2, .25, .0625, 0, 0, 0);
-    bb->gen_vertices();
-    vertex_size += bb->get_vertex_size() * sizeof(float);
-    bb->translate(glm::vec3(-1, y_off, -1.25));
+    mouth[0] = new Box(90, 2, .25, .0625, 0, 0, 0);
+    mouth[0]->gen_vertices();
+    vertex_size += mouth[0]->get_vertex_size() * sizeof(float);
+    mouth[0]->translate(glm::vec3(-1, y_off, -1.25));
 
-    Box *bb2 = new Box(90, 2, .25, .0625, 0, 0, 0);
-    bb2->gen_vertices();
-    vertex_size += bb2->get_vertex_size() * sizeof(float);
-    bb2->translate(glm::vec3(-1, y_off, -1.75));
+    mouth[1] = new Box(90, 2, .25, .0625, 0, 0, 0);
+    mouth[1]->gen_vertices();
+    vertex_size += mouth[1]->get_vertex_size() * sizeof(float);
+    mouth[1]->translate(glm::vec3(-1, y_off, -1.75));
 
-    Box *bb3 = new Box(90, .25, .0625, .5, 0, 0, 0);
-    bb3->gen_vertices();
-    vertex_size += bb3->get_vertex_size() * sizeof(float);
-    bb3->rotate(0, 180);
-    bb3->rotate(2, 90);
-    bb3->translate(glm::vec3(-1, y_off, -1.1875));
+    mouth[2] = new Box(90, .25, .0625, .5, 0, 0, 0);
+    mouth[2]->gen_vertices();
+    vertex_size += mouth[2]->get_vertex_size() * sizeof(float);
+    mouth[2]->rotate(0, 180);
+    mouth[2]->rotate(2, 90);
+    mouth[2]->translate(glm::vec3(-1, y_off, -1.1875));
 
-    Box *bb4 = new Box(90, .25, .0625, .5625, 0, 0, 0);
-    bb4->gen_vertices();
-    vertex_size += bb4->get_vertex_size() * sizeof(float);
-    bb4->rotate(0, 180);
-    bb4->rotate(2, 90);
-    bb4->translate(glm::vec3(1., y_off, -1.1875));
+    mouth[3] = new Box(90, .25, .0625, .5625, 0, 0, 0);
+    mouth[3]->gen_vertices();
+    vertex_size += mouth[3]->get_vertex_size() * sizeof(float);
+    mouth[3]->rotate(0, 180);
+    mouth[3]->rotate(2, 90);
+    mouth[3]->translate(glm::vec3(1., y_off, -1.1875));
 
     c[0]->r = 0;
     c[0]->g = 0;
@@ -91,18 +91,23 @@ Dragonfly::Dragonfly() {
     c[2]->g = 0;
     c[2]->b = 0;
 
-    Box *back = new Box(90, 2, .5625, .005, 0, 0, 0, c);
-    back->gen_vertices();
-    vertex_size += back->get_vertex_size() * sizeof(float);
-    back->rotate(0, -90);
-    back->translate(glm::vec3(-1, y_off, -1.1875));
-    Cylinder *cc = new Cylinder(1.5, 1.125, 36, 4, 0, 0, 0);
-    cc->gen_vertices();
-    vertex_size += cc->get_vertex_size() * sizeof(float);
-    cc->rotate(0, 90.0);
-    cc->translate(glm::vec3(0., 3., -.85));
+    mouth[4] = new Box(90, 2, .5625, .005, 0, 0, 0, c);
+    mouth[4]->gen_vertices();
+    vertex_size += mouth[4]->get_vertex_size() * sizeof(float);
+    mouth[4]->rotate(0, -90);
+    mouth[4]->translate(glm::vec3(-1, y_off, -1.1875));
 
-    Polyg *teeth[TEETH];
+    //////////////////////////////////////////////////////////////////////
+
+
+
+    torso = new Cylinder(1.5, 1.125, 36, 4, 0, 0, 0);
+    torso->gen_vertices();
+    vertex_size += torso->get_vertex_size() * sizeof(float);
+    torso->rotate(0, 90.0);
+    torso->translate(glm::vec3(0., 3., -.85));
+
+
     float t_z = -1.70;
     float t_y = 5.0;
     teeth[0] = new Polyg(.0625, 36, .27);
@@ -208,7 +213,7 @@ Dragonfly::Dragonfly() {
     teeth[19]->rotate(0, 175);
     teeth[19]->translate(glm::vec3(.85, t_y, t_z + .5));
     int cntr = 0;
-    for (int i = 0; i < TEETH; i++) {
+    for (int i = 0; i < TOOTH_COUNT; i++) {
         cntr += teeth[i]->get_vertex_size();
     }
     vertex_size += cntr * sizeof(float);
@@ -235,7 +240,30 @@ Dragonfly::Dragonfly() {
 
 }
 
+
 Dragonfly::~Dragonfly() {}
+
+void Dragonfly::draw() {
+    int i;
+    head->draw();
+    for (i = 0; i < tail_segment_count; i++) {
+        tail_segments[i]->draw();
+    }
+    ey1->draw();
+    ey2->draw();
+    for (i = 0; i < MOUTH_PIECES; i++) {
+        mouth[i]->draw();
+    }
+    torso->draw();
+    for (i = 0; i < TOOTH_COUNT; i++) {
+        teeth[i]->draw();
+    }
+
+    for (i = 0; i < WING_COUNT; i++) {
+        wings[i]->draw();
+    }
+
+}
 
 //void Dragonfly::draw() {
 //    if (first) {
@@ -314,8 +342,44 @@ Dragonfly::~Dragonfly() {}
 //
 //}
 void Dragonfly::translate(glm::vec3 offset) {
-    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
-                     stride, vertex_count * stride);
+    int i;
+    head->translate(offset);
+    for (i = 0; i < tail_segment_count; i++) {
+        tail_segments[i]->translate(offset);
+    }
+    ey1->translate(offset);
+    ey2->translate(offset);
+    for (i = 0; i < MOUTH_PIECES; i++) {
+        mouth[i]->translate(offset);
+    }
+    torso->translate(offset);
+    for (i = 0; i < TOOTH_COUNT; i++) {
+        teeth[i]->translate(offset);
+    }
+
+    for (i = 0; i < WING_COUNT; i++) {
+        wings[i]->translate(offset);
+    }
+
 }
 
-void Dragonfly::rotate(int axis, float angle) {}
+void Dragonfly::rotate(int axis, float angle) {
+    int i;
+    head->rotate(axis, angle);
+    for (i = 0; i < tail_segment_count; i++) {
+        tail_segments[i]->rotate(axis, angle);
+    }
+    ey1->rotate(axis, angle);
+    ey2->rotate(axis, angle);
+    for (i = 0; i < MOUTH_PIECES; i++) {
+        mouth[i]->rotate(axis, angle);
+    }
+    torso->rotate(axis, angle);
+    for (i = 0; i < TOOTH_COUNT; i++) {
+        teeth[i]->rotate(axis, angle);
+    }
+
+    for (i = 0; i < WING_COUNT; i++) {
+        wings[i]->rotate(axis, angle);
+    }
+}
