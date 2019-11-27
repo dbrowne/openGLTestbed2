@@ -413,10 +413,10 @@ bool Cylinder::has_bottom() {
 }
 
 void Cylinder::draw() {
-    glGenVertexArrays(1, &cyl_vao);
-    glGenBuffers(1, &cyl_vbo);
-    glBindVertexArray(cyl_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, cyl_vbo);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
                  GL_STATIC_DRAW);
     glCheckError();
@@ -451,7 +451,7 @@ void Cylinder::draw() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
-    glBindVertexArray(cyl_vao);
+    glBindVertexArray(VAO);
 
     glCheckError();
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
@@ -469,4 +469,10 @@ void Cylinder::rotate(int axis, float angle) {
 void Cylinder::translate(glm::vec3 offset) {
     Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
                      vertex_stride, vertex_size);
+}
+
+
+void Cylinder::deletebuffers() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }

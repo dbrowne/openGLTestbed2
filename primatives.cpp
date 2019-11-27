@@ -574,3 +574,8 @@ void Polyg::draw() {
     glCheckError();
 
 }
+
+void Polyg::deletebuffers() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}

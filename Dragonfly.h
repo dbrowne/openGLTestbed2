@@ -49,6 +49,7 @@ public:
 
     void draw();
 
+    void deletebuffers();
     void rotate(int axis, float angle);
 
     void translate(glm::vec3 offset);

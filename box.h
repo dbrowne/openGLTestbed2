@@ -24,8 +24,8 @@ private:
     int index_size;
     bool bottom = true;
     Paralleogram *sides[6] = {};
-    unsigned int box_vao;
-    unsigned int box_vbo;
+    unsigned int VAO;
+    unsigned int VBO;
     int vertex_stride = 0;
     void set_vertex(int idx, float x1, float y1, float z1);
 
@@ -43,6 +43,7 @@ public:
 
     Box(float angle, float side1, float side2, float h, float x, float y, float z, Color **colors);
 
+    void deletebuffers();
 
     float *get_vertices();
 

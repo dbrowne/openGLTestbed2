@@ -288,3 +288,8 @@ void Ellipse::draw() {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 }
+
+void Ellipse::deletebuffers() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}

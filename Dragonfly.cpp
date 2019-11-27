@@ -383,3 +383,25 @@ void Dragonfly::rotate(int axis, float angle) {
         wings[i]->rotate(axis, angle);
     }
 }
+
+
+void Dragonfly::deletebuffers() {
+    int i;
+    head->deletebuffers();
+    for (i = 0; i < tail_segment_count; i++) {
+        tail_segments[i]->deletebuffers();
+    }
+    ey1->deletebuffers();
+    ey2->deletebuffers();
+    for (i = 0; i < MOUTH_PIECES; i++) {
+        mouth[i]->deletebuffers();
+    }
+    torso->deletebuffers();
+    for (i = 0; i < TOOTH_COUNT; i++) {
+        teeth[i]->deletebuffers();
+    }
+
+    for (i = 0; i < WING_COUNT; i++) {
+        wings[i]->deletebuffers();
+    }
+}

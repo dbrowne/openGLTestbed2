@@ -63,6 +63,7 @@ public:
 
     void translate(glm::vec3 offset);
 
+    void deletebuffers();
 
     bool has_bottom();
 

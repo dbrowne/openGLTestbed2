@@ -113,7 +113,7 @@ public:
 
     bool has_bottom();
 
-
+    void deletebuffers();
     ~Polyg();
 
     void set_pos(float val, int axis);

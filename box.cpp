@@ -164,16 +164,16 @@ void Box::print_vertices() {
 }
 
 void Box::delete_buffers() {
-    glDeleteVertexArrays(1, &box_vao);
-    glDeleteBuffers(1, &box_vbo);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
 
 void Box::draw() {
 
-    glGenVertexArrays(1, &box_vao);
-    glGenBuffers(1, &box_vbo);
-    glBindVertexArray(box_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, box_vbo);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
                  GL_STATIC_DRAW);
     glCheckError();
@@ -206,7 +206,7 @@ void Box::draw() {
     glCheckError();
     glEnableVertexAttribArray(3);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(box_vao);
+    glBindVertexArray(VAO);
 
     glCheckError();
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
@@ -222,4 +222,9 @@ void Box::translate(glm::vec3 offset) {
 void Box::rotate(int axis, float angle) {
     Extra::rotate(axis, angle, vertices,
                   VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE, vertex_stride, vertex_size);
+}
+
+void Box::deletebuffers() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
