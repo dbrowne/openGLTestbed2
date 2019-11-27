@@ -57,7 +57,6 @@ public:
 
     void translate(glm::vec3 offset);
 
-    unsigned int *get_indices();
 
     bool has_bottom();
 

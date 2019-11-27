@@ -69,11 +69,11 @@ void Ellipse::gen_vertices() {
     }
 
     index_size = 12 * vertex_count;
-    indices = (unsigned int *) malloc(index_size * sizeof(unsigned int));
-    if (!indices) {
-        std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
-        exit(-1);
-    }
+//    indices = (unsigned int *) malloc(index_size * sizeof(unsigned int));
+//    if (!indices) {
+//        std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
+//        exit(-1);
+//    }
 
     incr = mult * 3.1415967 / point_count;
     while (cntr < 2 * point_count) {
@@ -163,9 +163,6 @@ int Ellipse::get_vertex_size() {
     return vertex_size;
 }
 
-unsigned int *::Ellipse::get_indices() {
-    return indices;
-}
 
 bool Ellipse::has_bottom() {
     return true;

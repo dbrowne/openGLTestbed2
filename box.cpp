@@ -76,8 +76,6 @@ void Box::gen_vertices() {
 
     sides[0] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2], false, color); //back
     sides[0]->gen_vertices();
-//    sides[0]->print_vertices();
-
     sides[1] = new Paralleogram(theta, a, b, coords[0], coords[1], coords[2] + height, true, color); //Front
     sides[1]->gen_vertices();
 

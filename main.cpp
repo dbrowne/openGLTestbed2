@@ -131,14 +131,31 @@ int main()
     ax.gen_vertices();
     Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
 
-    c[0] = new Color(0, 0, 1, 1);
-    c[1] = new Color(1, 1, .02, 1);
-    c[2] = new Color(0, 1, 0, 1);
+
+    c[0]->r = 0;
+    c[0]->g = 0;
+    c[0]->b = 1;
+    c[1]->r = 1;
+    c[1]->g = 1;
+    c[1]->b = 0.2;
+    c[2]->r = 0;
+    c[2]->g = 1;
+    c[2]->b = 0;
+
 
     Sphere *yy = new Sphere(1.5, 72, 72, true, c);
-    c[0] = new Color(0, 0, 1, 1);
-    c[1] = new Color(.5, .5, 1, 1);
-    c[2] = new Color(.8, .5, 1, 1);
+
+    c[0]->r = 0;
+    c[0]->g = 0;
+    c[0]->b = 1;
+    c[1]->r = 0.5;
+    c[1]->g = 0.5;
+    c[1]->b = 1;
+    c[2]->r = .8;
+    c[2]->g = .5;
+    c[2]->b = 1;
+
+
     int cyl_count = 6;
     Cylinder *tail_segments[cyl_count];
     for (int i = 0; i < cyl_count; i++) {
@@ -216,38 +233,38 @@ int main()
 
     teeth[2] = new Polyg(.0625, 36, .27);
     teeth[2]->gen_vertices();
-    teeth[2]->rotate(0, -15);
+    teeth[2]->rotate(0, -17);
     teeth[2]->translate(glm::vec3(-.45, t_y, t_z));
 
     teeth[3] = new Polyg(.0625, 36, .27);
     teeth[3]->gen_vertices();
-    teeth[3]->rotate(0, -22);
-    teeth[3]->translate(glm::vec3(-.65, t_y + t_y * sin(-22), t_z));
+    teeth[3]->rotate(0, -27);
+    teeth[3]->translate(glm::vec3(-.65, t_y, t_z));
 
 
     teeth[4] = new Polyg(.0625, 36, .27);
     teeth[4]->gen_vertices();
-    teeth[4]->rotate(0, -22);
-    teeth[4]->translate(glm::vec3(.65, t_y + t_y * sin(-22), t_z));
+    teeth[4]->rotate(0, -23);
+    teeth[4]->translate(glm::vec3(.65, t_y, t_z));
 
     teeth[5] = new Polyg(.0625, 36, .27);
     teeth[5]->gen_vertices();
-    teeth[5]->rotate(0, -27);
-    teeth[5]->translate(glm::vec3(.45, t_y + t_y * sin(-27), t_z));
+    teeth[5]->rotate(0, -32);
+    teeth[5]->translate(glm::vec3(.45, t_y, t_z));
 
     teeth[6] = new Polyg(.0625, 36, .27);
     teeth[6]->gen_vertices();
     teeth[6]->rotate(0, -22);
-    teeth[6]->translate(glm::vec3(.31, t_y + t_y * sin(-22), t_z));
+    teeth[6]->translate(glm::vec3(.31, t_y, t_z));
 
     teeth[7] = new Polyg(.06, 36, .28);
     teeth[7]->gen_vertices();
     teeth[7]->rotate(0, -29);
-    teeth[7]->translate(glm::vec3(.73, t_y + t_y * sin(-29), t_z));
+    teeth[7]->translate(glm::vec3(.79, t_y, t_z));
 
     teeth[8] = new Polyg(.06, 36, .28);
     teeth[8]->gen_vertices();
-    teeth[8]->rotate(0, -20);
+    teeth[8]->rotate(0, -31);
     teeth[8]->translate(glm::vec3(-.83, t_y + t_y * sin(-20), t_z));
 
 

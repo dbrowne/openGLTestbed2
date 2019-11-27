@@ -130,7 +130,7 @@ Polyg::Polyg(float rad, float pc, float h) {     // make them different default 
     height = h;
     color[0] = new Color(1.0, 0.0, 0.0, 1.0);
     color[1] = new Color(1.0, 1.0, 0.0, 1.0);
-    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+    color[2] = new Color(1.0, 1.0, 1.0, 1.0);
 
 }
 Polyg::Polyg(float rad, float pc, const Color c1) {
