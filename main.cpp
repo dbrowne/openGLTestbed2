@@ -99,11 +99,6 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
-//    glfwSetCursorPosCallback(window, mouse_callback);
-//    glfwSetScrollCallback(window, scroll_callback);
-
-    // tell GLFW to capture our mouse
-//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -134,7 +129,7 @@ int main()
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
-    Sphere *yyy = new Sphere(24.2, 36, 36, false, c);
+    Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
 
     c[0] = new Color(0, 0, 1, 1);
     c[1] = new Color(1, 1, .02, 1);
@@ -204,33 +199,67 @@ int main()
     cc->rotate(0, 90.0);
     cc->translate(glm::vec3(0., 3., -.85));
 
-
-
-//    yyy->printSelf();
     Ellipse *xxx[MAX_ITEMS];
-//    Paralleogram *xxx[MAX_ITEMS];
-//    Cylinder *xxx[MAX_ITEMS];
-//    Polyg *xxx[MAX_ITEMS];
-//    Box *xxx[MAX_ITEMS];
+
+    int TEETH = 9;
+    Polyg *teeth[TEETH];
+    float t_z = -1.70;
+    float t_y = 5.0;
+    teeth[0] = new Polyg(.0625, 36, .27);
+    teeth[0]->gen_vertices();
+    teeth[0]->translate(glm::vec3(0, t_y, t_z));
+
+    teeth[1] = new Polyg(.0625, 36, .27);
+    teeth[1]->gen_vertices();
+    teeth[1]->translate(glm::vec3(-.25, t_y, t_z));
+
+
+    teeth[2] = new Polyg(.0625, 36, .27);
+    teeth[2]->gen_vertices();
+    teeth[2]->rotate(0, -15);
+    teeth[2]->translate(glm::vec3(-.45, t_y, t_z));
+
+    teeth[3] = new Polyg(.0625, 36, .27);
+    teeth[3]->gen_vertices();
+    teeth[3]->rotate(0, -22);
+    teeth[3]->translate(glm::vec3(-.65, t_y + t_y * sin(-22), t_z));
+
+
+    teeth[4] = new Polyg(.0625, 36, .27);
+    teeth[4]->gen_vertices();
+    teeth[4]->rotate(0, -22);
+    teeth[4]->translate(glm::vec3(.65, t_y + t_y * sin(-22), t_z));
+
+    teeth[5] = new Polyg(.0625, 36, .27);
+    teeth[5]->gen_vertices();
+    teeth[5]->rotate(0, -27);
+    teeth[5]->translate(glm::vec3(.45, t_y + t_y * sin(-27), t_z));
+
+    teeth[6] = new Polyg(.0625, 36, .27);
+    teeth[6]->gen_vertices();
+    teeth[6]->rotate(0, -22);
+    teeth[6]->translate(glm::vec3(.31, t_y + t_y * sin(-22), t_z));
+
+    teeth[7] = new Polyg(.06, 36, .28);
+    teeth[7]->gen_vertices();
+    teeth[7]->rotate(0, -29);
+    teeth[7]->translate(glm::vec3(.73, t_y + t_y * sin(-29), t_z));
+
+    teeth[8] = new Polyg(.06, 36, .28);
+    teeth[8]->gen_vertices();
+    teeth[8]->rotate(0, -20);
+    teeth[8]->translate(glm::vec3(-.83, t_y + t_y * sin(-20), t_z));
+
+
 
     float *vertices[MAX_ITEMS];
     unsigned int *indices[MAX_ITEMS];
 
-//    Cylinder xxx(.65, 1.05, 70, .75, .2, -.5, -.5);
-
-//        Polyg xxx(1.0, 3, 0, 0, .5, .25);
-
-//    xxx.gen_vertices();
-//    xxx.print_vertices();
-//    xxx.print_indices();
-//    float *vertices = xxx.get_vertices();
-//    total_vertices = xxx.get_vertex_count();
 
 
     for (int i = 0; i < MAX_ITEMS; i++) {
         float h = .25;
         float theta = 90.0;
-//        xxx[i] = new Ellipse;
         if (i < 2) {
             xxx[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 32);
             xxx[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 32);
@@ -239,15 +268,7 @@ int main()
             xxx[i + 2]->set_color(1, 1, .5, .9, 2);
         }
 
-//        xxx[i] = new Paralleogram(theta, .5, .5, 1, 1, 1);
-//        xxx[i] = new Cylinder(1.125, 1.125, 4, 1, 0, 0, 0);
-//        xxx[i] = new Cylinder(.25, .5, 16, 4, 1, 1, 1);
-//        xxx[i] = new Cylinder(.25, .15, .25, 8, h, .2, -.5, -.5 + i * h);
-//        xxx[i] = new Polyg(.5, 32, exp(.75 * i), -exp(.25 * i), i, 1.25);
-
-//        xxx[i] = new Box;
         xxx[i]->gen_vertices();
-//        xxx[i]->print_vertices();
         vertices[i] = xxx[i]->get_vertices();
         indices[i] = xxx[i]->get_indices();
         total_vertices[i] = xxx[i]->get_vertex_count();
@@ -262,9 +283,6 @@ int main()
     yy->translate(glm::vec3(0, 3.5, -.85));
 
 
-//    std::cout <<"EXITING  at line "<<__LINE__<<"\n";
-//    exit(-1);
-
 
     float *axes_verts = ax.get_vertices();
 
@@ -276,8 +294,7 @@ int main()
         glBindVertexArray(VAO[i]);
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * xxx[i]->get_vertex_size(), vertices[i], GL_STATIC_DRAW);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * xxx.get_index_size(), indices, GL_STATIC_DRAW);
+
         glCheckError();
         // Position attribute
         glVertexAttribPointer(0, xxx[i]->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
@@ -521,6 +538,9 @@ int main()
         bb3->draw();
         bb4->draw();
         back->draw();
+        for (int i = 0; i < TEETH; i++) {
+            teeth[i]->draw();
+        }
 
         // Axes
             glBindVertexArray(Axis_VAO);

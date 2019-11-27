@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Color.h"
 #include "Prim_base.h"
+#include "extra_funcs.h"
 
 Axes::Axes(float ax_len) {
 
@@ -487,3 +488,58 @@ bool Polyg::has_bottom() {
 }
 
 void Polyg::increment(int int_val) {}
+
+void Polyg::rotate(int axis, float angle) {
+    Extra::rotate(axis, angle, vertices,
+                  VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE, vertex_stride, vertex_size);
+}
+
+void Polyg::translate(glm::vec3 offset) {
+    Extra::translate(offset, vertices, VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE,
+                     vertex_stride, vertex_size);
+}
+
+void Polyg::draw() {
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+                 GL_STATIC_DRAW);
+    glCheckError();
+    // position attribute
+    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) 0);
+    glEnableVertexAttribArray(0);
+    glCheckError();
+    //color attribute
+    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) (VERTEX_SIZE * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(1);
+
+
+
+    //texture attribute
+    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    //Normal attribute
+    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                          (vertex_stride) * sizeof(float),
+                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+
+    glCheckError();
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(VAO);
+
+    glCheckError();
+    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+    glCheckError();
+
+}

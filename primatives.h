@@ -12,6 +12,8 @@
 #include<cmath>
 #include <vector>
 #include "Color.h"
+#include <glm/vec3.hpp>
+#include "glad.h"
 
 const double PI = 3.1415967;
 
@@ -77,6 +79,8 @@ private:
     int index_size;
     bool bottom;
 
+    unsigned int VAO;
+    unsigned int VBO;
     void set_vertex_color(int idx, int vtx);
 
     void dump_vertex(int offset);
@@ -93,6 +97,7 @@ public:
     const int COLOR_SIZE = 4;
     const int TEXTURE_SIZE = 2;
     const int MAX_VERT_ELEMS = 8;
+    int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
 
     Polyg();
 
@@ -118,6 +123,13 @@ public:
     void set_alpha(int v, float a);
     void print_vertices(void);
     void print_indices(void);
+
+    void draw();
+
+    void rotate(int axis, float angle);
+
+    void translate(glm::vec3 offset);
+
 
     void increment(int int_val);
     void gen_vertices();
