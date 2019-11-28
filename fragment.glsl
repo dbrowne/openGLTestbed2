@@ -54,18 +54,6 @@ void main()
 {
 
     if (lightFlag == 0){
-
-        if (texflag == 0){
-            FragColor = texture(texture1, TexCoord) * vec4(ourColor);
-        }
-        if (texflag == 1){
-            FragColor = vec4(ourColor);
-        }
-        if (texflag == 2){
-            FragColor = texture(texture1, TexCoord);
-        }
-    } else if (lightFlag ==1){
-
         vec3 viewDir = normalize(viewPos - FragPos);
 
         // ambient
@@ -88,6 +76,19 @@ void main()
         }
         if (texflag == 1){
             FragColor = vec4(result, 1.0);;
+        }
+        if (texflag == 2){
+            FragColor = texture(texture1, TexCoord);
+        }
+
+
+    } else if (lightFlag ==1){
+
+        if (texflag == 0){
+            FragColor = texture(texture1, TexCoord) * vec4(ourColor);
+        }
+        if (texflag == 1){
+            FragColor = vec4(ourColor);
         }
         if (texflag == 2){
             FragColor = texture(texture1, TexCoord);

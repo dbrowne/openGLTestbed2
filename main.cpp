@@ -34,14 +34,14 @@ const unsigned int SCR_HEIGHT = 1000;
 
 
 // camera
-Camera g_camera(glm::vec3(0.0f, 0.0f, 18.0f));
+Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 
 // timing
 float deltaTime = 10.0f;    // time between current frame and last frame
 float lastFrame = 0.0f;
-float g_angle = 45.0f;
+float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
 
@@ -88,7 +88,8 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dwight Browne Final project", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dwight Browne Final Project CSCI5229", nullptr,
+                                          nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -345,33 +346,19 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_poly_flag %= 3;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-        switch (g_bottom_flag) {
-            case 0:
-                g_bottom_flag = 1;
-                break;
-            case 1:
-                g_bottom_flag = 0;
-                break;
-            default:
-                break;
-
-        }
-
-    }
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         g_light_flag *= -1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
-        g_l_zh -= .1;
+        g_l_zh += .1;
         g_l_zh = fmod(g_l_zh, 360.0);
         std::cout << g_l_zh;
     }
 
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
-        g_l_zh += .1;
+        g_l_zh -= .1;
         g_l_zh = fmod(g_l_zh, 360.0);
 
     }
@@ -394,14 +381,6 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_light %= 3;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {   //+
-        g_size = 1;
-        g_resize = true;
-    }
-    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {   //+
-        g_size = -1;
-        g_resize = true;
-    }
 
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
         g_tex_flag += 1;
@@ -418,10 +397,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_camera.ProcessKeyboard(RIGHT, deltaTime * 20);
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        g_pitch += 1.5;
+        g_pitch -= 1.5;
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        g_pitch -= 1.5;
+        g_pitch += 1.5;
 
     }
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
