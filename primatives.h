@@ -82,6 +82,7 @@ private:
     int vertex_count;
     int index_size;
     bool bottom;
+    bool first = true;
 
     unsigned int VAO;
     unsigned int VBO;

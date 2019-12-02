@@ -67,13 +67,7 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 
 int main()
 {
-    int total_vertices[MAX_ITEMS];
-    int vertices_to_render[MAX_ITEMS];
-    unsigned int Axis_VAO, Axis_VBO;
     unsigned int Light_VAO, Light_VBO;
-    unsigned int VBO[MAX_ITEMS];
-    unsigned int VAO[MAX_ITEMS];
-    unsigned int EBO[MAX_ITEMS];
 
     // glfw: initialize and configure
     // ------------------------------

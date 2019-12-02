@@ -128,43 +128,47 @@ void Sphere::deletebuffers() {
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::draw() {
 
+    if (first) {
+        glGenVertexArrays(1, &sphere_vao);
+        glGenBuffers(1, &sphere_vbo);
+        glBindVertexArray(sphere_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, sphere_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(outVertices) * outVertices_count * outVertices_stride, outVertices,
+                     GL_STATIC_DRAW);
+        glCheckError();
+        // position attribute
+        glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                              (outVertices_stride) * sizeof(float),
+                              (void *) 0);
+        glEnableVertexAttribArray(0);
+        glCheckError();
+        //color attribute
+        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                              (outVertices_stride) * sizeof(float),
+                              (void *) (VERTEX_SIZE * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(1);
 
-    glGenVertexArrays(1, &sphere_vao);
-    glGenBuffers(1, &sphere_vbo);
-    glBindVertexArray(sphere_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, sphere_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(outVertices) * outVertices_count * outVertices_stride, outVertices,
-                 GL_STATIC_DRAW);
-    glCheckError();
-    // position attribute
-    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                          (outVertices_stride) * sizeof(float),
-                          (void *) 0);
-    glEnableVertexAttribArray(0);
-    glCheckError();
-    //color attribute
-    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                          (outVertices_stride) * sizeof(float),
-                          (void *) (VERTEX_SIZE * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(1);
 
 
+        //texture attribute
+        glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                              (outVertices_stride) * sizeof(float),
+                              (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(3);
+        //Normal attribute
+        glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                              (outVertices_stride) * sizeof(float),
+                              (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
 
-    //texture attribute
-    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-                          (outVertices_stride) * sizeof(float),
-                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(3);
-    //Normal attribute
-    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
-                          (outVertices_stride) * sizeof(float),
-                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(3);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glCheckError();
-    glEnableVertexAttribArray(3);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        first = false;
+    }
     glBindVertexArray(sphere_vao);
 
     glCheckError();

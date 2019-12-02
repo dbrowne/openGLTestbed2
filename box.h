@@ -33,6 +33,8 @@ private:
 
     void set_tex_pos(int idx, float x, float y);
 
+    bool first = true;
+
 
 public:
     Box();

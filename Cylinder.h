@@ -30,6 +30,7 @@ private:
     unsigned int VAO;
     unsigned int VBO;
     int vertex_stride;
+    bool first = true;
 
     void set_vertex(int idx, float x1, float y1, float z1);
 

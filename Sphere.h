@@ -28,6 +28,7 @@ public:
     unsigned int sphere_vao;
     unsigned int sphere_vbo;
     int vertex_stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
+    bool first = true;
 
     // ctor/dtor
 

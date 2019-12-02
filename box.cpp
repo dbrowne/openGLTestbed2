@@ -169,45 +169,46 @@ void Box::delete_buffers() {
 }
 
 void Box::draw() {
+    if (first) {
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+                     GL_STATIC_DRAW);
+        glCheckError();
+        // position attribute
+        glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+                              (vertex_stride) * sizeof(float),
+                              (void *) 0);
+        glEnableVertexAttribArray(0);
+        glCheckError();
+        //color attribute
+        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
+                              (vertex_stride) * sizeof(float),
+                              (void *) (VERTEX_SIZE * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(1);
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+
+
+        //texture attribute
+        glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
+                              (vertex_stride) * sizeof(float),
+                              (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
+        glCheckError();
+        glEnableVertexAttribArray(3);
+        //Normal attribute
+        glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
+                              (vertex_stride) * sizeof(float),
+                              (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
+
+        glCheckError();
+        glEnableVertexAttribArray(3);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        first = false;
+    }
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
-                 GL_STATIC_DRAW);
-    glCheckError();
-    // position attribute
-    glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                          (vertex_stride) * sizeof(float),
-                          (void *) 0);
-    glEnableVertexAttribArray(0);
-    glCheckError();
-    //color attribute
-    glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
-                          (vertex_stride) * sizeof(float),
-                          (void *) (VERTEX_SIZE * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(1);
-
-
-
-    //texture attribute
-    glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-                          (vertex_stride) * sizeof(float),
-                          (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
-    glCheckError();
-    glEnableVertexAttribArray(3);
-    //Normal attribute
-    glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
-                          (vertex_stride) * sizeof(float),
-                          (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
-
-    glCheckError();
-    glEnableVertexAttribArray(3);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(VAO);
-
     glCheckError();
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
     glCheckError();
