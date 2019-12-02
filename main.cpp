@@ -125,7 +125,7 @@ int main()
 
     Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
 
-    int MAX_FLYS = 3;
+    int MAX_FLYS = 5;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly();
@@ -133,7 +133,8 @@ int main()
     dfly[1]->translate(glm::vec3(5, -4.5, -5));
     dfly[2]->translate(glm::vec3(12, 5.5, 6));
 
-
+    dfly[3]->translate(glm::vec3(-12, 5.5, -12));
+    dfly[4]->translate(glm::vec3(10, -5.5, 12));
 
     //LightCube
     glGenVertexArrays(1, &Light_VAO);
@@ -348,7 +349,6 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
         g_l_zh += .1;
         g_l_zh = fmod(g_l_zh, 360.0);
-        std::cout << g_l_zh;
     }
 
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
