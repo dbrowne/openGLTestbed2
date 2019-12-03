@@ -35,7 +35,7 @@ Dragonfly::Dragonfly() {
 
 
     for (int i = 0; i < tail_segment_count; i++) {
-        tail_segments[i] = new Cylinder(1.25, 1, 36, 2, 0, 0, 0);
+        tail_segments[i] = new Cylinder(0.625, .35, 36, 2, 0, 0, 0);
         tail_segments[i]->gen_vertices();
         vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
         tail_segments[i]->rotate(0, 90);
@@ -101,7 +101,7 @@ Dragonfly::Dragonfly() {
 
 
 
-    torso = new Cylinder(1.5, 1.125, 36, 4, 0, 0, 0);
+    torso = new Cylinder(.75, 1.125, 36, 4, 0, 0, 0);
     torso->gen_vertices();
     vertex_size += torso->get_vertex_size() * sizeof(float);
     torso->rotate(0, 90.0);
@@ -220,8 +220,8 @@ Dragonfly::Dragonfly() {
 
     for (int i = 0; i < WING_COUNT; i++) {
         if (i < 2) {
-            wings[i] = new Ellipse(2.5 - (5 * i), .5, .25, 2.5, .5, 2, 32);
-            wings[i + 2] = new Ellipse(2.5 - (5 * i), 1.5, .25, 2.5, .5, 2, 32);
+            wings[i] = new Ellipse(3.75 - (5 * i), .5, -.155 - i * .002, 4.05, .5, 2, 32);
+            wings[i + 2] = new Ellipse(3.75 - (5 * i), 1.5, -.156 - i * .002, 4.05, .5, 2, 32);
             wings[i + 2]->set_color(.25, 1, .75, .4, 1);
             wings[i + 2]->set_color(.5, 0, .5, .9, 0);
             wings[i + 2]->set_color(1, 1, .5, .9, 2);
