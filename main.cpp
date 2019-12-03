@@ -110,7 +110,11 @@ int main()
     // Load Shaders
     // ------------------------------------
     Shader ourShader("vertex.glsl", "fragment.glsl");
+    glCheckError();
     Shader lightShader("lamp_vec.glsl", "lamp_frag.glsl");
+    glCheckError();
+
+
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
