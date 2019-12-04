@@ -50,11 +50,14 @@ public:
     Cylinder(float r, int pc, float height);
 
     void increment(int int_val);
+
     void set_point_count(int pc);
 
     Cylinder(float r, int pc, float h, float x, float y, float z);
 
     Cylinder(float r, float r1, int pc, float h, float x, float y, float z);
+
+    Cylinder(float r, float r1, int pc, float h, float x, float y, float z, Color **cc);
 
     Cylinder(float r, float r1, int pc, float h);
 

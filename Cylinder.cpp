@@ -227,6 +227,25 @@ Cylinder::Cylinder(float r, float r1, int pc, float h) {
     bottom = true;
 }
 
+
+Cylinder::Cylinder(float r, float r1, int pc, float h, float x, float y, float z, Color **cc) {
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = z;
+    height = h;
+    point_count = pc;
+    initial_point_count = point_count;
+    ra = r;
+    rb = r;
+    r1a = r1;
+    r1b = r1;
+    for (int i = 0; i < 3; i++) {
+        color[i] = new Color(cc[i]->r, cc[i]->g, cc[i]->b, 1.0);
+    }
+    top = true;
+    bottom = true;
+}
+
 Cylinder::Cylinder(float r, float r1, int pc, float h, float x, float y, float z) {
     coords[0] = x;
     coords[1] = y;

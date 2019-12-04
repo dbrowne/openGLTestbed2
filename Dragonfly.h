@@ -32,7 +32,7 @@ private:
     const int TEXTURE_SIZE = 2;
     const int NORMAL_SIZE = 3;
     int stride = VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE + NORMAL_SIZE;
-    static const int tail_segment_count = 6;
+    static const int tail_segment_count = 7;
     Cylinder *tail_segments[tail_segment_count];
     Sphere *ey1;
     Sphere *ey2;

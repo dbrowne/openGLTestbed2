@@ -119,7 +119,7 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    LightCube *Lc = new LightCube();
+//    LightCube *Lc = new LightCube();
     Color *c[3];
     c[0] = new Color(1, 0, 0, 1);
     c[1] = new Color(0, 1, 0, 1);
@@ -130,7 +130,7 @@ int main()
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
-    int MAX_FLYS = 5;
+    int MAX_FLYS = 11;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly(&ourShader);
@@ -140,6 +140,12 @@ int main()
 
     dfly[3]->translate(glm::vec3(-12, 5.5, -12));
     dfly[4]->translate(glm::vec3(10, -5.5, 12));
+    dfly[5]->translate(glm::vec3(25, -25.5, -24));
+    dfly[6]->translate(glm::vec3(-6, 45.5, 3));
+    dfly[7]->translate(glm::vec3(-30, -37.5, 22));
+    dfly[8]->translate(glm::vec3(17, -10.5, 30));
+    dfly[9]->translate(glm::vec3(0, 15.5, -30));
+    dfly[10]->translate(glm::vec3(-3, 12.5, 40));
 
     //LightCube
 //    glGenVertexArrays(1, &Light_VAO);

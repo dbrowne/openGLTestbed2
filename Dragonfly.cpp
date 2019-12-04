@@ -22,6 +22,30 @@ Dragonfly::Dragonfly(Shader *shade) {
     vertex_size += head->getInterleavedVertexSize();
 
 
+
+
+
+    //TAIL SEGMENT
+
+    c[0]->r = .6;
+    c[0]->g = .8;
+    c[0]->b = 0;
+    c[1]->r = 0.1;
+    c[1]->g = 0.9;
+    c[1]->b = 0;
+    c[2]->r = .2;
+    c[2]->g = 1;
+    c[2]->b = .13;
+    for (int i = 0; i < tail_segment_count; i++) {
+        tail_segments[i] = new Cylinder(0.425, .15, 36, 2, 0, 0, 0, c);
+        c[2]->b = float(i) * (float(i) / 8. + c[2]->b);
+        tail_segments[i]->gen_vertices();
+        vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
+        tail_segments[i]->rotate(0, 90);
+        tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
+    }
+
+
     c[0]->r = 0;
     c[0]->g = 0;
     c[0]->b = 1;
@@ -31,18 +55,6 @@ Dragonfly::Dragonfly(Shader *shade) {
     c[2]->r = .8;
     c[2]->g = .5;
     c[2]->b = 1;
-
-
-    //TAIL SEGMENT
-
-
-    for (int i = 0; i < tail_segment_count; i++) {
-        tail_segments[i] = new Cylinder(0.625, .35, 36, 2, 0, 0, 0);
-        tail_segments[i]->gen_vertices();
-        vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
-        tail_segments[i]->rotate(0, 90);
-        tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
-    }
 
     ey1 = new Sphere(.5, 72, 18, true, c);
     vertex_size += ey1->getInterleavedVertexSize();
