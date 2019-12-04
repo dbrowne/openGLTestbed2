@@ -17,7 +17,7 @@ Dragonfly::Dragonfly(Shader *shade) {
     c[2] = new Color(.5, 0, 0.3, 1);
 
     // HEAD
-    head = new Sphere(1.6, 72, 72, true, c);
+    head = new Sphere(1.6, 36, 36, true, c);
     head->translate(glm::vec3(0, 3.5, -.85));
     vertex_size += head->getInterleavedVertexSize();
 

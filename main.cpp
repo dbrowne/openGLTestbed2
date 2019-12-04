@@ -15,7 +15,7 @@
 #include "Camera.h"
 #define IMAGENAME "subtle-white-feathers.png"
 #define IMAGENAME2 "zanti.png"
-
+#define IMAGENAME3 "awsomeface.png"
 #include "Dragonfly.h"
 #include "Color.h"
 
