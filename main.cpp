@@ -13,10 +13,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
-#include "Cylinder.h"
-#include "ellipse.h"
-#include "LightCube.h"
-#include "box.h"
 #define IMAGENAME "awesomeface.png"
 #define IMAGENAME2 "zanti.png"
 
@@ -51,10 +47,6 @@ float g_pitch = 1.0;
 int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 1;
-int g_bottom_flag = 1;
-int g_size = 1;
-bool g_resize = false;
-const int MAX_ITEMS = 4;
 int g_light = 0;
 
 // lighting
@@ -68,7 +60,6 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 
 int main()
 {
-    unsigned int Light_VAO, Light_VBO;
 
     // glfw: initialize and configure
     // ------------------------------
@@ -122,7 +113,7 @@ int main()
 //    LightCube *Lc = new LightCube();
     Color *c[3];
     c[0] = new Color(1, 0, 0, 1);
-    c[1] = new Color(0, 1, 0, 1);
+    c[1] = new Color(0, .35, .25, 1);
     c[2] = new Color(0, 0, 1, 1);
     Axes ax(1.5);
     ax.set_symmetric(1);
@@ -146,18 +137,6 @@ int main()
     dfly[8]->translate(glm::vec3(17, -10.5, 30));
     dfly[9]->translate(glm::vec3(0, 15.5, -30));
     dfly[10]->translate(glm::vec3(-3, 12.5, 40));
-
-    //LightCube
-//    glGenVertexArrays(1, &Light_VAO);
-//    glGenBuffers(1, &Light_VBO);
-//    glBindVertexArray(Light_VAO);
-//    glBindBuffer(GL_ARRAY_BUFFER, Light_VBO);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Lc->get_vertex_size(), Lc->get_vertices(), GL_STATIC_DRAW);
-//    glVertexAttribPointer(0, Lc->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-//                          (Lc->VERTEX_SIZE + Lc->NORMAL_SIZE + Lc->TEXTURE_SIZE + Lc->COLOR_SIZE) * sizeof(float),
-//                          (void *) 0);
-//    glCheckError();
-//    glEnableVertexAttribArray(0);
 
 
     // load and create a texture
@@ -320,26 +299,6 @@ int main()
         ax.draw();
         tent->draw();
 
-        // Light
-//        lightShader.use();
-////        view = glm::mat4(1.0f);
-////        projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],.1f, 100.0f);
-//        lightShader.setMat4("projection", projection);
-//        lightShader.setMat4("view", view);
-//        model = glm::translate(model, lightPos);
-//        model = glm::scale(model, glm::vec3(.05f));
-//        lightShader.setMat4("model", model);
-//
-//        glCheckError();
-//        glBindVertexArray(Light_VAO);
-//        glCheckError();
-//        glDrawArrays(GL_TRIANGLES, 0, Lc->get_vertex_count());
-//        glCheckError();
-
-        // glBindVertexArray(0); // no need to unbind it every time
-
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

@@ -31,9 +31,9 @@ Ellipse::Ellipse(float x, float y, float z, float a1, float b1, float m, int pc)
     b = b1;
     mult = m;
     point_count = pc;
-    color[0] = new Color(1.0, 1.0, 0.0, 1.0);
-    color[1] = new Color(0.0, 1.0, 0.0, 1.0);
-    color[2] = new Color(0.0, 0.0, 1.0, 1.0);
+    color[0] = new Color(1.0, 1.0, 0.0, .50);
+    color[1] = new Color(0.0, 1.0, 0.0, .50);
+    color[2] = new Color(0.0, 0.0, 1.0, .50);
 }
 
 Ellipse::~Ellipse() = default;
@@ -69,11 +69,7 @@ void Ellipse::gen_vertices() {
     }
 
     index_size = 12 * vertex_count;
-//    indices = (unsigned int *) malloc(index_size * sizeof(unsigned int));
-//    if (!indices) {
-//        std::cout << "Polyg: Malloc failed. Cannot allocate indices\n";
-//        exit(-1);
-//    }
+
 
     incr = mult * 3.1415967 / point_count;
     while (cntr < 2 * point_count) {
@@ -277,15 +273,13 @@ void Ellipse::draw() {
         glCheckError();
         glEnableVertexAttribArray(3);
 
-        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-        // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
         glBindVertexArray(0);
         first = false;
     }
     glBindVertexArray(VAO);
+
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 }
 

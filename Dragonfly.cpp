@@ -12,12 +12,12 @@ Dragonfly::Dragonfly(Shader *shade) {
     Color *c[3];
 
 
-    c[0] = new Color(0, 0, 1, 1);
-    c[1] = new Color(0, 1, 1, 1);
-    c[2] = new Color(1, 0, 0, 1);
+    c[0] = new Color(0, 1, .1, 1);
+    c[1] = new Color(0, .8, .2, 1);
+    c[2] = new Color(.5, 0, 0.3, 1);
 
     // HEAD
-    head = new Sphere(1.5, 72, 72, true, c);
+    head = new Sphere(1.6, 72, 72, true, c);
     head->translate(glm::vec3(0, 3.5, -.85));
     vertex_size += head->getInterleavedVertexSize();
 
@@ -37,7 +37,7 @@ Dragonfly::Dragonfly(Shader *shade) {
     c[2]->g = 1;
     c[2]->b = .13;
     for (int i = 0; i < tail_segment_count; i++) {
-        tail_segments[i] = new Cylinder(0.425, .15, 36, 2, 0, 0, 0, c);
+        tail_segments[i] = new Cylinder(0.425, .15, 48, 2, 0, 0, 0, c);
         c[2]->b = float(i) * (float(i) / 8. + c[2]->b);
         tail_segments[i]->gen_vertices();
         vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
@@ -62,11 +62,11 @@ Dragonfly::Dragonfly(Shader *shade) {
     vertex_size += ey2->getInterleavedVertexSize();
 
     ey1->rotate(0, 105);
-    ey1->rotate(1, 15);
+    ey1->rotate(1, 45);
     ey1->translate(glm::vec3(1, 4, .45));
 
     ey2->rotate(0, 105);
-    ey2->rotate(1, -15);
+    ey2->rotate(1, -45);
     ey2->translate(glm::vec3(-1, 4, .45));
 
     //mouth
@@ -114,20 +114,40 @@ Dragonfly::Dragonfly(Shader *shade) {
     //////////////////////////////////////////////////////////////////////
 
 
+    c[0]->r = .3;
+    c[0]->g = .4;
+    c[0]->b = 0;
+    c[1]->r = 0.1;
+    c[1]->g = 0.45;
+    c[1]->b = 0;
+    c[2]->r = .1;
+    c[2]->g = .5;
+    c[2]->b = .07;
 
-    torso[0] = new Cylinder(.75, 1.125, 36, 3, 0, 0, 0);
+    torso[0] = new Cylinder(.75, 1.125, 36, 3, 0, 0, 0, c);
     torso[0]->gen_vertices();
     vertex_size += torso[0]->get_vertex_size() * sizeof(float);
     torso[0]->rotate(0, 90.0);
     torso[0]->translate(glm::vec3(0., 3., -.85));
 
-    torso[1] = new Cylinder(.45, .749, 36, 1, 0, 0, 0);
+    torso[1] = new Cylinder(.45, .749, 36, 1, 0, 0, 0, c);
     torso[1]->gen_vertices();
     vertex_size += torso[1]->get_vertex_size() * sizeof(float);
     torso[1]->rotate(0, 90.0);
     torso[1]->translate(glm::vec3(0., 0., -.85));
 
-    torso[2] = new Cylinder(.195, .45, 36, .5, 0, 0, 0);
+    c[0]->r = .15;
+    c[0]->g = .2;
+    c[0]->b = 0;
+    c[1]->r = 0.05;
+    c[1]->g = 0.23;
+    c[1]->b = 0;
+    c[2]->r = .05;
+    c[2]->g = .25;
+    c[2]->b = .03;
+
+
+    torso[2] = new Cylinder(.195, .45, 36, .5, 0, 0, 0, c);
     torso[2]->gen_vertices();
     vertex_size += torso[2]->get_vertex_size() * sizeof(float);
     torso[2]->rotate(0, 90.0);
@@ -289,88 +309,15 @@ void Dragonfly::draw() {
         teeth[i]->draw();
     }
 
+
     for (i = 0; i < WING_COUNT; i++) {
         wings[i]->draw();
     }
 
+
 }
 
-//void Dragonfly::draw() {
-//    if (first) {
-//        build();
-//
-//
-//        glGenVertexArrays(1, &VAO);
-//        glGenBuffers(1, &VBO);
-//        glBindVertexArray(VAO);
-//        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * stride, vertices, GL_STATIC_DRAW);
-//        glCheckError();
-//        // position attribute
-//        glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-//                              (stride) * sizeof(float),
-//                              (void *) 0);
-//        glEnableVertexAttribArray(0);
-//        glCheckError();
-//        //color attribute
-//        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, GL_FALSE,
-//                              (stride) * sizeof(float),
-//                              (void *) (VERTEX_SIZE * sizeof(float)));
-//        glCheckError();
-//        glEnableVertexAttribArray(1);
-//        //texture attribute
-//        glVertexAttribPointer(2, TEXTURE_SIZE, GL_FLOAT, GL_FALSE,
-//                              (stride) * sizeof(float),
-//                              (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
-//        glCheckError();
-//        glEnableVertexAttribArray(2);
-//        //Normal attribute
-//        glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
-//                              (stride) * sizeof(float),
-//                              (void *) ((VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float)));
-//
-//        glCheckError();
-//        glEnableVertexAttribArray(3);
-//        first = false;
-//    }
-//
-//    glBindVertexArray(VAO);
-//
-//    glCheckError();
-//    glDrawArrays(GL_TRIANGLES, 0, vertex_count);
-//    glCheckError();
-//
-//}
 
-//void Dragonfly::build() {
-//    int curr_size = vertex_size;
-//    int offset =0;
-//    int sz =0;
-//    int seg_size=0;
-//    float *ptr;
-//    vertices = (float *)malloc(vertex_size);
-//    if(!vertices){
-//        std::cout<<"Cannot malloc! "<<__LINE__<<"\n";
-//        exit(-1);
-//    }
-//    // Head
-//    ptr = head->get_vertices();
-//    sz = head->getInterleavedVertexSize();
-//    memcpy (&vertices[offset],ptr,sz);
-//    vertex_count += head->outVertices_count;
-//    offset +=sz;
-//
-//    for (int i = 0; i < 1; i++) {
-//          sz= tail_segments[i]->get_vertex_size() * sizeof(float);
-//          ptr = tail_segments[i]->get_vertices();
-//          memcpy (&vertices[offset], ptr,sz);
-//          vertex_count += tail_segments[i]->get_vertex_count();
-//          offset +=sz;
-//    }
-//
-//    translate(glm::vec3(2,3,3));
-//
-//}
 void Dragonfly::translate(glm::vec3 offset) {
     int i;
     head->translate(offset);
