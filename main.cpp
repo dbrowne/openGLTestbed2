@@ -121,7 +121,7 @@ int main()
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
-    int MAX_FLYS = 11;
+    int MAX_FLYS = 12;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly(&ourShader);
@@ -137,7 +137,7 @@ int main()
     dfly[8]->translate(glm::vec3(17, -10.5, 30));
     dfly[9]->translate(glm::vec3(0, 15.5, -30));
     dfly[10]->translate(glm::vec3(-3, 12.5, 40));
-
+    dfly[11]->translate(glm::vec3(-9, 33.5, 50));
 
     // load and create a texture
     // -------------------------
