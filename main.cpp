@@ -103,8 +103,7 @@ int main()
     // ------------------------------------
     Shader ourShader("vertex.glsl", "fragment.glsl");
     glCheckError();
-    Shader lightShader("lamp_vec.glsl", "lamp_frag.glsl");
-    glCheckError();
+
 
 
 
@@ -112,7 +111,7 @@ int main()
     // ------------------------------------------------------------------
     Color *c[3];
     c[0] = new Color(1, 0, 1, 1);
-    c[1] = new Color(0, .35, .25, 1);
+    c[1] = new Color(1, 1, 1, 1);
     c[2] = new Color(1, 0, 1, 1);
     Axes ax(4.5);
     ax.set_symmetric(1);
@@ -120,26 +119,85 @@ int main()
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
-    int MAX_FLYS = 14;
+    int MAX_FLYS = 15;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly(&ourShader);
     }
+    dfly[0]->rotate(0, -4);
+    dfly[0]->rotate(1, 7);
+    dfly[0]->rotate(2, 5);
+
+    dfly[1]->rotate(1, -18);
+    dfly[1]->rotate(0, 3);
+    dfly[1]->rotate(2, -7);
     dfly[1]->translate(glm::vec3(5, -4.5, -5));
+
+    dfly[2]->rotate(0, -5);
+    dfly[2]->rotate(1, 17);
+    dfly[2]->rotate(2, 1);
     dfly[2]->translate(glm::vec3(12, 5.5, 6));
 
+    dfly[3]->rotate(0, 8);
+    dfly[3]->rotate(1, -17);
+    dfly[3]->rotate(2, -4);
     dfly[3]->translate(glm::vec3(-12, 5.5, -12));
+
+    dfly[4]->rotate(0, -6);
+    dfly[4]->rotate(1, -25);
+    dfly[4]->rotate(2, -2);
     dfly[4]->translate(glm::vec3(10, -5.5, 12));
+
+    dfly[5]->rotate(0, -3);
+    dfly[5]->rotate(1, 19);
+    dfly[5]->rotate(2, -4);
     dfly[5]->translate(glm::vec3(25, -25.5, -24));
+
+    dfly[6]->rotate(0, 5);
+    dfly[6]->rotate(1, -12);
+    dfly[6]->rotate(2, 3);
     dfly[6]->translate(glm::vec3(-6, 45.5, 3));
+
+    dfly[7]->rotate(0, 7);
+    dfly[7]->rotate(1, 17);
+    dfly[7]->rotate(2, -6);
     dfly[7]->translate(glm::vec3(-30, -37.5, 22));
+
+    dfly[8]->rotate(0, -3);
+    dfly[8]->rotate(1, 15);
+    dfly[8]->rotate(2, 3);
     dfly[8]->translate(glm::vec3(17, -10.5, 30));
+
+    dfly[9]->rotate(0, 8);
+    dfly[9]->rotate(1, -9);
+    dfly[9]->rotate(2, 3);
     dfly[9]->translate(glm::vec3(0, 15.5, -30));
+
+    dfly[10]->rotate(0, 12);
+    dfly[10]->rotate(1, -17);
+    dfly[10]->rotate(2, 4);
     dfly[10]->translate(glm::vec3(-3, 12.5, 40));
+
+
+    dfly[11]->rotate(0, -6);
+    dfly[11]->rotate(1, 7);
+    dfly[11]->rotate(2, -2);
     dfly[11]->translate(glm::vec3(-9, 33.5, 50));
+
+    dfly[12]->rotate(0, 6);
+    dfly[12]->rotate(1, 11);
+    dfly[12]->rotate(2, 5);
     dfly[12]->translate(glm::vec3(-16, 12.5, -50));
+
+    dfly[13]->rotate(0, 15);
+    dfly[13]->rotate(1, -20);
+    dfly[13]->rotate(2, 2);
     dfly[13]->translate(glm::vec3(-1, -12.5, 6));
 
+    dfly[14]->rotate(0, -5);
+    dfly[14]->rotate(1, -2);
+    dfly[14]->rotate(2, -2);
+    dfly[14]->translate(glm::vec3(4, -5.5, -20));
 
 
 
@@ -223,11 +281,12 @@ int main()
         glCheckError();
         ourShader.use();
         ourShader.setInt("texflag", g_tex_flag);
-        ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        ourShader.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
         ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        ourShader.setVec3("lightColor2", 1.0f, .25f, .25f);
+        ourShader.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
         ourShader.setInt("material.diffuse", 0);
         ourShader.setInt("material.specular", 1);
+
         if (g_light_flag == 1) {
             g_l_zh = fmod(glfwGetTime(), 360.0);
         }
