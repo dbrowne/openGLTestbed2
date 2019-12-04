@@ -119,7 +119,7 @@ int main()
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
-    int MAX_FLYS = 15;
+    int MAX_FLYS = 17;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly(&ourShader);
@@ -198,6 +198,16 @@ int main()
     dfly[14]->rotate(1, -2);
     dfly[14]->rotate(2, -2);
     dfly[14]->translate(glm::vec3(4, -5.5, -20));
+
+    dfly[15]->rotate(0, 5);
+    dfly[15]->rotate(1, 12);
+    dfly[15]->rotate(2, 2);
+    dfly[15]->translate(glm::vec3(8, -15.5, -12));
+
+    dfly[16]->rotate(0, -9);
+    dfly[16]->rotate(1, -18);
+    dfly[16]->rotate(2, -1);
+    dfly[16]->translate(glm::vec3(5, 17.5, -16));
 
 
 
