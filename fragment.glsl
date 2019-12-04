@@ -34,6 +34,7 @@ struct SpotLight {
 };
 
 uniform sampler2D texture1;
+uniform sampler2D texture2;
 uniform int texflag;
 uniform int lightFlag;
 uniform vec3 lightPos;

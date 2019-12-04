@@ -126,7 +126,7 @@ void Sphere::deletebuffers() {
 // draw a sphere in VertexArray mode
 // OpenGL RC must be set before calling it
 ///////////////////////////////////////////////////////////////////////////////
-void Sphere::draw() {
+void Sphere::draw(int useTex) {
 
     if (first) {
         glGenVertexArrays(1, &sphere_vao);
@@ -156,7 +156,11 @@ void Sphere::draw() {
                               (outVertices_stride) * sizeof(float),
                               (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
         glCheckError();
-        glEnableVertexAttribArray(3);
+        if (useTex == 1) {
+            glEnableVertexAttribArray(2);
+        } else {
+            glDisableVertexAttribArray(2);
+        }
         //Normal attribute
         glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
                               (outVertices_stride) * sizeof(float),

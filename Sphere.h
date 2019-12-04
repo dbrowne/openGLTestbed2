@@ -110,7 +110,7 @@ public:
     const float *getInterleavedVertices() const { return interleavedVertices.data(); }
 
     // draw in VertexArray modes[
-    void draw();                                  // draw surface
+    void draw(int useTex = 0);                                  // draw surface
     void drawLines(const float lineColor[4]) const;     // draw lines only
     void drawWithLines(const float lineColor[4]); // draw surface and lines
 

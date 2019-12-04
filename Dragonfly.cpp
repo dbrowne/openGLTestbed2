@@ -249,8 +249,8 @@ void Dragonfly::draw() {
     for (i = 0; i < tail_segment_count; i++) {
         tail_segments[i]->draw();
     }
-    ey1->draw();
-    ey2->draw();
+    ey1->draw(1);
+    ey2->draw(1);
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->draw();
     }

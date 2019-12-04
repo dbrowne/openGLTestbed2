@@ -18,6 +18,7 @@
 #include "LightCube.h"
 #include "box.h"
 #define IMAGENAME "awesomeface.png"
+#define IMAGENAME2 "zanti.png"
 
 #include "Dragonfly.h"
 #include "Color.h"
@@ -120,14 +121,14 @@ int main()
     // ------------------------------------------------------------------
     LightCube *Lc = new LightCube();
     Color *c[3];
-    c[0] = new Color(0, 0, 1, 1);
-    c[1] = new Color(0, 1, 1, 1);
-    c[2] = new Color(1, 0, 0, 1);
+    c[0] = new Color(1, 0, 0, 1);
+    c[1] = new Color(0, 1, 0, 1);
+    c[2] = new Color(0, 0, 1, 1);
     Axes ax(1.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
 
-    Sphere *yyy = new Sphere(68.8, 36, 36, false, c);
+    Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
     int MAX_FLYS = 5;
     Dragonfly *dfly[MAX_FLYS];
@@ -141,16 +142,16 @@ int main()
     dfly[4]->translate(glm::vec3(10, -5.5, 12));
 
     //LightCube
-    glGenVertexArrays(1, &Light_VAO);
-    glGenBuffers(1, &Light_VBO);
-    glBindVertexArray(Light_VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, Light_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Lc->get_vertex_size(), Lc->get_vertices(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, Lc->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
-                          (Lc->VERTEX_SIZE + Lc->NORMAL_SIZE + Lc->TEXTURE_SIZE + Lc->COLOR_SIZE) * sizeof(float),
-                          (void *) 0);
-    glCheckError();
-    glEnableVertexAttribArray(0);
+//    glGenVertexArrays(1, &Light_VAO);
+//    glGenBuffers(1, &Light_VBO);
+//    glBindVertexArray(Light_VAO);
+//    glBindBuffer(GL_ARRAY_BUFFER, Light_VBO);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Lc->get_vertex_size(), Lc->get_vertices(), GL_STATIC_DRAW);
+//    glVertexAttribPointer(0, Lc->VERTEX_SIZE, GL_FLOAT, GL_FALSE,
+//                          (Lc->VERTEX_SIZE + Lc->NORMAL_SIZE + Lc->TEXTURE_SIZE + Lc->COLOR_SIZE) * sizeof(float),
+//                          (void *) 0);
+//    glCheckError();
+//    glEnableVertexAttribArray(0);
 
 
     // load and create a texture
@@ -176,10 +177,33 @@ int main()
     } else {
         std::cout << "Failed to load texture" << std::endl;
     }
+
+    unsigned int texture2;
+    // texture 2
+    // ---------
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+    data = stbi_load(IMAGENAME2, &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+
     stbi_image_free(data);
 
     ourShader.use();
     ourShader.setInt("texture1", 0);
+
     ourShader.setInt("lightFlag", g_light);
 
 
@@ -281,23 +305,23 @@ int main()
         }
         // Axes
         ax.draw();
-        yyy->draw();
+        tent->draw();
 
         // Light
-        lightShader.use();
-//        view = glm::mat4(1.0f);
-//        projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],.1f, 100.0f);
-        lightShader.setMat4("projection", projection);
-        lightShader.setMat4("view", view);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(.05f));
-        lightShader.setMat4("model", model);
-
-        glCheckError();
-        glBindVertexArray(Light_VAO);
-        glCheckError();
-        glDrawArrays(GL_TRIANGLES, 0, Lc->get_vertex_count());
-        glCheckError();
+//        lightShader.use();
+////        view = glm::mat4(1.0f);
+////        projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],.1f, 100.0f);
+//        lightShader.setMat4("projection", projection);
+//        lightShader.setMat4("view", view);
+//        model = glm::translate(model, lightPos);
+//        model = glm::scale(model, glm::vec3(.05f));
+//        lightShader.setMat4("model", model);
+//
+//        glCheckError();
+//        glBindVertexArray(Light_VAO);
+//        glCheckError();
+//        glDrawArrays(GL_TRIANGLES, 0, Lc->get_vertex_count());
+//        glCheckError();
 
         // glBindVertexArray(0); // no need to unbind it every time
 
@@ -309,7 +333,7 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    yyy->deletebuffers();
+    tent->deletebuffers();
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx]->deletebuffers();
     }
