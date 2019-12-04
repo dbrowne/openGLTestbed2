@@ -110,18 +110,17 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-//    LightCube *Lc = new LightCube();
     Color *c[3];
-    c[0] = new Color(1, 0, 0, 1);
+    c[0] = new Color(1, 0, 1, 1);
     c[1] = new Color(0, .35, .25, 1);
-    c[2] = new Color(0, 0, 1, 1);
-    Axes ax(1.5);
+    c[2] = new Color(1, 0, 1, 1);
+    Axes ax(4.5);
     ax.set_symmetric(1);
     ax.gen_vertices();
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
 
-    int MAX_FLYS = 12;
+    int MAX_FLYS = 14;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
         dfly[xx] = new Dragonfly(&ourShader);
@@ -138,6 +137,11 @@ int main()
     dfly[9]->translate(glm::vec3(0, 15.5, -30));
     dfly[10]->translate(glm::vec3(-3, 12.5, 40));
     dfly[11]->translate(glm::vec3(-9, 33.5, 50));
+    dfly[12]->translate(glm::vec3(-16, 12.5, -50));
+    dfly[13]->translate(glm::vec3(-1, -12.5, 6));
+
+
+
 
     // load and create a texture
     // -------------------------
@@ -262,7 +266,7 @@ int main()
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
+//        glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
         GLint dims[4] = {0};

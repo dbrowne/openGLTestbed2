@@ -31,9 +31,9 @@ Ellipse::Ellipse(float x, float y, float z, float a1, float b1, float m, int pc)
     b = b1;
     mult = m;
     point_count = pc;
-    color[0] = new Color(1.0, 1.0, 0.0, .50);
-    color[1] = new Color(0.0, 1.0, 0.0, .50);
-    color[2] = new Color(0.0, 0.0, 1.0, .50);
+    color[0] = new Color(1.0, 1.0, 0.0, 1.);
+    color[1] = new Color(0.0, 1.0, 0.0, 1.);
+    color[2] = new Color(0.0, 0.0, 1.0, 1.);
 }
 
 Ellipse::~Ellipse() = default;
