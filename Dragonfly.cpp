@@ -4,8 +4,10 @@
 
 #include "Dragonfly.h"
 
-Dragonfly::Dragonfly() {
+
+Dragonfly::Dragonfly(Shader *shade) {
     vertex_size = 0;
+    ss = shade;
 
     Color *c[3];
 
@@ -249,8 +251,10 @@ void Dragonfly::draw() {
     for (i = 0; i < tail_segment_count; i++) {
         tail_segments[i]->draw();
     }
+    ss->setInt("useTex", 1);
     ey1->draw(1);
     ey2->draw(1);
+    ss->setInt("useTex", 0);
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->draw();
     }

@@ -133,7 +133,7 @@ int main()
     int MAX_FLYS = 5;
     Dragonfly *dfly[MAX_FLYS];
     for (int xx = 0; xx < MAX_FLYS; xx++) {
-        dfly[xx] = new Dragonfly();
+        dfly[xx] = new Dragonfly(&ourShader);
     }
     dfly[1]->translate(glm::vec3(5, -4.5, -5));
     dfly[2]->translate(glm::vec3(12, 5.5, 6));
@@ -178,6 +178,8 @@ int main()
         std::cout << "Failed to load texture" << std::endl;
     }
 
+    stbi_image_free(data);
+
     unsigned int texture2;
     // texture 2
     // ---------
@@ -202,8 +204,11 @@ int main()
     stbi_image_free(data);
 
     ourShader.use();
-    ourShader.setInt("texture1", 0);
 
+    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+    glCheckError();
+    ourShader.setInt("texture2", 1);
+    glCheckError();
     ourShader.setInt("lightFlag", g_light);
 
 
@@ -224,6 +229,8 @@ int main()
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
         glCheckError();
         ourShader.use();
         ourShader.setInt("texflag", g_tex_flag);

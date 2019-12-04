@@ -126,7 +126,7 @@ void Sphere::deletebuffers() {
 // draw a sphere in VertexArray mode
 // OpenGL RC must be set before calling it
 ///////////////////////////////////////////////////////////////////////////////
-void Sphere::draw(int useTex) {
+void Sphere::draw(int useTex, int tex_num) {
 
     if (first) {
         glGenVertexArrays(1, &sphere_vao);

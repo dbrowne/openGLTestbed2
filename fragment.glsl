@@ -42,7 +42,7 @@ uniform vec3 lightPos2;
 uniform vec3 lightColor2;
 uniform SpotLight spotLight;
 uniform Material material;
-
+uniform int useTex;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform vec3 viewPos;
@@ -73,26 +73,43 @@ void main()
         //        FragColor = vec4(result, 1.0);
 
         if (texflag == 0){
-            FragColor = texture(texture1, TexCoord) * vec4(result, 1.0);;
+            if (useTex == 1){
+                FragColor = texture(texture2, TexCoord) * vec4(result, 1.0);
+            } else {
+                FragColor = texture(texture1, TexCoord) * vec4(result, 1.0);
+            }
         }
         if (texflag == 1){
             FragColor = vec4(result, 1.0);;
         }
         if (texflag == 2){
-            FragColor = texture(texture1, TexCoord);
+            if (useTex ==1){
+                FragColor = texture(texture2, TexCoord);
+            } else {
+                FragColor = texture(texture1, TexCoord);
+            }
+
         }
 
 
     } else if (lightFlag ==1){
 
         if (texflag == 0){
-            FragColor = texture(texture1, TexCoord) * vec4(ourColor);
+            if (useTex ==1){
+                FragColor = texture(texture2, TexCoord) * vec4(ourColor);
+            } else {
+                FragColor = texture(texture1, TexCoord) * vec4(ourColor);
+            }
         }
         if (texflag == 1){
             FragColor = vec4(ourColor);
         }
         if (texflag == 2){
-            FragColor = texture(texture1, TexCoord);
+            if (useTex ==1){
+                FragColor = texture(texture2, TexCoord);
+            } else {
+                FragColor = texture(texture1, TexCoord);
+            }
         }
 
     }

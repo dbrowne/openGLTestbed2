@@ -11,7 +11,7 @@
 #include "Sphere.h"
 #include "box.h"
 #include "ellipse.h"
-
+#include "Shader.h"
 
 class Dragonfly {
 private:
@@ -40,10 +40,12 @@ private:
     Cylinder *torso;
     Polyg *teeth[TOOTH_COUNT];
     Ellipse *wings[WING_COUNT];
+    Shader *ss;
 
 public:
-    Dragonfly();
+    Dragonfly(Shader *shade);
 
+    Dragonfly();
     ~Dragonfly();
 
     void draw();
