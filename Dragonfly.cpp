@@ -115,11 +115,17 @@ Dragonfly::Dragonfly(Shader *shade) {
 
 
 
-    torso = new Cylinder(.75, 1.125, 36, 4, 0, 0, 0);
-    torso->gen_vertices();
-    vertex_size += torso->get_vertex_size() * sizeof(float);
-    torso->rotate(0, 90.0);
-    torso->translate(glm::vec3(0., 3., -.85));
+    torso[0] = new Cylinder(.75, 1.125, 36, 3, 0, 0, 0);
+    torso[0]->gen_vertices();
+    vertex_size += torso[0]->get_vertex_size() * sizeof(float);
+    torso[0]->rotate(0, 90.0);
+    torso[0]->translate(glm::vec3(0., 3., -.85));
+
+    torso[1] = new Cylinder(.45, .749, 36, 1, 0, 0, 0);
+    torso[1]->gen_vertices();
+    vertex_size += torso[1]->get_vertex_size() * sizeof(float);
+    torso[1]->rotate(0, 90.0);
+    torso[1]->translate(glm::vec3(0., 0., -.85));
 
 
     float t_z = -1.70;
@@ -270,7 +276,9 @@ void Dragonfly::draw() {
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->draw();
     }
-    torso->draw();
+    for (i = 0; i < TORSO_COUNT; i++) {
+        torso[i]->draw();
+    }
     for (i = 0; i < TOOTH_COUNT; i++) {
         teeth[i]->draw();
     }
@@ -368,7 +376,9 @@ void Dragonfly::translate(glm::vec3 offset) {
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->translate(offset);
     }
-    torso->translate(offset);
+    for (i = 0; i < TORSO_COUNT; i++) {
+        torso[i]->translate(offset);
+    }
     for (i = 0; i < TOOTH_COUNT; i++) {
         teeth[i]->translate(offset);
     }
@@ -390,7 +400,9 @@ void Dragonfly::rotate(int axis, float angle) {
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->rotate(axis, angle);
     }
-    torso->rotate(axis, angle);
+    for (i = 0; i < TORSO_COUNT; i++) {
+        torso[i]->rotate(axis, angle);
+    }
     for (i = 0; i < TOOTH_COUNT; i++) {
         teeth[i]->rotate(axis, angle);
     }
@@ -412,7 +424,9 @@ void Dragonfly::deletebuffers() {
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->deletebuffers();
     }
-    torso->deletebuffers();
+    for (i = 0; i < TORSO_COUNT; i++) {
+        torso[i]->deletebuffers();
+    }
     for (i = 0; i < TOOTH_COUNT; i++) {
         teeth[i]->deletebuffers();
     }

@@ -23,6 +23,7 @@ private:
     bool first = true;
     static const int MOUTH_PIECES = 5;
     void build();
+    static const int TORSO_COUNT = 2;
 
     static const int TOOTH_COUNT = 20;
     static const int WING_COUNT = 4;
@@ -37,7 +38,7 @@ private:
     Sphere *ey1;
     Sphere *ey2;
     Box *mouth[MOUTH_PIECES];
-    Cylinder *torso;
+    Cylinder *torso[2];
     Polyg *teeth[TOOTH_COUNT];
     Ellipse *wings[WING_COUNT];
     Shader *ss;
