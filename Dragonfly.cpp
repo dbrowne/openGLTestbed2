@@ -90,25 +90,38 @@ Dragonfly::Dragonfly(Shader *shade) {
     ey2->translate(glm::vec3(-1, 4, .45));
 
     //mouth
+
+
+
+    c[0]->r = .6;
+    c[0]->g = .8;
+    c[0]->b = 0;
+    c[1]->r = 0.5;
+    c[1]->g = 1;
+    c[1]->b = 0;
+    c[2]->r = .3;
+    c[2]->g = .85;
+    c[2]->b = 1.0;
+
     float y_off = 4.95;
-    mouth[0] = new Box(90, 2, .25, .0625, 0, 0, 0);
+    mouth[0] = new Box(90, 2, .25, .0625, 0, 0, 0, c);
     mouth[0]->gen_vertices();
     vertex_size += mouth[0]->get_vertex_size() * sizeof(float);
     mouth[0]->translate(glm::vec3(-1, y_off, -1.25));
 
-    mouth[1] = new Box(90, 2, .25, .0625, 0, 0, 0);
+    mouth[1] = new Box(90, 2, .25, .0625, 0, 0, 0, c);
     mouth[1]->gen_vertices();
     vertex_size += mouth[1]->get_vertex_size() * sizeof(float);
     mouth[1]->translate(glm::vec3(-1, y_off, -1.75));
 
-    mouth[2] = new Box(90, .25, .0625, .5, 0, 0, 0);
+    mouth[2] = new Box(90, .25, .0625, .5, 0, 0, 0, c);
     mouth[2]->gen_vertices();
     vertex_size += mouth[2]->get_vertex_size() * sizeof(float);
     mouth[2]->rotate(0, 180);
     mouth[2]->rotate(2, 90);
     mouth[2]->translate(glm::vec3(-1, y_off, -1.1875));
 
-    mouth[3] = new Box(90, .25, .0625, .5625, 0, 0, 0);
+    mouth[3] = new Box(90, .25, .0625, .5625, 0, 0, 0, c);
     mouth[3]->gen_vertices();
     vertex_size += mouth[3]->get_vertex_size() * sizeof(float);
     mouth[3]->rotate(0, 180);
