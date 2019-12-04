@@ -279,7 +279,6 @@ void Ellipse::draw() {
         first = false;
     }
     glBindVertexArray(VAO);
-
     glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 }
 

@@ -309,11 +309,13 @@ void Dragonfly::draw() {
         teeth[i]->draw();
     }
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     for (i = 0; i < WING_COUNT; i++) {
         wings[i]->draw();
     }
-
+    glDisable(GL_BLEND);
 
 }
 

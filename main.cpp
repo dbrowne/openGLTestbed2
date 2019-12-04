@@ -13,7 +13,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
-#define IMAGENAME "awesomeface.png"
+#define IMAGENAME "subtle-white-feathers.png"
 #define IMAGENAME2 "zanti.png"
 
 #include "Dragonfly.h"
