@@ -127,6 +127,12 @@ Dragonfly::Dragonfly(Shader *shade) {
     torso[1]->rotate(0, 90.0);
     torso[1]->translate(glm::vec3(0., 0., -.85));
 
+    torso[2] = new Cylinder(.195, .45, 36, .5, 0, 0, 0);
+    torso[2]->gen_vertices();
+    vertex_size += torso[2]->get_vertex_size() * sizeof(float);
+    torso[2]->rotate(0, 90.0);
+    torso[2]->translate(glm::vec3(0., -1., -.85));
+
 
     float t_z = -1.70;
     float t_y = 5.0;
