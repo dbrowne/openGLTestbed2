@@ -15,6 +15,7 @@
 #include <cmath>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "DflyPos.h"
 
 class Dragonfly {
 private:
@@ -49,6 +50,8 @@ private:
     int wing_off = 1;
     glm::mat4 Model45p;
     glm::mat4 Model45m;
+    DflyPos *dp;
+
 
 public:
     Dragonfly(Shader *shade);
@@ -57,7 +60,7 @@ public:
 
     ~Dragonfly();
 
-    void draw(glm::mat4 matty, float yaw, float pitch, int move);
+    void draw(glm::mat4 matty, float yaw, float pitch, int move, float angle);
 
     void deletebuffers();
     void rotate(int axis, float angle);

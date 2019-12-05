@@ -21,6 +21,7 @@ class Dragonfly **Dfly::genFlies(Shader *shader) {
         dfly[xx] = new Dragonfly(shader);
     }
     setPos(0, -4, 7, 5, 0, 0, 0, true, false);
+//    setPos(0, 0, 0, 0, 7, 5, -1, true, true);
     setPos(1, 3, -18, -7, 5, -4.5, -5, true, true);
     setPos(2, -5, 17, 1, 12, 5.5, 6, true, true);
     setPos(3, 8, -17, -4, -12, 5.5, -12, true, true);

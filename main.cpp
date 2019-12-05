@@ -267,7 +267,6 @@ int main() {
             model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
-            model_t = model;
             model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
             model = glm::rotate(model, glm::radians(g_pitch), glm::vec3(1, 0, 0));
             ourShader.setMat4("model", model);
@@ -280,10 +279,11 @@ int main() {
 
 
         for (int xx = 0; xx < flies->getFlyCount(); xx++) {
-            dfly[xx]->draw(model_t, g_yaw, g_pitch, g_move);
+            dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
         }
 
-//            dfly[0]->draw();
+//            dfly[0]->draw(model, g_yaw, g_pitch, g_move,g_angle);
+//            dfly[3]->draw(model, g_yaw, g_pitch, g_move,g_angle);
 
 
         // Axes
@@ -301,6 +301,7 @@ int main() {
         dfly[xx]->deletebuffers();
     }
 //    dfly[0]->deletebuffers();
+//    dfly[3]->deletebuffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();

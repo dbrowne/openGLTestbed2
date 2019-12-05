@@ -13,12 +13,21 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform int perspective;
+uniform int wing;
+uniform mat4 mod1;
 
 
 void main()
 {
+    vec4 rotated;
     if (perspective ==1){
-        gl_Position = projection * view * model * vec4(aPos, 1.0);
+        if (wing == 1){
+            rotated = mod1*vec4(aPos, 1.0);
+            gl_Position = projection * view * model *rotated;
+
+        } else {
+            gl_Position = projection * view * model * vec4(aPos, 1.0);
+        }
 
     } else {
         gl_Position = vec4(aPos, 1.0);

@@ -8,6 +8,7 @@
 Dragonfly::Dragonfly(Shader *shade) {
     vertex_size = 0;
     ss = shade;
+    dp = new DflyPos;
     int i;
     Color *c[3];
     Model45p = glm::mat4(1.);
@@ -328,7 +329,7 @@ Dragonfly::Dragonfly(Shader *shade) {
 
 Dragonfly::~Dragonfly() = default;
 
-void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move) {
+void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float angle) {
     int i;
     int flag;
     head->draw();
@@ -356,22 +357,36 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move) {
     wing_off *= -1;
     flag = wing_off * move;
 
+
+    glm::mat4 identity = glm::mat4(1, 0, 0, 0,
+                                   0, 1, 0, 0,
+                                   0, 0, 1, 0,
+                                   0, 0, 0, 1);
+    glm::mat4 Model;
+    glm::mat4 xxx;
+
+
     for (i = 0; i < WING_COUNT; i++) {
+
         if (flag == 1) {
-            Model45p = glm::rotate(matty, glm::radians(yaw + 15), glm::vec3(0, 1, 0));
-            Model45p = glm::rotate(Model45p, glm::radians(pitch), glm::vec3(1, 0, 0));
-            ss->setMat4("model", Model45p);
+            Model = glm::translate(identity, glm::vec3(-dp->position[0], -dp->position[1], -dp->position[2]));
+            xxx = Model45p * Model;
+            Model = glm::translate(identity, glm::vec3(dp->position[0], dp->position[1], dp->position[2]));
+            xxx = Model * xxx;
+            ss->setMat4("mod1", xxx);
+            ss->setInt("wing", 1);
         } else if (flag == -1) {
-            Model45m = glm::rotate(matty, glm::radians(yaw - 15), glm::vec3(0, 1, 0));
-            Model45m = glm::rotate(Model45m, glm::radians(pitch), glm::vec3(1, 0, 0));
-            ss->setMat4("model", Model45m);
+            Model = glm::translate(identity, glm::vec3(-dp->position[0], -dp->position[1], -dp->position[2]));
+            xxx = Model45m * Model;
+            Model = glm::translate(identity, glm::vec3(dp->position[0], dp->position[1], dp->position[2]));
+            xxx = Model * xxx;
+            ss->setMat4("mod1", xxx);
+            ss->setInt("wing", 1);
         }
         wings[i]->draw();
     }
-
-    matty = glm::rotate(matty, glm::radians(yaw), glm::vec3(0, 1, 0));
-    matty = glm::rotate(matty, glm::radians(pitch), glm::vec3(1, 0, 0));
     ss->setMat4("model", matty);
+    ss->setInt("wing", 0);
     glDisable(GL_BLEND);
 
 }
@@ -379,6 +394,7 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move) {
 
 void Dragonfly::translate(glm::vec3 offset) {
     int i;
+    dp->position = offset;
     head->translate(offset);
     for (i = 0; i < tail_segment_count; i++) {
         tail_segments[i]->translate(offset);
@@ -403,6 +419,7 @@ void Dragonfly::translate(glm::vec3 offset) {
 
 void Dragonfly::rotate(int axis, float angle) {
     int i;
+    dp->angles[axis] = angle;
     head->rotate(axis, angle);
     for (i = 0; i < tail_segment_count; i++) {
         tail_segments[i]->rotate(axis, angle);
