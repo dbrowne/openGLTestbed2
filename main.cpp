@@ -1,7 +1,4 @@
 // Dwight J. Browne
-
-
-
 #include <iostream>
 #include "primatives.h"
 #include "glad.h"
@@ -61,7 +58,7 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 // objects
 Dragonfly **dfly;
 Dfly *flies = new Dfly();
-int g_move = 0;    //wing motion flag
+int g_move = 1;    //wing motion flag
 
 int main() {
 
@@ -247,8 +244,7 @@ int main() {
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 model_t;
-//        glm::mat4 view = glm::mat4(1.0f);
+
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
         GLint dims[4] = {0};
