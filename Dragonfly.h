@@ -12,6 +12,9 @@
 #include "box.h"
 #include "ellipse.h"
 #include "Shader.h"
+#include <cmath>
+#include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Dragonfly {
 private:
@@ -43,13 +46,18 @@ private:
     Ellipse *wings[WING_COUNT];
     Shader *ss;
 
+    int wing_off = 1;
+    glm::mat4 Model45p;
+    glm::mat4 Model45m;
+
 public:
     Dragonfly(Shader *shade);
 
     Dragonfly();
+
     ~Dragonfly();
 
-    void draw();
+    void draw(glm::mat4 matty, float yaw, float pitch, int move);
 
     void deletebuffers();
     void rotate(int axis, float angle);

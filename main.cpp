@@ -15,11 +15,12 @@
 #include "Camera.h"
 #define IMAGENAME "subtle-white-feathers.png"
 #define IMAGENAME2 "zanti.png"
-#define IMAGENAME3 "awsomeface.png"
+
 #include "Dragonfly.h"
 #include "Color.h"
 
 #include "Sphere.h"
+#include "dflyGen.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -57,9 +58,12 @@ int g_light_flag = 1;
 glm::vec3 lightPos(g_l_dist * cos(g_l_zh), g_l_y, g_l_dist * sin(g_l_zh));
 glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 
+// objects
+Dragonfly **dfly;
+Dfly *flies = new Dfly();
+int g_move = 0;    //wing motion flag
 
-int main()
-{
+int main() {
 
     // glfw: initialize and configure
     // ------------------------------
@@ -118,96 +122,7 @@ int main()
     ax.gen_vertices();
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
-
-    int MAX_FLYS = 17;
-    Dragonfly *dfly[MAX_FLYS];
-    for (int xx = 0; xx < MAX_FLYS; xx++) {
-        dfly[xx] = new Dragonfly(&ourShader);
-    }
-    dfly[0]->rotate(0, -4);
-    dfly[0]->rotate(1, 7);
-    dfly[0]->rotate(2, 5);
-
-    dfly[1]->rotate(1, -18);
-    dfly[1]->rotate(0, 3);
-    dfly[1]->rotate(2, -7);
-    dfly[1]->translate(glm::vec3(5, -4.5, -5));
-
-    dfly[2]->rotate(0, -5);
-    dfly[2]->rotate(1, 17);
-    dfly[2]->rotate(2, 1);
-    dfly[2]->translate(glm::vec3(12, 5.5, 6));
-
-    dfly[3]->rotate(0, 8);
-    dfly[3]->rotate(1, -17);
-    dfly[3]->rotate(2, -4);
-    dfly[3]->translate(glm::vec3(-12, 5.5, -12));
-
-    dfly[4]->rotate(0, -6);
-    dfly[4]->rotate(1, -25);
-    dfly[4]->rotate(2, -2);
-    dfly[4]->translate(glm::vec3(10, -5.5, 12));
-
-    dfly[5]->rotate(0, -3);
-    dfly[5]->rotate(1, 19);
-    dfly[5]->rotate(2, -4);
-    dfly[5]->translate(glm::vec3(25, -25.5, -24));
-
-    dfly[6]->rotate(0, 5);
-    dfly[6]->rotate(1, -12);
-    dfly[6]->rotate(2, 3);
-    dfly[6]->translate(glm::vec3(-6, 45.5, 3));
-
-    dfly[7]->rotate(0, 7);
-    dfly[7]->rotate(1, 17);
-    dfly[7]->rotate(2, -6);
-    dfly[7]->translate(glm::vec3(-30, -37.5, 22));
-
-    dfly[8]->rotate(0, -3);
-    dfly[8]->rotate(1, 15);
-    dfly[8]->rotate(2, 3);
-    dfly[8]->translate(glm::vec3(17, -10.5, 30));
-
-    dfly[9]->rotate(0, 8);
-    dfly[9]->rotate(1, -9);
-    dfly[9]->rotate(2, 3);
-    dfly[9]->translate(glm::vec3(0, 15.5, -30));
-
-    dfly[10]->rotate(0, 12);
-    dfly[10]->rotate(1, -17);
-    dfly[10]->rotate(2, 4);
-    dfly[10]->translate(glm::vec3(-3, 12.5, 40));
-
-
-    dfly[11]->rotate(0, -6);
-    dfly[11]->rotate(1, 7);
-    dfly[11]->rotate(2, -2);
-    dfly[11]->translate(glm::vec3(-9, 33.5, 50));
-
-    dfly[12]->rotate(0, 6);
-    dfly[12]->rotate(1, 11);
-    dfly[12]->rotate(2, 5);
-    dfly[12]->translate(glm::vec3(-16, 12.5, -50));
-
-    dfly[13]->rotate(0, 15);
-    dfly[13]->rotate(1, -20);
-    dfly[13]->rotate(2, 2);
-    dfly[13]->translate(glm::vec3(-1, -12.5, 6));
-
-    dfly[14]->rotate(0, -5);
-    dfly[14]->rotate(1, -2);
-    dfly[14]->rotate(2, -2);
-    dfly[14]->translate(glm::vec3(4, -5.5, -20));
-
-    dfly[15]->rotate(0, 5);
-    dfly[15]->rotate(1, 12);
-    dfly[15]->rotate(2, 2);
-    dfly[15]->translate(glm::vec3(8, -15.5, -12));
-
-    dfly[16]->rotate(0, -9);
-    dfly[16]->rotate(1, -18);
-    dfly[16]->rotate(2, -1);
-    dfly[16]->translate(glm::vec3(5, 17.5, -16));
+    dfly = flies->genFlies(&ourShader);
 
 
 
@@ -329,12 +244,10 @@ int main()
 
         ourShader.setFloat("material.shininess", 32.0f);
 
-
-
-
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 model_t;
 //        glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
         ourShader.setInt("perspective", g_perspective);
@@ -351,9 +264,10 @@ int main()
             glm::mat4 view = g_camera.GetViewMatrix();
             ourShader.setMat4("view", view);
             // calculate the model matrix for each object and pass it to shader before drawing
-            model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+            model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
+            model_t = model;
             model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
             model = glm::rotate(model, glm::radians(g_pitch), glm::vec3(1, 0, 0));
             ourShader.setMat4("model", model);
@@ -365,9 +279,13 @@ int main()
         }
 
 
-        for (int xx = 0; xx < MAX_FLYS; xx++) {
-            dfly[xx]->draw();
+        for (int xx = 0; xx < flies->getFlyCount(); xx++) {
+            dfly[xx]->draw(model_t, g_yaw, g_pitch, g_move);
         }
+
+//            dfly[0]->draw();
+
+
         // Axes
         ax.draw();
         tent->draw();
@@ -379,9 +297,10 @@ int main()
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     tent->deletebuffers();
-    for (int xx = 0; xx < MAX_FLYS; xx++) {
+    for (int xx = 0; xx < flies->getFlyCount(); xx++) {
         dfly[xx]->deletebuffers();
     }
+//    dfly[0]->deletebuffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
@@ -422,6 +341,14 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
         g_l_zh += .1;
         g_l_zh = fmod(g_l_zh, 360.0);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) { //< key
+        if (g_move == 1) {
+            g_move = 0;
+        } else if (g_move == 0) {
+            g_move = 1;
+        }
     }
 
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key

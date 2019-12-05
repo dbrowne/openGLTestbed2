@@ -87,7 +87,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
             rot_axis = glm::vec3(0, 0, 1);
             break;
         default:
-            std::cout << "bad axis rotation  exiting at " << __LINE__ << "\n";
+            std::cout << "bad axis rotation  exiting in " << __FILE_NAME__ << " @ line: " << __LINE__ << "\n";
             exit(-1);
             break;
     }
@@ -126,8 +126,10 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
                                    0, 1, 0, 0,
                                    0, 0, 1, 0,
                                    0, 0, 0, 1);
+    glm::mat4 Modit;
+
     glm::mat4 Model = glm::translate(identity, tr);
-//    std::cout << glm::to_string(Model) << std::endl;
+    Modit = glm::inverseTranspose(Model);
 
     glm::vec4 cds = glm::vec4(1.);
     glm::vec4 xxx;
@@ -140,15 +142,23 @@ void Extra::translate(glm::vec3 tr, float *verts, int offset2, int stride, int v
         cds[1] = verts[pos + 1];
         cds[2] = verts[pos + 2];
         cds[3] = 1.0;
-//        std::cout <<cntr<<"," <<glm::to_string(cds) <<", ";
         xxx = Model * cds;
-//        std::cout << glm::to_string(xxx) << std::endl;
         verts[pos] = xxx[0];
         verts[pos + 1] = xxx[1];
         verts[pos + 2] = xxx[2];
+        pos += offset2;
+        cds[0] = verts[pos];     // Rotate normals
+        cds[1] = verts[pos + 1];
+        cds[2] = verts[pos + 2];
+        cds[3] = 1.0;
+
+        xxx = Modit * cds;
+        verts[pos] = xxx[0];
+        verts[pos + 1] = xxx[1];
+        verts[pos + 2] = xxx[2];
+
         cntr += stride;
 
     }
 
-//    std::cout<<"------------------------------------------\n";
 }

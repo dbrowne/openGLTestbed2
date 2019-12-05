@@ -10,7 +10,13 @@ Dragonfly::Dragonfly(Shader *shade) {
     ss = shade;
     int i;
     Color *c[3];
+    Model45p = glm::mat4(1.);
+    Model45m = glm::mat4(1.);
+    float ang = 15;
 
+    Model45p = glm::rotate(Model45p, glm::radians(ang), glm::vec3(0, 1, 0));
+    ang = -15;
+    Model45m = glm::rotate(Model45m, glm::radians(ang), glm::vec3(0, 1, 0));
 
     c[0] = new Color(0, 1, .1, 1);
     c[1] = new Color(0, .8, .2, 1);
@@ -320,10 +326,11 @@ Dragonfly::Dragonfly(Shader *shade) {
 }
 
 
-Dragonfly::~Dragonfly() {}
+Dragonfly::~Dragonfly() = default;
 
-void Dragonfly::draw() {
+void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move) {
     int i;
+    int flag;
     head->draw();
     for (i = 0; i < tail_segment_count; i++) {
         tail_segments[i]->draw();
@@ -345,9 +352,26 @@ void Dragonfly::draw() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
+    wing_off *= -1;
+    flag = wing_off * move;
+
     for (i = 0; i < WING_COUNT; i++) {
+        if (flag == 1) {
+            Model45p = glm::rotate(matty, glm::radians(yaw + 15), glm::vec3(0, 1, 0));
+            Model45p = glm::rotate(Model45p, glm::radians(pitch), glm::vec3(1, 0, 0));
+            ss->setMat4("model", Model45p);
+        } else if (flag == -1) {
+            Model45m = glm::rotate(matty, glm::radians(yaw - 15), glm::vec3(0, 1, 0));
+            Model45m = glm::rotate(Model45m, glm::radians(pitch), glm::vec3(1, 0, 0));
+            ss->setMat4("model", Model45m);
+        }
         wings[i]->draw();
     }
+
+    matty = glm::rotate(matty, glm::radians(yaw), glm::vec3(0, 1, 0));
+    matty = glm::rotate(matty, glm::radians(pitch), glm::vec3(1, 0, 0));
+    ss->setMat4("model", matty);
     glDisable(GL_BLEND);
 
 }
