@@ -4,20 +4,29 @@
 #include "glad.h"
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "stb_image.h"
 #include "extra_funcs.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
+
 #define IMAGENAME "subtle-white-feathers.png"
+#ifdef __APPLE__
 #define IMAGENAME2 "zanti.png"
+#else
+#define IMAGENAME2 "awesomeface.png"
+#endif
+
 
 #include "Dragonfly.h"
 #include "Color.h"
 
 #include "Sphere.h"
 #include "dflyGen.h"
+
 void motion_gen();
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
