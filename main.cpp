@@ -17,7 +17,7 @@
 #ifdef __APPLE__
 #define IMAGENAME2 "zanti.png"
 #else
-#define IMAGENAME2 "awesomeface.png"
+#define IMAGENAME2 "zanti2.png"
 #endif
 
 
