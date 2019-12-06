@@ -11,13 +11,7 @@ Dragonfly::Dragonfly(Shader *shade) {
     dp = new DflyPos;
     int i;
     Color *c[3];
-    Model45p = glm::mat4(1.);
-    Model45m = glm::mat4(1.);
-    float ang = 15;
 
-    Model45p = glm::rotate(Model45p, glm::radians(ang), glm::vec3(0, 1, 0));
-    ang = -15;
-    Model45m = glm::rotate(Model45m, glm::radians(ang), glm::vec3(0, 1, 0));
 
     c[0] = new Color(0, 1, .1, 1);
     c[1] = new Color(0, .8, .2, 1);
@@ -366,7 +360,17 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     glm::mat4 xxx;
 
     ss->setInt("wing", 0);
+    Model45p = glm::mat4(1.);
+    Model45m = glm::mat4(1.);
+    float ang;
+
     for (i = 0; i < WING_COUNT; i++) {
+        Model45p = glm::mat4(1.);
+        Model45m = glm::mat4(1.);
+        ang = 15.0 * cos(drand48());
+        Model45p = glm::rotate(Model45p, glm::radians(ang), glm::vec3(0, 1, 0));
+        ang = -15.0 * cos(drand48());
+        Model45m = glm::rotate(Model45m, glm::radians(ang), glm::vec3(0, 1, 0));
         if (flag == 1) {
             Model = glm::translate(identity, glm::vec3(-dp->position[0], -dp->position[1], -dp->position[2]));
             xxx = Model45p * Model;

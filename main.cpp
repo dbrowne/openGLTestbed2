@@ -66,6 +66,8 @@ int g_motion_count = 0;
 int g_motion_mod = 5000;
 bool g_set_change = false;
 int g_set_count = 0;
+float g_pitch_const = .05;
+float g_yaw_const = 0.025;
 
 int main() {
 
@@ -314,24 +316,24 @@ int main() {
 
 void motion_gen() {
     if (g_motion == 1) {
-        g_pitch += .05 * g_pitch_flag;
-        g_yaw -= .025 * g_pitch_flag;
-    }
-    g_motion_count++;
-    if (g_motion_count % g_motion_mod == 0) {
-        g_set_change = true;
-    }
-    if (g_set_change) {
-        g_yaw -= .00125;
-        g_pitch += .001335;
-        g_set_count++;
-    }
+        g_pitch += g_pitch_const * g_pitch_flag;
+        g_yaw -= g_yaw_const * g_pitch_flag;
+
+        g_motion_count++;
+        if (g_motion_count % g_motion_mod == 0) {
+            g_set_change = true;
+        }
+        if (g_set_change) {
+            g_yaw -= .00125;
+            g_pitch += .001335;
+            g_set_count++;
+        }
 
     if (g_set_count % 201 == 0) {
         g_set_change = false;
     }
 
-
+    }
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -364,6 +366,16 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_light_flag *= -1;
     }
 
+
+    if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
+        g_pitch_const = g_pitch_const - .25 * g_pitch_const;
+        g_yaw_const = g_yaw_const - .125 * g_yaw_const;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
+        g_pitch_const = g_pitch_const + .25 * g_pitch_const;
+        g_yaw_const = g_yaw_const + .25 * g_yaw_const;
+    }
 
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
         g_motion *= -1;

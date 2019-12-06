@@ -24,6 +24,8 @@
 * n  step light down
 * m  step light up
 * y  Toggle wing motion
+* .  increase rotation speed
+* ,  decreas rotation speed
 
 TO RUN
 * run final
@@ -33,8 +35,8 @@ Total time 154 hours from Nov 3 to Dec 5  due to several false starts and pernic
 ISSUES:
 Had to abandon Qt and adopt modern opengl workflow. 
 Had to learn C++
-Code would not be written this haphazardly if I had the time to design
-First object may not always display moving wings
+Code would not be written this haphazardly if I had the time to design.
+Had to abandon adding legs:   Could not easily create symmetry as translations did not match with rotations for my objects. eg move a cylinder to  .24 .15 .13  with a rotation of z y y.   will not match to its negative counterpart. need to create a common coordinate system for my primtives    Will need to add a debugging grid to define placements. 
 
 FEATURES:
 Modern OpenGL programmable pipeline 
