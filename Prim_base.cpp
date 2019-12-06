@@ -87,7 +87,7 @@ void Extra::rotate(int axis, float angle, float *verts, int offset2, int stride,
             rot_axis = glm::vec3(0, 0, 1);
             break;
         default:
-            std::cout << "bad axis rotation  exiting in " << __FILE_NAME__ << " @ line: " << __LINE__ << "\n";
+            std::cout << "bad axis rotation  exiting  " << " @ line: " << __LINE__ << "\n";
             exit(-1);
             break;
     }
