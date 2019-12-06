@@ -41,6 +41,7 @@ class Dragonfly **Dfly::genFlies(Shader *shader) {
     setPos(17, 13.5, 8, 3, 13, -17.5, 33, true, true);
     setPos(18, -19.5, -10, -6, 19, 29.5, -37, true, true);
     setPos(19, 9.5, 1, 2, 1, 27.5, -33, true, true);
+    setPos(20, .5, -20, -3, -4, -7.5, 29.5, true, true);
 
 
     for (xx = 0; xx < MAX_FLIES; xx++) {
