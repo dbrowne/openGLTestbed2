@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 project(testbed2)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "-Wno-deprecated-declarations -fprofile-instr-generate  -fcoverage-mapping")
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
