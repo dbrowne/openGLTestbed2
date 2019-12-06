@@ -45,7 +45,7 @@ Dragonfly::Dragonfly(Shader *shade) {
     c[2]->b = .13;
     for (i = 0; i < tail_segment_count; i++) {
         if (i == tail_segment_count - 1) {
-            tail_segments[i] = new Cylinder(0.15, .425, 48, .5, 0, 0, 0, c);
+            tail_segments[i] = new Cylinder(0.1, .425, 48, .65, 0, 0, 0, c);
             c[0]->b = float(i) * (float(i) / 8. + c[2]->b);
             c[2]->b = float(i) * (float(i) / 8. + c[2]->b);
             tail_segments[i]->gen_vertices();
@@ -53,7 +53,7 @@ Dragonfly::Dragonfly(Shader *shade) {
             tail_segments[i]->rotate(0, 90);
             tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
         } else {
-            tail_segments[i] = new Cylinder(0.425, .15, 48, 2, 0, 0, 0, c);
+            tail_segments[i] = new Cylinder(0.425, .305, 48, 2, 0, 0, 0, c);
             c[2]->b = float(i) * (float(i) / 8. + c[2]->b);
             tail_segments[i]->gen_vertices();
             vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);

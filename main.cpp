@@ -18,8 +18,9 @@
 
 #include "Sphere.h"
 #include "dflyGen.h"
+void motion_gen();
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
@@ -59,6 +60,13 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 Dragonfly **dfly;
 Dfly *flies = new Dfly();
 int g_move = 1;    //wing motion flag
+int g_motion = 1;
+int g_pitch_flag = 1;
+int g_yaw_flag = 0;
+int g_motion_count = 0;
+int g_motion_mod = 5000;
+bool g_set_change = false;
+int g_set_count = 0;
 
 int main() {
 
@@ -288,6 +296,7 @@ int main() {
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        motion_gen();
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
@@ -304,10 +313,31 @@ int main() {
     return 0;
 }
 
+void motion_gen() {
+    if (g_motion == 1) {
+        g_pitch += .05 * g_pitch_flag;
+        g_yaw -= .025 * g_pitch_flag;
+    }
+    g_motion_count++;
+    if (g_motion_count % g_motion_mod == 0) {
+        g_set_change = true;
+    }
+    if (g_set_change) {
+        g_yaw -= .00125;
+        g_pitch += .001335;
+        g_set_count++;
+    }
+
+    if (g_set_count % 201 == 0) {
+        g_set_change = false;
+    }
+
+
+}
+
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
@@ -333,6 +363,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         g_light_flag *= -1;
+    }
+
+
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+        g_motion *= -1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key

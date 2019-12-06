@@ -12,7 +12,7 @@
 
 class Dfly {
 private:
-    const static int MAX_FLIES = 17;
+    const static int MAX_FLIES = 20;
     Dragonfly *dfly[MAX_FLIES];
     bool Generated_flies = false;
     DflyPos *posArr[MAX_FLIES];

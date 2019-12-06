@@ -20,7 +20,7 @@ class Dragonfly **Dfly::genFlies(Shader *shader) {
         posArr[xx] = new DflyPos;
         dfly[xx] = new Dragonfly(shader);
     }
-    setPos(0, -4, 7, 5, 0, 0, 0, true, false);
+    setPos(0, -4, 7, 5, 5, 1, -2, true, false);
 //    setPos(0, 0, 0, 0, 7, 5, -1, true, true);
     setPos(1, 3, -18, -7, 5, -4.5, -5, true, true);
     setPos(2, -5, 17, 1, 12, 5.5, 6, true, true);
@@ -38,6 +38,9 @@ class Dragonfly **Dfly::genFlies(Shader *shader) {
     setPos(14, -5, -2, -2, 4, -5.5, -20, true, true);
     setPos(15, 5, 12, 2, 8, -15.5, -12, true, true);
     setPos(16, -9, -18, -1, 5, 17.5, -16, true, true);
+    setPos(17, 13.5, 8, 3, 13, -17.5, 33, true, true);
+    setPos(18, -19.5, -10, -6, 19, 29.5, -37, true, true);
+    setPos(19, 9.5, 1, 2, 1, 27.5, -33, true, true);
 
 
     for (xx = 0; xx < MAX_FLIES; xx++) {
