@@ -66,8 +66,14 @@ int g_motion_count = 0;
 int g_motion_mod = 5000;
 bool g_set_change = false;
 int g_set_count = 0;
+#ifdef __APPLE__
 float g_pitch_const = .05;
 float g_yaw_const = 0.025;
+#else
+float g_pitch_const = .025;
+float g_yaw_const = 0.0125;
+#endif
+
 
 int main() {
 
