@@ -62,7 +62,6 @@ Dfly *flies = new Dfly();
 int g_move = 1;    //wing motion flag
 int g_motion = 1;
 int g_pitch_flag = 1;
-int g_yaw_flag = 0;
 int g_motion_count = 0;
 int g_motion_mod = 5000;
 bool g_set_change = false;
@@ -83,7 +82,7 @@ int main() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dwight Browne Final Project CSCI5229", nullptr,
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Dwight Browne. Final Project CSCI5229", nullptr,
                                           nullptr);
     if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;

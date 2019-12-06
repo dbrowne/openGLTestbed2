@@ -53,8 +53,8 @@ Dragonfly::Dragonfly(Shader *shade) {
             tail_segments[i]->rotate(0, 90);
             tail_segments[i]->translate(glm::vec3(0, -1 - i * 2, -.85));
         } else {
-            tail_segments[i] = new Cylinder(0.425, .305, 48, 2, 0, 0, 0, c);
-            c[2]->b = float(i) * (float(i) / 8. + c[2]->b);
+            tail_segments[i] = new Cylinder(0.425, .35, 48, 2, 0, 0, 0, c);
+            c[2]->b = float(i) * (float(i) / (float) (tail_segment_count - 1) + c[2]->b);
             tail_segments[i]->gen_vertices();
             vertex_size += tail_segments[i]->get_vertex_size() * sizeof(float);
             tail_segments[i]->rotate(0, 90);
@@ -365,9 +365,8 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     glm::mat4 Model;
     glm::mat4 xxx;
 
-
+    ss->setInt("wing", 0);
     for (i = 0; i < WING_COUNT; i++) {
-
         if (flag == 1) {
             Model = glm::translate(identity, glm::vec3(-dp->position[0], -dp->position[1], -dp->position[2]));
             xxx = Model45p * Model;

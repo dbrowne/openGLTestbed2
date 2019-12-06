@@ -1,0 +1,111 @@
+
+********************************************************************
+********************************************************************
+*  CSCI 5229  - Schreuder Computer Graphics
+* Dwight Browne
+* Final project   DRAGONFLY SCREEN SAVER   
+* Key Bindings:
+* Arrows change view angle
+* ESC Exit
+* home_key or h:  set Azimuth and elevation to 0.
+* w move camera forward.
+* a move camera left.
+* s move camera back.
+* d move camera right.
+* SPACE stop Light animation.
+
+* y rotate sphere by y
+* z rotate sphere by z
+* p toggle perspective
+* l  Toggle lighting   Spotlight shader is currently broken
+* o  Toggle Polygon mode
+* t  Toggle Texture
+* g  Toggle view motion
+* n  step light down
+* m  step light up
+* y  Toggle wing motion
+
+TO RUN
+* run final
+
+Total time 154 hours from Nov 3 to Dec 5  due to several false starts and pernicious bugs.  
+
+ISSUES:
+Had to abandon Qt and adopt modern opengl workflow. 
+Had to learn C++
+Code would not be written this haphazardly if I had the time to design
+First object may not always display moving wings
+
+FEATURES:
+Modern OpenGL programmable pipeline 
+Normals on side of mouth are correct Reversed them to make them "illuminate" in the shadow 
+World is not constrained 
+Wings are transparent
+primatives are all configurable 
+Modern OpenGL programmable pipeline 
+relatively clean code not based on class examples:
+Used GLFW, glm and  glad header
+All objects are GL_TRIANGLES
+All ojbects are of the format XYZ|RGBA|T1T2|NxNyNz  
+No hardcoding of objects
+
+
+3RD PARTY CODE:
+Camera.h
+stb_image.h
+Sphere was based on code from http://www.songho.ca/opengl/gl_sphere.html
+glad.h, glad.cpp from https://glad.dav1d.de/
+
+Code time breakdown per Wakatime:
+55 hrs 58 mins	...testbed2/main.cpp 
+16 hrs 53 mins	...testbed2/primatives.cpp 
+13 hrs 14 mins	...testbed2/Cylinder.cpp 
+9 hrs 53 mins	...testbed2/Dragonfly.cpp 
+7 hrs 21 mins	...testbed2/Sphere.cpp 
+5 hrs 45 mins	...CLionProjects/testbed2/box.cpp 
+4 hrs 17 mins	...testbed2/primatives.h 
+4 hrs 6 mins	...testbed2/ellipse.cpp 
+3 hrs 22 mins	...testbed2/Parallelogram.cpp 
+3 hrs 6 mins	...testbed2/fragment.glsl 
+2 hrs 43 mins	...testbed2/Prim_base.cpp 
+2 hrs 36 mins	...testbed2/Parallelogram .cpp 
+2 hrs 22 mins	...testbed2/dflyGen.cpp 
+2 hrs 8 mins	...testbed2/Cylinder.h 
+1 hr 45 mins	...testbed2/ellipse.h 
+1 hr 23 mins	...testbed2/Readme.md 
+1 hr 8 mins	...testbed2/vertex.glsl 
+1 hr 8 mins	...CLionProjects/testbed2/box.h 
+1 hr 6 mins	...testbed2/Dragonfly.h 
+1 hr 5 mins	...testbed2/dflyGen.h 
+1 hr 4 mins	...testbed2/CMakeLists.txt 
+1 hr 3 mins	...testbed2/Parallelogram .h 
+58 mins	...testbed2/Sphere.h 
+55 mins	...testbed2/Parallelogram.h 
+54 mins	...testbed2/makefile 
+53 mins	...testbed2/tent_fragment.glsl 
+46 mins	...testbed2/vertex.shader 
+38 mins	...testbed2/extra_funcs.cpp 
+37 mins	...CLionProjects/testbed2/Color.h 
+34 mins	...testbed2/fragment.shader 
+29 mins	...testbed2/extra_funcs.h 
+22 mins	...testbed2/Camera.h 
+21 mins	...testbed2/Circle.h 
+16 mins	...testbed2/LightCube.h 
+15 mins	...testbed2/lamp_frag.glsl 
+15 mins	...testbed2/Color.cpp 
+14 mins	...testbed2/lamp_vec.glsl 
+13 mins	...testbed2/Prim_base.h 
+11 mins	...testbed2/LightCube.cpp 
+11 mins	...testbed2/tent_vertex.glsl 
+11 mins	...CLionProjects/testbed2/glad.h 
+10 mins	...testbed2/DragonFly.cpp 
+8 mins	...testbed2/DragonFly.h 
+7 mins	...testbed2/DflyPos.h 
+7 mins	...testbed2/shader.fs 
+7 mins	...testbed2/Shader.h 
+6 mins	...testbed2/tent_vector.glsl 
+5 mins	...testbed2/glad.cpp 
+4 mins	...testbed2/Circle.cpp 
+4 mins	...testbed2/filesystem.h 
+
+

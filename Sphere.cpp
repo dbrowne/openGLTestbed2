@@ -10,7 +10,7 @@
 //  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
 // CREATED: 2017-11-01
 // UPDATED: 2018-12-13
-// MODIFIED By Dwight Browne to present vertor array
+// MODIFIED By Dwight Browne to present vector array
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
