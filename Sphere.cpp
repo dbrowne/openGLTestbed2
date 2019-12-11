@@ -7,7 +7,7 @@
 // Sphere for OpenGL with (radius, sectors, stacks)
 // The min number of sectors is 3 and the min number of stacks are 2.
 //
-//  AUTHOR: Song Ho Ahn (song.ahn@gmail.com)
+//  Based on CODE created by Song Ho Ahn (song.ahn@gmail.com)
 // CREATED: 2017-11-01
 // UPDATED: 2018-12-13
 // MODIFIED By Dwight Browne to present vector array

@@ -12,5 +12,5 @@ set(CMAKE_INCLUDE_PATH "/usr/local/lib")
 link_directories("/usr/local/lib")
 
 
-add_executable(testbed2 main.cpp primatives.cpp primatives.h glad.cpp glad.h khrplatform.h Shader.h stb_image.h filesystem.h Color.cpp Color.h extra_funcs.cpp extra_funcs.h Camera.h Cylinder.cpp Cylinder.h ellipse.cpp ellipse.h "Parallelogram.cpp" "Parallelogram.h" Prim_base.cpp Prim_base.h Sphere.cpp Sphere.h box.cpp box.h Dragonfly.cpp Dragonfly.h dflyGen.cpp dflyGen.h DflyPos.h)
+add_executable(testbed2 main.cpp primatives.cpp primatives.h glad.cpp glad.h khrplatform.h Shader.h stb_image.h Color.cpp Color.h extra_funcs.cpp extra_funcs.h Camera.h Cylinder.cpp Cylinder.h ellipse.cpp ellipse.h "Parallelogram.cpp" "Parallelogram.h" Prim_base.cpp Prim_base.h Sphere.cpp Sphere.h box.cpp box.h Dragonfly.cpp Dragonfly.h dflyGen.cpp dflyGen.h DflyPos.h)
 target_link_libraries(testbed2 ${OPENGL_LIBRARIES} GLEW::GLEW glfw -v)

@@ -24,13 +24,12 @@ CLEAN=rm -f $(EXE) *.o *.a
 endif
 
 # Dependencies
-main.o: main.cpp extra_funcs.h Camera.h Cylinder.h ellipse.h Parallelogram.h LightCube.h Camera.h khrplatform.h Shader.h dflyGen.h
+main.o: main.cpp extra_funcs.h Camera.h Cylinder.h ellipse.h Parallelogram.h Camera.h khrplatform.h Shader.h dflyGen.h
 extra_funcs.o: extra_funcs.cpp extra_funcs.h
 Color.o: Color.cpp Color.h
 Cylinder.o: Cylinder.cpp Cylinder.h Prim_base.h extra_funcs.h
 ellipse.o: ellipse.cpp ellipse.h
 glad.o: glad.cpp glad.h
-LightCube.o: LightCube.cpp LightCube.h
 Parallelogram.o: Parallelogram.cpp Parallelogram.h
 Prim_base.o: Prim_base.cpp Prim_base.h
 primatives.o: primatives.cpp primatives.h Color.h Prim_base.h extra_funcs.h
@@ -40,7 +39,7 @@ Dragonfly.o: Dragonfly.cpp Dragonfly.h
 dflyGen.o: dflyGen.cpp dflyGen.h
 
 #  Create archive
-CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o LightCube.o Parallelogram.o primatives.o Prim_base.o Sphere.o box.o Dragonfly.o dflyGen.o
+CSCIx229.a:Color.o Cylinder.o ellipse.o extra_funcs.o glad.o Parallelogram.o primatives.o Prim_base.o Sphere.o box.o Dragonfly.o dflyGen.o
 	ar -rcs $@ $^
 
 # Compile rules
