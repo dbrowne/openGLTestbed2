@@ -128,7 +128,6 @@ int main() {
     // ------------------------------------
     Shader shader1("vertex.glsl", "fragment.glsl");
     glCheckError();
-
     Shader shader0("vertex0.glsl", "Cloudfragment.glsl");
     glCheckError();
 
@@ -197,6 +196,14 @@ int main() {
     }
 
     stbi_image_free(data);
+
+    shader0.use();
+    glUniform1i(glGetUniformLocation(shader0.ID, "texture1"), 0);
+    glCheckError();
+    shader0.setInt("texture2", 1);
+    glCheckError();
+    shader0.setInt("lightFlag", g_light);
+
 
     shader1.use();
 
@@ -310,6 +317,8 @@ int main() {
 
         // Axes
         ax.draw();
+
+
         tent->draw();
 
         glfwSwapBuffers(window);
