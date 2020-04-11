@@ -55,7 +55,7 @@ float g_pitch = 1.0;
 int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 1;
-int g_light = 0;
+int g_light = 1;
 
 // lighting
 float g_l_dist = 7;
@@ -69,7 +69,7 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 Dragonfly **dfly;
 Dfly *flies = new Dfly();
 int g_move = 1;    //wing motion flag
-int g_motion = 1;
+int g_motion = -1;
 int g_pitch_flag = 1;
 int g_motion_count = 0;
 int g_motion_mod = 5000;
@@ -126,7 +126,7 @@ int main() {
 
     // Load Shaders
     // ------------------------------------
-    Shader ourShader("vertex.glsl", "fragment.glsl");
+    Shader shader1("vertex.glsl", "fragment.glsl");
     glCheckError();
 
 
@@ -143,7 +143,7 @@ int main() {
     ax.gen_vertices();
 
     Sphere *tent = new Sphere(68.8, 72, 72, false, c);
-    dfly = flies->genFlies(&ourShader);
+    dfly = flies->genFlies(&shader1);
 
 
 
@@ -196,13 +196,13 @@ int main() {
 
     stbi_image_free(data);
 
-    ourShader.use();
+    shader1.use();
 
-    glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shader1.ID, "texture1"), 0);
     glCheckError();
-    ourShader.setInt("texture2", 1);
+    shader1.setInt("texture2", 1);
     glCheckError();
-    ourShader.setInt("lightFlag", g_light);
+    shader1.setInt("lightFlag", g_light);
 
 
 
@@ -225,13 +225,13 @@ int main() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
         glCheckError();
-        ourShader.use();
-        ourShader.setInt("texflag", g_tex_flag);
-        ourShader.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
-        ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        ourShader.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
-        ourShader.setInt("material.diffuse", 0);
-        ourShader.setInt("material.specular", 1);
+        shader1.use();
+        shader1.setInt("texflag", g_tex_flag);
+        shader1.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
+        shader1.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        shader1.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
+        shader1.setInt("material.diffuse", 0);
+        shader1.setInt("material.specular", 1);
 
         if (g_light_flag == 1) {
             g_l_zh = fmod(glfwGetTime(), 360.0);
@@ -244,33 +244,33 @@ int main() {
         lightPos2[1] = g_l_dist * cos(g_l_zh);
         lightPos2[2] = g_l_y;
 
-        ourShader.setVec3("lightPos", lightPos);
-        ourShader.setInt("lightFlag", g_light);
+        shader1.setVec3("lightPos", lightPos);
+        shader1.setInt("lightFlag", g_light);
 
-        ourShader.setVec3("lightPos2", lightPos2);
-        ourShader.setVec3("spotLight.position", lightPos2);
-        ourShader.setVec3("viewPos", g_camera.Position);
+        shader1.setVec3("lightPos2", lightPos2);
+        shader1.setVec3("spotLight.position", lightPos2);
+        shader1.setVec3("viewPos", g_camera.Position);
 
-        ourShader.setVec3("spotLight.direction", lightPos2);
-        ourShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(.5f)));
-        ourShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(.05f)));
+        shader1.setVec3("spotLight.direction", lightPos2);
+        shader1.setFloat("spotLight.cutOff", glm::cos(glm::radians(.5f)));
+        shader1.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(.05f)));
 
-        ourShader.setFloat("spotLight.constant", .050f);
-        ourShader.setFloat("spotLight.linear", 0.01);
-        ourShader.setFloat("spotLight.quadratic", 0.0032);
+        shader1.setFloat("spotLight.constant", .050f);
+        shader1.setFloat("spotLight.linear", 0.01);
+        shader1.setFloat("spotLight.quadratic", 0.0032);
 
-        ourShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-        ourShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-        ourShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+        shader1.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+        shader1.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+        shader1.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
 
-        ourShader.setFloat("material.shininess", 32.0f);
+        shader1.setFloat("material.shininess", 32.0f);
 
         //-------------------------------------------- perspective
         // create transformations
         glm::mat4 model = glm::mat4(1.0f);
 
         glm::mat4 projection = glm::mat4(1.0f);
-        ourShader.setInt("perspective", g_perspective);
+        shader1.setInt("perspective", g_perspective);
         GLint dims[4] = {0};
         glGetIntegerv(GL_VIEWPORT, dims);
 
@@ -279,31 +279,31 @@ int main() {
         if (g_perspective) {
             glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
                                                     0.1f, 100.0f);
-            ourShader.setMat4("projection", projection);
+            shader1.setMat4("projection", projection);
             // camera/view transformation
             glm::mat4 view = g_camera.GetViewMatrix();
-            ourShader.setMat4("view", view);
+            shader1.setMat4("view", view);
             // calculate the model matrix for each object and pass it to shader before drawing
             model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
             model = glm::rotate(model, glm::radians(g_angle), glm::vec3(1.0f, 1.0f, 0.5f));
             model = glm::rotate(model, glm::radians(g_yaw), glm::vec3(0, 1, 0));
             model = glm::rotate(model, glm::radians(g_pitch), glm::vec3(1, 0, 0));
-            ourShader.setMat4("model", model);
+            shader1.setMat4("model", model);
 
         } else {
             projection = glm::ortho(-(float) dims[2], (float) dims[2], -(float) dims[3], (float) dims[3],
                                     0.1f, 100.0f);   //this is a cheat for now
-            ourShader.setMat4("projection", projection);
+            shader1.setMat4("projection", projection);
         }
 
 
-        for (int xx = 0; xx < flies->getFlyCount(); xx++) {
-            dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
-        }
+//        for (int xx = 0; xx < flies->getFlyCount(); xx++) {
+//            dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
+//        }
 
-//            dfly[0]->draw(model, g_yaw, g_pitch, g_move,g_angle);
-//            dfly[3]->draw(model, g_yaw, g_pitch, g_move,g_angle);
+        dfly[0]->draw(model, g_yaw, g_pitch, g_move, g_angle);
+        dfly[3]->draw(model, g_yaw, g_pitch, g_move, g_angle);
 
 
         // Axes
@@ -318,11 +318,11 @@ int main() {
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     tent->deletebuffers();
-    for (int xx = 0; xx < flies->getFlyCount(); xx++) {
-        dfly[xx]->deletebuffers();
-    }
-//    dfly[0]->deletebuffers();
-//    dfly[3]->deletebuffers();
+//    for (int xx = 0; xx < flies->getFlyCount(); xx++) {
+//        dfly[xx]->deletebuffers();
+//    }
+    dfly[0]->deletebuffers();
+    dfly[3]->deletebuffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
