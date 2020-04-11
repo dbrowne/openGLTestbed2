@@ -129,6 +129,8 @@ int main() {
     Shader shader1("vertex.glsl", "fragment.glsl");
     glCheckError();
 
+    Shader shader0("vertex0.glsl", "Cloudfragment.glsl");
+    glCheckError();
 
 
 
