@@ -284,13 +284,13 @@ int main() {
         glGetIntegerv(GL_VIEWPORT, dims);
 
         glCheckError();
-
+        glm::mat4 view = glm::mat4(1.0f);
         if (g_perspective) {
             glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
                                                     0.1f, 100.0f);
             shader1.setMat4("projection", projection);
             // camera/view transformation
-            glm::mat4 view = g_camera.GetViewMatrix();
+            view = g_camera.GetViewMatrix();
             shader1.setMat4("view", view);
             // calculate the model matrix for each object and pass it to shader before drawing
             model = glm::mat4(1.0f);
@@ -319,7 +319,39 @@ int main() {
         ax.draw();
 
 
-        tent->draw();
+//        shader0.use();
+//        shader0.setInt("texflag", g_tex_flag);
+//        shader0.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
+//        shader0.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+//        shader0.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
+//        shader0.setInt("material.diffuse", 0);
+//        shader0.setInt("material.specular", 1);
+//        shader0.setVec3("lightPos", lightPos);
+//        shader0.setInt("lightFlag", g_light);
+//
+//        shader0.setVec3("lightPos2", lightPos2);
+//        shader0.setVec3("spotLight.position", lightPos2);
+//        shader0.setVec3("viewPos", g_camera.Position);
+//
+//        shader0.setVec3("spotLight.direction", lightPos2);
+//        shader0.setFloat("spotLight.cutOff", glm::cos(glm::radians(.5f)));
+//        shader0.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(.05f)));
+//
+//        shader0.setFloat("spotLight.constant", .050f);
+//        shader0.setFloat("spotLight.linear", 0.01);
+//        shader0.setFloat("spotLight.quadratic", 0.0032);
+//
+//        shader0.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+//        shader0.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+//        shader0.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+//
+//        shader0.setFloat("material.shininess", 32.0f);
+//        shader0.setInt("perspective", g_perspective);
+//        shader0.setMat4("projection", projection);
+//        shader0.setMat4("view", view);
+//        shader0.setMat4("model", model);
+
+        tent->draw(0, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -49,6 +49,10 @@ uniform vec3 viewPos;
 uniform Light light;
 
 
+
+
+
+
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
