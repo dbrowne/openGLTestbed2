@@ -186,7 +186,7 @@ void main()
 
     } else if (dotFlag ==1){
         // Cellular noise
-        vec2 st = FragPos.xy/u_resolution.xy*1000.;
+        vec2 st = FragPos.xy/u_resolution.xy*800.;
         st.x *= u_resolution.x/u_resolution.y;
         vec3 color = vec3(.3, .8, .3);
 
@@ -227,10 +227,8 @@ void main()
         // Draw cell center
         color += .03-step(.02, m_dist);
 
-
         // Show isolines
-        // color -= step(.7,abs(sin(27.0*m_dist)))*.5;
-
+        color -= step(.7, abs(sin(27.0*m_dist)))*.5;
 
         // ambient
         float ambientStrength = 0.01;
