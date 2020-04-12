@@ -128,8 +128,7 @@ int main() {
     // ------------------------------------
     Shader shader1("vertex.glsl", "fragment.glsl");
     glCheckError();
-    Shader shader0("vertex0.glsl", "Cloudfragment.glsl");
-    glCheckError();
+
 
 
 
@@ -197,14 +196,6 @@ int main() {
 
     stbi_image_free(data);
 
-    shader0.use();
-    glUniform1i(glGetUniformLocation(shader0.ID, "texture1"), 0);
-    glCheckError();
-    shader0.setInt("texture2", 1);
-    glCheckError();
-    shader0.setInt("lightFlag", g_light);
-
-
     shader1.use();
 
     glUniform1i(glGetUniformLocation(shader1.ID, "texture1"), 0);
@@ -212,7 +203,6 @@ int main() {
     shader1.setInt("texture2", 1);
     glCheckError();
     shader1.setInt("lightFlag", g_light);
-
 
 
     // render loop
@@ -235,6 +225,7 @@ int main() {
         glBindTexture(GL_TEXTURE_2D, texture2);
         glCheckError();
         shader1.use();
+        shader1.setInt("smokeFlag", 0);
         shader1.setInt("texflag", g_tex_flag);
         shader1.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
         shader1.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
@@ -242,9 +233,11 @@ int main() {
         shader1.setInt("material.diffuse", 0);
         shader1.setInt("material.specular", 1);
 
+
         if (g_light_flag == 1) {
             g_l_zh = fmod(glfwGetTime(), 360.0);
         }
+
         lightPos[0] = g_l_dist * cos(g_l_zh);
         lightPos[2] = g_l_dist * sin(g_l_zh);
         lightPos[1] = g_l_y;
@@ -282,8 +275,8 @@ int main() {
         shader1.setInt("perspective", g_perspective);
         GLint dims[4] = {0};
         glGetIntegerv(GL_VIEWPORT, dims);
-
         glCheckError();
+
         glm::mat4 view = glm::mat4(1.0f);
         if (g_perspective) {
             glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float) dims[2] / (float) dims[3],
@@ -317,41 +310,11 @@ int main() {
 
         // Axes
         ax.draw();
+        shader1.setInt("smokeFlag", 1);
+        shader1.setVec2("u_resolution", dims[2], dims[3]);
+        shader1.setFloat("u_time", glfwGetTime());
+        tent->draw();
 
-
-//        shader0.use();
-//        shader0.setInt("texflag", g_tex_flag);
-//        shader0.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
-//        shader0.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-//        shader0.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
-//        shader0.setInt("material.diffuse", 0);
-//        shader0.setInt("material.specular", 1);
-//        shader0.setVec3("lightPos", lightPos);
-//        shader0.setInt("lightFlag", g_light);
-//
-//        shader0.setVec3("lightPos2", lightPos2);
-//        shader0.setVec3("spotLight.position", lightPos2);
-//        shader0.setVec3("viewPos", g_camera.Position);
-//
-//        shader0.setVec3("spotLight.direction", lightPos2);
-//        shader0.setFloat("spotLight.cutOff", glm::cos(glm::radians(.5f)));
-//        shader0.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(.05f)));
-//
-//        shader0.setFloat("spotLight.constant", .050f);
-//        shader0.setFloat("spotLight.linear", 0.01);
-//        shader0.setFloat("spotLight.quadratic", 0.0032);
-//
-//        shader0.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-//        shader0.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-//        shader0.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-//
-//        shader0.setFloat("material.shininess", 32.0f);
-//        shader0.setInt("perspective", g_perspective);
-//        shader0.setMat4("projection", projection);
-//        shader0.setMat4("view", view);
-//        shader0.setMat4("model", model);
-
-        tent->draw(0, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -33,6 +33,12 @@ struct SpotLight {
     vec3 specular;
 };
 
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform int smokeFlag;
+
+
+
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform int texflag;
@@ -91,86 +97,6 @@ float fbm (in vec2 _st) {
     return v;
 }
 
-
-
-
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
-
-void main()
-{
-
-    if (lightFlag == 0){
-        vec3 viewDir = normalize(viewPos - FragPos);
-
-        // ambient
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-
-        // diffuse
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-        //        vec3 result = (ambient + diffuse) * objectColor;
-
-
-        //        FragColor = vec4(result, 1.0);
-
-        if (texflag == 0){
-            if (useTex == 1){
-                FragColor = texture(texture2, TexCoord) * vec4(result, 1.0);
-            } else {
-                FragColor = texture(texture1, TexCoord) * vec4(result, 1.0);
-            }
-        }
-        if (texflag == 1){
-            FragColor = vec4(result, 1.0);;
-        }
-        if (texflag == 2){
-            if (useTex ==1){
-                FragColor = texture(texture2, TexCoord);
-            } else {
-                FragColor = texture(texture1, TexCoord);
-            }
-
-        }
-
-
-    } else if (lightFlag ==1){
-
-        if (texflag == 0){
-            if (useTex ==1){
-                FragColor = texture(texture2, TexCoord) * vec4(ourColor);
-            } else {
-                FragColor = texture(texture1, TexCoord) * vec4(ourColor);
-            }
-        }
-        if (texflag == 1){
-            FragColor = vec4(ourColor);
-        }
-        if (texflag == 2){
-            if (useTex ==1){
-                FragColor = texture(texture2, TexCoord);
-            } else {
-                FragColor = texture(texture1, TexCoord);
-            }
-        }
-
-    }
-    else
-    {
-        vec3 viewDir = normalize(viewPos - FragPos);
-
-        vec3 norm = normalize(Normal);
-
-        vec3 result =CalcSpotLight(spotLight, norm, FragPos, viewDir);
-
-        FragColor = vec4(result, 1.0);
-
-    }
-}
-
 // calculates the color when using a spot light.
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
@@ -197,3 +123,115 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     //    return (ambient + diffuse + specular);
     return lightDir;
 }
+
+
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+void main()
+{
+
+    if (smokeFlag ==1){
+        vec2 st =TexCoord.xy/u_resolution.xy*3.;
+        // st += st * abs(sin(u_time*0.1)*3.0);
+        vec3 color = vec3(0.0);
+        vec2 q = vec2(0.);
+        q.x = fbm(st + 0.00*u_time);
+        q.y = fbm(st + vec2(1.0));
+
+        vec2 r = vec2(0.);
+        r.x = fbm(st + 1.0*q + vec2(1.7, 9.2)+ 0.15*u_time);
+        r.y = fbm(st + 1.0*q + vec2(8.3, 2.8)+ 0.126*u_time);
+
+        float f = fbm(st+r);
+
+        color = mix(vec3(0.101961, 0.619608, 0.666667),
+        vec3(0.666667, 0.666667, 0.498039),
+        clamp((f*f)*4.0, 0.0, 1.0));
+
+        color = mix(color,
+        vec3(0, 0, 0.164706),
+        clamp(length(q), 0.0, 1.0));
+
+        color = mix(color,
+        vec3(0.666667, 1, 1),
+        clamp(length(r.x), 0.0, 1.0));
+        FragColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
+
+        //        FragColor = vec4(ourColor.rgb,1.0);
+    } else {
+
+
+        if (lightFlag == 0){
+            vec3 viewDir = normalize(viewPos - FragPos);
+
+            // ambient
+            float ambientStrength = 0.01;
+            vec3 ambient = ambientStrength * lightColor;
+
+            // diffuse
+            vec3 norm = normalize(Normal);
+            vec3 lightDir = normalize(lightPos);
+            float diff = max(dot(norm, lightDir), 0.0);
+            vec3 diffuse = diff * lightColor;
+            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+            //        vec3 result = (ambient + diffuse) * objectColor;
+
+
+            //        FragColor = vec4(result, 1.0);
+
+            if (texflag == 0){
+                if (useTex == 1){
+                    FragColor = texture(texture2, TexCoord) * vec4(result, 1.0);
+                } else {
+                    FragColor = texture(texture1, TexCoord) * vec4(result, 1.0);
+                }
+            }
+            if (texflag == 1){
+                FragColor = vec4(result, 1.0);;
+            }
+            if (texflag == 2){
+                if (useTex ==1){
+                    FragColor = texture(texture2, TexCoord);
+                } else {
+                    FragColor = texture(texture1, TexCoord);
+                }
+
+            }
+
+
+        } else if (lightFlag ==1){
+
+            if (texflag == 0){
+                if (useTex ==1){
+                    FragColor = texture(texture2, TexCoord) * vec4(ourColor);
+                } else {
+                    FragColor = texture(texture1, TexCoord) * vec4(ourColor);
+                }
+            }
+            if (texflag == 1){
+                FragColor = vec4(ourColor);
+            }
+            if (texflag == 2){
+                if (useTex ==1){
+                    FragColor = texture(texture2, TexCoord);
+                } else {
+                    FragColor = texture(texture1, TexCoord);
+                }
+            }
+
+        }
+        else
+        {
+
+            vec3 viewDir = normalize(viewPos - FragPos);
+
+            vec3 norm = normalize(Normal);
+
+            vec3 result =CalcSpotLight(spotLight, norm, FragPos, viewDir);
+
+            FragColor = vec4(result, 1.0);
+
+        }
+    }
+}
+
