@@ -326,7 +326,9 @@ Dragonfly::~Dragonfly() = default;
 void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float angle) {
     int i;
     int flag;
+    ss->setInt("headFlag", 1);
     head->draw();
+    ss->setInt("headFlag", 0);
     for (i = 0; i < tail_segment_count; i++) {
       tail_segments[i]->draw();
     }

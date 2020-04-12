@@ -38,6 +38,7 @@ uniform float u_time;
 uniform int smokeFlag;
 uniform int showSphere;
 uniform int dotFlag;
+uniform int headFlag;
 
 
 uniform sampler2D texture1;
@@ -64,6 +65,54 @@ float random (in vec2 _st) {
 
 vec2 random2(vec2 p) {
     return fract(sin(vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3))))*43758.5453);
+}
+
+vec2 random3(vec2 p) {
+    return fract(sin(vec2(dot(p, vec2(227.1, 611.7)), dot(p, vec2(869.5, 183.3))))*93758.5453);
+}
+
+
+// from the book of shaders
+vec3 voronoi(in vec2 x) {
+    vec2 n = floor(x);
+    vec2 f = fract(x);
+
+    // first pass: regular voronoi
+    vec2 mg, mr;
+    float md = 8.0;
+    for (int j= -1; j <= 1; j++) {
+        for (int i= -1; i <= 1; i++) {
+            vec2 g = vec2(float(i), float(j));
+            vec2 o = random3(n + g);
+            o = 0.5 + 0.5*sin(u_time + 6.2831*o);
+
+            vec2 r = g + o - f;
+            float d = dot(r, r);
+
+            if (d<md) {
+                md = d;
+                mr = r;
+                mg = g;
+            }
+        }
+    }
+
+    // second pass: distance to borders
+    md = 8.0;
+    for (int j= -2; j <= 2; j++) {
+        for (int i= -2; i <= 2; i++) {
+            vec2 g = mg + vec2(float(i), float(j));
+            vec2 o = random3(n + g);
+            o = 0.5 + 0.5*sin(u_time + 6.2831*o);
+
+            vec2 r = g + o - f;
+
+            if (dot(mr-r, mr-r)>0.00001) {
+                md = min(md, dot(0.5*(mr+r), normalize(r-mr)));
+            }
+        }
+    }
+    return vec3(md, mr);
 }
 
 
@@ -244,6 +293,37 @@ void main()
 
 
         FragColor = vec4(result.rgb, 1.0);
+    } else if (headFlag ==1){
+        vec2 st = FragPos.xy/u_resolution.xy*160.;
+        st.x *= u_resolution.x/u_resolution.y;
+        vec3 color = vec3(.5, 1.0, .8);
+
+        // Scale
+        st *= 3.;
+        vec3 c = voronoi(st);
+
+        // isolines
+        color = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
+        // borders
+        color = mix(vec3(1.0), color, smoothstep(0.01, 0.02, c.x));
+        // feature points
+        float dd = length(c.yz);
+        color += vec3(1.)*(1.0-smoothstep(0.0, 0.04, dd));
+
+        float ambientStrength = 0.01;
+        vec3 ambient = ambientStrength * lightColor;
+
+        // diffuse
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(lightPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = diff * lightColor;
+        vec3  result = (ambient + diffuse)*vec3(color[0]*ourColor[0], color[1]*ourColor[1], color[2]*ourColor[2]);
+
+
+
+
+        FragColor = vec4(result, 1.0);
     }
 
     else {
