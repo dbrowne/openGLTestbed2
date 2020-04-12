@@ -36,7 +36,7 @@ struct SpotLight {
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform int smokeFlag;
-
+uniform int showSphere;
 
 
 uniform sampler2D texture1;
@@ -155,9 +155,29 @@ void main()
         color = mix(color,
         vec3(0.666667, 1, 1),
         clamp(length(r.x), 0.0, 1.0));
-        FragColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
 
-        //        FragColor = vec4(ourColor.rgb,1.0);
+        if (showSphere ==1){
+
+            vec3 viewDir = normalize(viewPos - FragPos);
+
+            // ambient
+            float ambientStrength = 0.01;
+            vec3 ambient = ambientStrength * lightColor;
+
+            // diffuse
+            vec3 norm = normalize(Normal);
+            vec3 lightDir = normalize(lightPos);
+            float diff = max(dot(norm, lightDir), 0.0);
+            vec3 diffuse = diff * lightColor;
+            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+
+
+
+            FragColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
+        } else {
+            FragColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
+        }
+
     } else {
 
 

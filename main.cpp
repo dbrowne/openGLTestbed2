@@ -39,6 +39,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 int g_motion = 1;
 int g_light = 0;
+int g_show_sphere = -1;
 
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
@@ -312,6 +313,7 @@ int main() {
 
         // Axes
         ax.draw();
+        shader1.setInt("showSphere", g_show_sphere);
         shader1.setInt("smokeFlag", 1);
         shader1.setFloat("bMult", g_bMult);
         shader1.setVec2("u_resolution", dims[2], dims[3]);
@@ -461,6 +463,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_tex_flag %= 3;
     }
 
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+        g_show_sphere *= -1;
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         g_camera.ProcessKeyboard(FORWARD, deltaTime * 20);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
