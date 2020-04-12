@@ -175,8 +175,8 @@ void main()
             vec3 lightDir = normalize(lightPos);
             float diff = max(dot(norm, lightDir), 0.0);
             vec3 diffuse = diff * lightColor;
-            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-
+            //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+            vec3 result = ambient+diffuse;
 
 
             FragColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
@@ -185,7 +185,7 @@ void main()
         }
 
     } else if (dotFlag ==1){
-
+        // Cellular noise
         vec2 st = FragPos.xy/u_resolution.xy*1000.;
         st.x *= u_resolution.x/u_resolution.y;
         vec3 color = vec3(.3, .8, .3);
