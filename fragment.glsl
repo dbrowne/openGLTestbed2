@@ -131,8 +131,8 @@ void main()
 {
 
     if (smokeFlag ==1){
-        vec2 st =TexCoord.xy/u_resolution.xy*3.;
-        // st += st * abs(sin(u_time*0.1)*3.0);
+        vec2 st =FragPos.xy/u_resolution.xy*3.;
+        st += st * abs(sin(u_time*0.1)*3.0);
         vec3 color = vec3(0.0);
         vec2 q = vec2(0.);
         q.x = fbm(st + 0.00*u_time);
