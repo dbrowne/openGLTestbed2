@@ -328,7 +328,7 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     int flag;
     head->draw();
     for (i = 0; i < tail_segment_count; i++) {
-        tail_segments[i]->draw();
+      tail_segments[i]->draw();
     }
     ss->setInt("useTex", 1);
     ey1->draw(1);
@@ -337,9 +337,11 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     for (i = 0; i < MOUTH_PIECES; i++) {
         mouth[i]->draw();
     }
+    ss->setInt("dotFlag", 1);
     for (i = 0; i < TORSO_COUNT; i++) {
         torso[i]->draw();
     }
+    ss->setInt("dotFlag", 0);
     for (i = 0; i < TOOTH_COUNT; i++) {
         teeth[i]->draw();
     }

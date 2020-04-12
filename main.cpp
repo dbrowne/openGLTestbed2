@@ -302,7 +302,8 @@ int main() {
             shader1.setMat4("projection", projection);
         }
 
-
+        shader1.setFloat("u_time", glfwGetTime());
+        shader1.setVec2("u_resolution", dims[2], dims[3]);
         for (int xx = 0; xx < flies->getFlyCount(); xx++) {
             dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
         }
