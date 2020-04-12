@@ -37,6 +37,8 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
 
+int g_motion = 1;
+int g_light = 0;
 
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
@@ -49,13 +51,13 @@ float lastFrame = 0.0f;
 float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
-float g_bMult = 1.0;
+float g_bMult = 8.0;
 
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
 int g_perspective = 1;
-int g_light = 1;
+
 
 // lighting
 float g_l_dist = 7;
@@ -69,7 +71,7 @@ glm::vec3 lightPos2(g_l_dist * sin(g_l_zh), g_l_dist * cos(g_l_zh), g_l_y);
 Dragonfly **dfly;
 Dfly *flies = new Dfly();
 int g_move = 1;    //wing motion flag
-int g_motion = -1;
+
 int g_pitch_flag = 1;
 int g_motion_count = 0;
 int g_motion_mod = 5000;
