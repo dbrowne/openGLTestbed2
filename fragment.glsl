@@ -53,7 +53,7 @@ uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform vec3 viewPos;
 uniform Light light;
-
+uniform float bMult;
 
 float random (in vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -80,7 +80,7 @@ float noise (in vec2 _st) {
     (d - b) * u.x * u.y;
 }
 
-    #define NUM_OCTAVES 5
+    #define NUM_OCTAVES 15
 
 float fbm (in vec2 _st) {
     float v = 0.0;
@@ -131,7 +131,7 @@ void main()
 {
 
     if (smokeFlag ==1){
-        vec2 st =FragPos.xy/u_resolution.xy*3.;
+        vec2 st =FragPos.xy/u_resolution.xy*bMult;
         st += st * abs(sin(u_time*0.1)*3.0);
         vec3 color = vec3(0.0);
         vec2 q = vec2(0.);
@@ -145,7 +145,7 @@ void main()
         float f = fbm(st+r);
 
         color = mix(vec3(0.501961, 0.19608, 0.99),
-        vec3(0.666667, 0.666667, 0.498039),
+        vec3(0.666667, 0.666667, 0.0498039),
         clamp((f*f)*4.0, 0.0, 1.0));
 
         color = mix(color,

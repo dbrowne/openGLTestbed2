@@ -49,7 +49,7 @@ float lastFrame = 0.0f;
 float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
-
+float g_bMult = 1.0;
 
 
 int g_tex_flag = 0;
@@ -300,17 +300,18 @@ int main() {
         }
 
 
-//        for (int xx = 0; xx < flies->getFlyCount(); xx++) {
-//            dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
-//        }
+        for (int xx = 0; xx < flies->getFlyCount(); xx++) {
+            dfly[xx]->draw(model, g_yaw, g_pitch, g_move, g_angle);
+        }
 
-        dfly[0]->draw(model, g_yaw, g_pitch, g_move, g_angle);
-        dfly[3]->draw(model, g_yaw, g_pitch, g_move, g_angle);
+//        dfly[0]->draw(model, g_yaw, g_pitch, g_move, g_angle);
+//        dfly[3]->draw(model, g_yaw, g_pitch, g_move, g_angle);
 
 
         // Axes
         ax.draw();
         shader1.setInt("smokeFlag", 1);
+        shader1.setFloat("bMult", g_bMult);
         shader1.setVec2("u_resolution", dims[2], dims[3]);
         shader1.setFloat("u_time", glfwGetTime());
         tent->draw();
@@ -324,11 +325,11 @@ int main() {
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     tent->deletebuffers();
-//    for (int xx = 0; xx < flies->getFlyCount(); xx++) {
-//        dfly[xx]->deletebuffers();
-//    }
-    dfly[0]->deletebuffers();
-    dfly[3]->deletebuffers();
+    for (int xx = 0; xx < flies->getFlyCount(); xx++) {
+        dfly[xx]->deletebuffers();
+    }
+//    dfly[0]->deletebuffers();
+//    dfly[3]->deletebuffers();
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
@@ -414,6 +415,19 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             g_move = 1;
         }
     }
+
+
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+        g_bMult += 1.0;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+        g_bMult -= 1.0;
+        if (g_bMult < 1.0) {
+            g_bMult = 3.0;
+        }
+    }
+
 
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
         g_l_zh -= .1;
