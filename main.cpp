@@ -39,7 +39,7 @@ const unsigned int SCR_HEIGHT = 1000;
 
 int g_motion = 1;
 int g_light = 0;
-int g_show_sphere = -1;
+int g_show_sphere = 1;
 
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
@@ -52,7 +52,7 @@ float lastFrame = 0.0f;
 float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
-float g_bMult = 8.0;
+float g_bMult = 16.0;
 
 
 int g_tex_flag = 0;
@@ -145,7 +145,7 @@ int main() {
     ax.set_symmetric(1);
     ax.gen_vertices();
 
-    Sphere *tent = new Sphere(68.8, 72, 72, false, c);
+    Sphere *tent = new Sphere(68.8, 96, 96, false, c);
     dfly = flies->genFlies(&shader1);
 
 
