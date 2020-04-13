@@ -329,9 +329,13 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     ss->setInt("headFlag", 1);
     head->draw();
     ss->setInt("headFlag", 0);
+    ss->setInt("tailFlag", 1);
     for (i = 0; i < tail_segment_count; i++) {
-      tail_segments[i]->draw();
+        ss->setFloat("tailMult", (i * i * i + 1) * 1.0);
+        tail_segments[i]->draw();
     }
+    ss->setInt("tailFlag", 0);
+
     ss->setInt("useTex", 1);
     ey1->draw(1);
     ey2->draw(1);
