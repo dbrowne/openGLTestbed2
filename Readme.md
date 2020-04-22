@@ -1,7 +1,6 @@
 
 OpenGL Testbed
 -----------------
-Initially based on the code in [Learn OpenGL]
 needs the following installed on Unbuntu glfw, doxygen
 libglm-dev, xorg-dev, libxcb-xinput-dev, libxcursor-dev, libxinerama-dev, libxrandr-dev, 
 Some references:   
