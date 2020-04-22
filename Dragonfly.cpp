@@ -106,6 +106,7 @@ Dragonfly::Dragonfly(Shader *shade) {
 
     float y_off = 4.95;
     mouth[0] = new Box(90, 2, .25, .0625, 0, 0, 0, c);
+    mouth[0] = new Box(90, 2, .25, .0625, 0, 0, 0, c);
     mouth[0]->gen_vertices();
     vertex_size += mouth[0]->get_vertex_size() * sizeof(float);
     mouth[0]->translate(glm::vec3(-1, y_off, -1.25));
@@ -340,9 +341,18 @@ void Dragonfly::draw(glm::mat4 matty, float yaw, float pitch, int move, float an
     ey1->draw(1);
     ey2->draw(1);
     ss->setInt("useTex", 0);
+
     for (i = 0; i < MOUTH_PIECES; i++) {
+        if (i == 2 || i == 3 || i == 4) {
+            ss->setInt("boxFlag", 1);
+        } else {
+            ss->setInt("boxFlag", 0);
+        }
         mouth[i]->draw();
     }
+
+    ss->setInt("boxFlag", 0);
+
     ss->setInt("dotFlag", 1);
     for (i = 0; i < TORSO_COUNT; i++) {
         torso[i]->draw();
