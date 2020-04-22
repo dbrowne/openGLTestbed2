@@ -17,9 +17,9 @@
 
 const double PI = 3.1415967;
 
-class verts {
+class Axes {
 private:
-    float verts[3];
+    float axes[3];
     Color axis_color[3];
     int symmetric;
     float *vertices{nullptr};
@@ -33,9 +33,9 @@ private:
 
 
 public:
-    verts(float ax_len);
+    Axes(float ax_len);
 
-    ~verts();
+    ~Axes();
 
     void set_axis_color(int axis, Color c);
 
