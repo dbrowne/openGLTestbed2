@@ -384,6 +384,20 @@ vec3 genVoroni(){
     return result;
 }
 
+vec3 genCellular(){
+    vec2 st = FragPos.xy/u_resolution.xy*tailMult*6.0;
+    st *= 10.;
+
+    vec2 F = cellular(vec3(st, u_time));
+    float dots = smoothstep(0.005, 0.01, F.x);
+    float n = F.y-F.x;
+
+    n *= dots;
+
+    vec3 lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+    return result;
+}
 
 vec3 genCellularDots(){
     // Cellular noise
@@ -431,16 +445,8 @@ vec3 genCellularDots(){
     // Show isolines
     color -= step(.7, abs(sin(27.0*m_dist)))*.5;
 
-    // ambient
-    float ambientStrength = 0.01;
-    vec3 ambient = ambientStrength * lightColor;
-
-    // diffuse
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
-    vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
+    vec3  lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(color[0], color[1], color[2]);
     return result;
 }
 vec3 boxGrid(){
@@ -647,17 +653,7 @@ void main()
         FragColor = vec4(result, 1.0);
 
     } else if (tailFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*tailMult*6.0;
-        st *= 10.;
-
-        vec2 F = cellular(vec3(st, u_time));
-        float dots = smoothstep(0.005, 0.01, F.x);
-        float n = F.y-F.x;
-
-        n *= dots;
-
-        vec3 lightValue = getLightFunc();
-        vec3  result = lightValue*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+        vec3 result = genCellular();
         FragColor = vec4(result, 1.0);
     } else if (boxFlag ==1){
         vec3 color = boxGrid();
@@ -669,7 +665,6 @@ void main()
 
 
     else {
-
 
         if (lightFlag == 0){
             vec3  lightValue = getLightFunc();
