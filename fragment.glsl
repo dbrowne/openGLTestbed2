@@ -346,6 +346,34 @@ float fbm (in vec2 _st) {
     }
     return v;
 }
+
+vec3 boxGrid(){
+    vec2 st = FragPos.xy/u_resolution.xy*512.;
+    st.x *= u_resolution.x/u_resolution.y;
+
+    vec3 color = vec3(0.0, .8, .3);
+
+    // Grid
+    vec2 grid_st = st*300.;
+    color += vec3(0.0, 0.7, 0.2)*grid(grid_st, 0.01);
+    color += vec3(0.2, 0., 0.)*grid(grid_st, 0.02);
+    color += vec3(0.2)*grid(grid_st, 0.1);
+
+    // Crosses
+    vec2 crosses_st = st + .5;
+    crosses_st *= 3.;
+    vec2 crosses_st_f = fract(crosses_st);
+    color *= 1.-cross(crosses_st_f, vec2(.3, .3));
+    color += vec3(.9)*cross(crosses_st_f, vec2(.2, .2));
+
+    // Digits
+    vec2 blocks_st = floor(st*6.);
+    float t = u_time*.8+random4(blocks_st);
+    float time_i = floor(t);
+    float time_f = fract(t);
+    color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
+    return color;
+}
 vec3 getLightFunc(){
     vec3 viewDir = normalize(viewPos - FragPos);
 
@@ -639,41 +667,10 @@ void main()
         vec3  result = (ambient + diffuse)*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
         FragColor = vec4(result, 1.0);
     } else if (boxFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*512.;
-        st.x *= u_resolution.x/u_resolution.y;
+        vec3 color = boxGrid();
 
-        vec3 color = vec3(0.0, .8, .3);
-
-        // Grid
-        vec2 grid_st = st*300.;
-        color += vec3(0.0, 0.7, 0.2)*grid(grid_st, 0.01);
-        color += vec3(0.2, 0., 0.)*grid(grid_st, 0.02);
-        color += vec3(0.2)*grid(grid_st, 0.1);
-
-        // Crosses
-        vec2 crosses_st = st + .5;
-        crosses_st *= 3.;
-        vec2 crosses_st_f = fract(crosses_st);
-        color *= 1.-cross(crosses_st_f, vec2(.3, .3));
-        color += vec3(.9)*cross(crosses_st_f, vec2(.2, .2));
-
-        // Digits
-        vec2 blocks_st = floor(st*6.);
-        float t = u_time*.8+random4(blocks_st);
-        float time_i = floor(t);
-        float time_f = fract(t);
-        color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
-
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-
-        vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
-
-
+        vec3 lightValue = getLightFunc();
+        vec3  result = lightValue*color;
         FragColor = vec4(result, 1.0);
     }
 
