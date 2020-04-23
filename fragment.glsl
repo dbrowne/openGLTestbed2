@@ -505,6 +505,8 @@ vec4 smoky(){
     }
     return outColor;
 }
+
+
 void main()
 {
     if (smokeFlag ==1){
@@ -680,18 +682,8 @@ void main()
 
 
         if (lightFlag == 0){
-            vec3 viewDir = normalize(viewPos - FragPos);
-
-            // ambient
-            float ambientStrength = 0.01;
-            vec3 ambient = ambientStrength * lightColor;
-
-            // diffuse
-            vec3 norm = normalize(Normal);
-            vec3 lightDir = normalize(lightPos);
-            float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = diff * lightColor;
-            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+            vec3  lightValue = getLightFunc();
+            vec3  result = lightValue*vec3(ourColor[0], ourColor[1], ourColor[2]);
             //        vec3 result = (ambient + diffuse) * objectColor;
 
 
