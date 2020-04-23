@@ -93,7 +93,22 @@ float box(in vec2 st, in vec2 size){
     vec2(1.0)-st);
     return uv.x*uv.y;
 }
+vec3 getLightFunc(){
+    vec3 viewDir = normalize(viewPos - FragPos);
 
+    // ambient
+    float ambientStrength = 0.01;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+    vec3 result = ambient+diffuse;
+    return result;
+}
 float cross(in vec2 st, vec2 size){
     return clamp(box(st, vec2(size.x*0.5, size.y*0.125)) +
     box(st, vec2(size.y*0.125, size.x*0.5)), 0., 1.);
@@ -347,6 +362,29 @@ float fbm (in vec2 _st) {
     return v;
 }
 
+vec3 genVoroni(){
+    vec2 st = FragPos.xy/u_resolution.xy*160.;
+    st.x *= u_resolution.x/u_resolution.y;
+    vec3 color = vec3(.5, 1.0, .8);
+
+    // Scale
+    st *= 3.;
+    vec3 c = voronoi(st);
+
+    // isolines
+    color = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
+    // borders
+    color = mix(vec3(1.0), color, smoothstep(0.01, 0.02, c.x));
+    // feature points
+    float dd = length(c.yz);
+    color += vec3(1.)*(1.0-smoothstep(0.0, 0.04, dd));
+
+    vec3 lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(color[0]*ourColor[0], color[1]*ourColor[1], color[2]*ourColor[2]);
+    return result;
+}
+
+
 vec3 genCellularDots(){
     // Cellular noise
     vec2 st = FragPos.xy/u_resolution.xy*800.;
@@ -432,22 +470,7 @@ vec3 boxGrid(){
     color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
     return color;
 }
-vec3 getLightFunc(){
-    vec3 viewDir = normalize(viewPos - FragPos);
 
-    // ambient
-    float ambientStrength = 0.01;
-    vec3 ambient = ambientStrength * lightColor;
-
-    // diffuse
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
-    //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-    vec3 result = ambient+diffuse;
-    return result;
-}
 
 float sdHexPrism(vec3 p, vec2 h) {
     vec3 q = abs(p);
@@ -619,35 +642,8 @@ void main()
         FragColor = vec4(result.rgb, 1.0);
 
     } else if (headFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*160.;
-        st.x *= u_resolution.x/u_resolution.y;
-        vec3 color = vec3(.5, 1.0, .8);
 
-        // Scale
-        st *= 3.;
-        vec3 c = voronoi(st);
-
-        // isolines
-        color = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
-        // borders
-        color = mix(vec3(1.0), color, smoothstep(0.01, 0.02, c.x));
-        // feature points
-        float dd = length(c.yz);
-        color += vec3(1.)*(1.0-smoothstep(0.0, 0.04, dd));
-
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-
-        // diffuse
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(color[0]*ourColor[0], color[1]*ourColor[1], color[2]*ourColor[2]);
-
-
-
-
+        vec3 result = genVoroni();
         FragColor = vec4(result, 1.0);
 
     } else if (tailFlag ==1){
