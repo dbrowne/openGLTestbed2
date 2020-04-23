@@ -5,6 +5,8 @@ in vec4 ourColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
+float cntr =0.;
+float cntr_offset=0.04;
 
 struct Material {
     sampler2D diffuse;
@@ -505,10 +507,24 @@ vec4 smoky(){
 }
 void main()
 {
-
     if (smokeFlag ==1){
-        //        FragColor = smoky();
-        FragColor = newImage();
+        vec4 smokeColor = smoky();
+        vec4 rayColor = newImage();
+        cntr = cntr + cntr_offset;
+        if (cntr <1.){
+            if (cntr_offset <.6){
+                cntr_offset = cntr_offset +cntr_offset;
+            }
+            FragColor = (1.-cntr)*smokeColor + (cntr)*rayColor;
+        } else if (cntr > 1. && cntr <20.){
+            FragColor = rayColor;
+            cntr = cntr + cntr_offset;
+        }
+        else {
+            cntr = 0.;
+        }
+        //        FragColor = newImage();
+
 
     } else if (dotFlag ==1){
         // Cellular noise

@@ -41,6 +41,7 @@ int g_motion = 1;
 int g_light = 0;
 int g_show_sphere = 1;
 
+
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
