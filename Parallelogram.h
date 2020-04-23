@@ -22,7 +22,7 @@ private:
     int vertex_count;
     int index_size;
 
-    bool bottom = true;
+
     bool wind = true;
     bool have_vertices = false;
     float vv[6][3];

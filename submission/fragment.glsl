@@ -5,6 +5,8 @@ in vec4 ourColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
+float cntr =0.;
+float cntr_offset=0.04;
 
 struct Material {
     sampler2D diffuse;
@@ -41,6 +43,7 @@ uniform int dotFlag;
 uniform int headFlag;
 uniform int tailFlag;
 uniform float tailMult;
+uniform int boxFlag;
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
@@ -71,6 +74,31 @@ vec2 random2(vec2 p) {
 vec2 random3(vec2 p) {
     return fract(sin(vec2(dot(p, vec2(227.1, 611.7)), dot(p, vec2(869.5, 183.3))))*93758.5453);
 }
+
+float random4(in float x){ return fract(sin(x)*43758.5453); }
+float random4(in vec2 st){ return fract(sin(dot(st.xy, vec2(12.9898, 5.233))) * 43758.5453); }
+
+float grid(vec2 st, float res){
+    vec2 grid = fract(st*res);
+    return 1.-(step(res, grid.x) * step(res, grid.y));
+}
+
+float box(in vec2 st, in vec2 size){
+    size = vec2(0.5) - size*0.5;
+    vec2 uv = smoothstep(size,
+    size+vec2(0.001),
+    st);
+    uv *= smoothstep(size,
+    size+vec2(0.001),
+    vec2(1.0)-st);
+    return uv.x*uv.y;
+}
+
+float cross(in vec2 st, vec2 size){
+    return clamp(box(st, vec2(size.x*0.5, size.y*0.125)) +
+    box(st, vec2(size.y*0.125, size.x*0.5)), 0., 1.);
+}
+
 
 // Cellular noise ("Worley noise") in 3D in GLSL.
 // Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
@@ -318,6 +346,97 @@ float fbm (in vec2 _st) {
     }
     return v;
 }
+vec3 getLightFunc(){
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    // ambient
+    float ambientStrength = 0.01;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+    vec3 result = ambient+diffuse;
+    return result;
+}
+
+float sdHexPrism(vec3 p, vec2 h) {
+    vec3 q = abs(p);
+    return max(q.z-h.y, max((q.x*0.866025+q.y*0.5), q.y)-h.x);
+}
+
+float opRep(vec3 p, vec3 spacing) {
+    vec3 q = mod(p, spacing) - 0.5 * spacing;
+    return sdHexPrism(q, vec2(0.2 + 0.1 * cos(u_time/2.), 1.0 + 0.9 * sin(3.14 + u_time/2.)));
+}
+
+vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
+    int ITERATIONS = 300;
+    // 1 : retrieve the fragment's coordinates
+    vec2 uv = FragPos.xy / u_resolution.xy*16.;
+    uv -= vec2(0.5, 0.5);
+    uv.x *= u_resolution.x / u_resolution.y;// Correct for aspect ratio
+
+    //     2 : camera position and ray direction
+    vec3 pos = vec3(sin(u_time), 0, sin(u_time) * 5.);
+    //    vec3 pos = vec3( sin(u_time), 0, u_time / 20. );
+    vec3 dir = normalize(vec3(uv, 1.));
+
+    // 3 : ray march loop
+    // ip will store where the ray hits the surface
+    vec3 ip;
+
+    // variable step size
+    float t = 0.0;
+    float findThresh = 0.001;
+    int found = 0;
+    int last_i = 0;
+
+    for (int i = 0; i < ITERATIONS; i++) {
+        last_i = i;
+
+        //update position along path
+        ip = pos + dir * t;
+
+        //gets the shortest distance to the scene
+        //break the loop if the distance was too small
+        //this means that we are close enough to the surface
+        float temp;
+
+        // make a repeating SDF shape
+        temp = opRep(ip, vec3(2.5 + 2.0 * sin(u_time/2.)));
+        if (temp < findThresh) {
+            float r = 0.7 + 0.3 * sin(ip.z/8. + ip.x/2.);
+            float g = 0.6 + 0.3 * cos(ip.z/8. + ip.y/2.);
+            float b = 0.5 + 0.4 * sin(ip.z/8. + ip.x);
+            ip = vec3(r, g, b);
+            found = 1;
+            break;
+        }
+
+        //increment the step along the ray path
+        t += temp;
+    }
+
+    // make background black if no shape was hit
+    if (found == 0) {
+        ip = vec3(0, 0, 0);
+    }
+
+    // 4 : apply color to this fragment
+    // subtract from color as distance increases
+    vec4 outColor = vec4(ip - float(last_i) / float(ITERATIONS), 1.0);
+    if (showSphere ==1){
+        vec3 result = getLightFunc();
+        return vec4(vec3(outColor.r, outColor.g, outColor.b) * result, 1);
+    }
+    return outColor;
+
+}
+
 
 // calculates the color when using a spot light.
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -349,56 +468,63 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
+vec4 smoky(){
+    vec4 outColor;
+    vec2 st =FragPos.xy/u_resolution.xy*bMult;
+    st += st * abs(sin(u_time*0.1)*3.0);
+    vec3 color = vec3(0.0);
+    vec2 q = vec2(0.);
+    q.x = fbm(st + 0.00*u_time);
+    q.y = fbm(st + vec2(1.0));
+
+    vec2 r = vec2(0.);
+    r.x = fbm(st + 1.0*q + vec2(1.7, 9.2)+ 0.15*u_time);
+    r.y = fbm(st + 1.0*q + vec2(8.3, 2.8)+ 0.126*u_time);
+
+    float f = fbm(st+r);
+
+    color = mix(vec3(0.501961, 0.19608, 0.99),
+    vec3(0.666667, 0.666667, 0.0498039),
+    clamp((f*f)*4.0, 0.0, 1.0));
+
+    color = mix(color,
+    vec3(0, 0, 0.164706),
+    clamp(length(q), 0.0, 1.0));
+
+    color = mix(color,
+    vec3(0.666667, 1, 1),
+    clamp(length(r.x), 0.0, 1.0));
+
+    if (showSphere ==1){
+
+        vec3 result = getLightFunc();
+
+        outColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
+    } else {
+        outColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
+    }
+    return outColor;
+}
 void main()
 {
-
     if (smokeFlag ==1){
-        vec2 st =FragPos.xy/u_resolution.xy*bMult;
-        st += st * abs(sin(u_time*0.1)*3.0);
-        vec3 color = vec3(0.0);
-        vec2 q = vec2(0.);
-        q.x = fbm(st + 0.00*u_time);
-        q.y = fbm(st + vec2(1.0));
-
-        vec2 r = vec2(0.);
-        r.x = fbm(st + 1.0*q + vec2(1.7, 9.2)+ 0.15*u_time);
-        r.y = fbm(st + 1.0*q + vec2(8.3, 2.8)+ 0.126*u_time);
-
-        float f = fbm(st+r);
-
-        color = mix(vec3(0.501961, 0.19608, 0.99),
-        vec3(0.666667, 0.666667, 0.0498039),
-        clamp((f*f)*4.0, 0.0, 1.0));
-
-        color = mix(color,
-        vec3(0, 0, 0.164706),
-        clamp(length(q), 0.0, 1.0));
-
-        color = mix(color,
-        vec3(0.666667, 1, 1),
-        clamp(length(r.x), 0.0, 1.0));
-
-        if (showSphere ==1){
-
-            vec3 viewDir = normalize(viewPos - FragPos);
-
-            // ambient
-            float ambientStrength = 0.01;
-            vec3 ambient = ambientStrength * lightColor;
-
-            // diffuse
-            vec3 norm = normalize(Normal);
-            vec3 lightDir = normalize(lightPos);
-            float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = diff * lightColor;
-            //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-            vec3 result = ambient+diffuse;
-
-
-            FragColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
-        } else {
-            FragColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
+        vec4 smokeColor = smoky();
+        vec4 rayColor = newImage();
+        cntr = cntr + cntr_offset;
+        if (cntr <1.){
+            if (cntr_offset <.6){
+                cntr_offset = cntr_offset +cntr_offset;
+            }
+            FragColor = (1.-cntr)*smokeColor + (cntr)*rayColor;
+        } else if (cntr > 1. && cntr <20.){
+            FragColor = rayColor;
+            cntr = cntr + cntr_offset;
         }
+        else {
+            cntr = 0.;
+        }
+        //        FragColor = newImage();
+
 
     } else if (dotFlag ==1){
         // Cellular noise
@@ -458,7 +584,6 @@ void main()
         vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
 
 
-
         FragColor = vec4(result.rgb, 1.0);
 
     } else if (headFlag ==1){
@@ -510,6 +635,43 @@ void main()
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * lightColor;
         vec3  result = (ambient + diffuse)*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+        FragColor = vec4(result, 1.0);
+    } else if (boxFlag ==1){
+        vec2 st = FragPos.xy/u_resolution.xy*512.;
+        st.x *= u_resolution.x/u_resolution.y;
+
+        vec3 color = vec3(0.0, .8, .3);
+
+        // Grid
+        vec2 grid_st = st*300.;
+        color += vec3(0.0, 0.7, 0.2)*grid(grid_st, 0.01);
+        color += vec3(0.2, 0., 0.)*grid(grid_st, 0.02);
+        color += vec3(0.2)*grid(grid_st, 0.1);
+
+        // Crosses
+        vec2 crosses_st = st + .5;
+        crosses_st *= 3.;
+        vec2 crosses_st_f = fract(crosses_st);
+        color *= 1.-cross(crosses_st_f, vec2(.3, .3));
+        color += vec3(.9)*cross(crosses_st_f, vec2(.2, .2));
+
+        // Digits
+        vec2 blocks_st = floor(st*6.);
+        float t = u_time*.8+random4(blocks_st);
+        float time_i = floor(t);
+        float time_f = fract(t);
+        color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
+
+        float ambientStrength = 0.01;
+        vec3 ambient = ambientStrength * lightColor;
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(lightPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = diff * lightColor;
+
+        vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
+
+
         FragColor = vec4(result, 1.0);
     }
 

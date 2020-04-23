@@ -36,3 +36,10 @@ had to abandon original "New framework" and focused on shaders
 
 FEATURES:
 Procedural shaders
+
+
+Remaining work
+Finish shaders
+integrate keyboard commands
+fix occassional memory leak
+
