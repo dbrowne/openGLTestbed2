@@ -347,6 +347,64 @@ float fbm (in vec2 _st) {
     return v;
 }
 
+vec3 genCellularDots(){
+    // Cellular noise
+    vec2 st = FragPos.xy/u_resolution.xy*800.;
+    st.x *= u_resolution.x/u_resolution.y;
+    vec3 color = vec3(.3, .8, .3);
+
+    // Scale
+    st *= 3.;
+
+    // Tile the space
+    vec2 i_st = floor(st);
+    vec2 f_st = fract(st);
+
+    float m_dist = 1.;// minimun distance
+
+    for (int y= -1; y <= 1; y++) {
+        for (int x= -1; x <= 1; x++) {
+            // Neighbor place in the grid
+            vec2 neighbor = vec2(float(x), float(y));
+
+            // Random position from current + neighbor place in the grid
+            vec2 point = random2(i_st + neighbor);
+
+            // Animate the point
+            point = 0.5 + 0.5*sin(u_time + 6.2831*point);
+
+            // Vector between the pixel and the point
+            vec2 diff = neighbor + point - f_st;
+
+            // Distance to the point
+            float dist = length(diff);
+
+            // Keep the closer distance
+            m_dist = min(m_dist, dist);
+        }
+    }
+
+    // Draw the min distance (distance field)
+    color += .6*m_dist;
+
+    // Draw cell center
+    color += .03-step(.02, m_dist);
+
+    // Show isolines
+    color -= step(.7, abs(sin(27.0*m_dist)))*.5;
+
+    // ambient
+    float ambientStrength = 0.01;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
+    return result;
+}
 vec3 boxGrid(){
     vec2 st = FragPos.xy/u_resolution.xy*512.;
     st.x *= u_resolution.x/u_resolution.y;
@@ -557,63 +615,7 @@ void main()
 
 
     } else if (dotFlag ==1){
-        // Cellular noise
-        vec2 st = FragPos.xy/u_resolution.xy*800.;
-        st.x *= u_resolution.x/u_resolution.y;
-        vec3 color = vec3(.3, .8, .3);
-
-        // Scale
-        st *= 3.;
-
-        // Tile the space
-        vec2 i_st = floor(st);
-        vec2 f_st = fract(st);
-
-        float m_dist = 1.;// minimun distance
-
-        for (int y= -1; y <= 1; y++) {
-            for (int x= -1; x <= 1; x++) {
-                // Neighbor place in the grid
-                vec2 neighbor = vec2(float(x), float(y));
-
-                // Random position from current + neighbor place in the grid
-                vec2 point = random2(i_st + neighbor);
-
-                // Animate the point
-                point = 0.5 + 0.5*sin(u_time + 6.2831*point);
-
-                // Vector between the pixel and the point
-                vec2 diff = neighbor + point - f_st;
-
-                // Distance to the point
-                float dist = length(diff);
-
-                // Keep the closer distance
-                m_dist = min(m_dist, dist);
-            }
-        }
-
-        // Draw the min distance (distance field)
-        color += .6*m_dist;
-
-        // Draw cell center
-        color += .03-step(.02, m_dist);
-
-        // Show isolines
-        color -= step(.7, abs(sin(27.0*m_dist)))*.5;
-
-        // ambient
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-
-        // diffuse
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
-
-
+        vec3  result = genCellularDots();
         FragColor = vec4(result.rgb, 1.0);
 
     } else if (headFlag ==1){
@@ -658,13 +660,8 @@ void main()
 
         n *= dots;
 
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+        vec3 lightValue = getLightFunc();
+        vec3  result = lightValue*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
         FragColor = vec4(result, 1.0);
     } else if (boxFlag ==1){
         vec3 color = boxGrid();
