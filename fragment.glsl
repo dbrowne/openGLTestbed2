@@ -5,8 +5,7 @@ in vec4 ourColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
-float cntr =0.;
-float cntr_offset=0.001;
+
 
 struct Material {
     sampler2D diffuse;
@@ -44,7 +43,8 @@ uniform int headFlag;
 uniform int tailFlag;
 uniform float tailMult;
 uniform int boxFlag;
-
+uniform float cntr;
+uniform float cntr_offset;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform int texflag;
@@ -60,6 +60,8 @@ uniform vec3 objectColor;
 uniform vec3 viewPos;
 uniform Light light;
 uniform float bMult;
+uniform int ITERATIONS;
+uniform float density;
 
 float random (in vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -489,7 +491,7 @@ float opRep(vec3 p, vec3 spacing) {
 }
 
 vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
-    int ITERATIONS = 300;
+
     // 1 : retrieve the fragment's coordinates
     vec2 uv = FragPos.xy / u_resolution.xy*16.;
     uv -= vec2(0.5, 0.5);
@@ -522,10 +524,10 @@ vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
         float temp;
 
         // make a repeating SDF shape
-        temp = opRep(ip, vec3(2.5 + 2.0 * sin(u_time/2.)));
+        temp = opRep(ip, vec3(2.5 + density * sin(u_time/2.)));
         if (temp < findThresh) {
             float r = 0.7 + 0.3 * sin(ip.z/8. + ip.x/2.);
-            float g = 0.6 + 0.3 * cos(ip.z/8. + ip.y/2.);
+            float g = 0.6 + 0.3 * sin(cos(ip.z/8. + ip.y/2.));
             float b = 0.5 + 0.4 * sin(ip.z/8. + ip.x);
             ip = vec3(r, g, b);
             found = 1;
@@ -623,17 +625,11 @@ vec4 smoky(){
 
 vec4 mixer(vec4 first, vec4 second){
     vec4 result;
-    cntr = cntr +cntr_offset;
+
     if (cntr <1.){
-        if (cntr_offset < .3){
-            cntr_offset = cntr_offset + cntr_offset;
-        }
         result = (1. -cntr)*first + cntr*second;
     } else if (cntr>1. && cntr < 60.){
         result = second;
-    } else {
-        cntr = 0.;
-        cntr_offset = 0.04;
     }
     return result;
 }

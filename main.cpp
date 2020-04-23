@@ -27,6 +27,7 @@
 #include "Sphere.h"
 #include "dflyGen.h"
 
+
 void motion_gen();
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -36,11 +37,14 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
-
+const float MIX_INCR = 0.0001;
 int g_motion = 1;
 int g_light = 0;
 int g_show_sphere = 1;
+int g_iteration_count = 0;
 
+float g_mix_cntr = 0.;
+float g_mix_offset = MIX_INCR;
 
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
@@ -54,7 +58,7 @@ float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
 float g_bMult = 16.0;
-
+float g_density = 0.5;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -116,7 +120,7 @@ int main() {
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -174,7 +178,7 @@ int main() {
     } else {
         std::cout << "Failed to load texture" << std::endl;
     }
-  
+
     stbi_image_free(data);
 
     unsigned int texture2;
@@ -320,6 +324,10 @@ int main() {
         shader1.setFloat("bMult", g_bMult);
         shader1.setVec2("u_resolution", dims[2], dims[3]);
         shader1.setFloat("u_time", glfwGetTime());
+        shader1.setFloat("cntr", g_mix_cntr);
+        shader1.setFloat("cntr_offset", g_mix_offset);
+        shader1.setInt("ITERATIONS", g_iteration_count);
+        shader1.setFloat("density", g_density);
         tent->draw();
 
 
@@ -357,10 +365,20 @@ void motion_gen() {
             g_set_count++;
         }
 
-    if (g_set_count % 201 == 0) {
-        g_set_change = false;
-    }
-
+        if (g_set_count % 201 == 0) {
+            g_set_change = false;
+        }
+        g_mix_cntr += g_mix_offset;
+        g_iteration_count = 250 + int(100. * cos(g_mix_cntr));
+        g_density = 1 + 2 * sin(g_mix_cntr);
+        if (g_mix_cntr < 1.) {
+//            if (g_mix_offset <.3){
+//                g_mix_offset +=MIX_INCR;
+//            }
+        } else if (g_mix_cntr > 60.) {
+            g_mix_offset = MIX_INCR;
+            g_mix_cntr = 0.;
+        }
     }
 }
 
@@ -503,14 +521,11 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
 
-
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
