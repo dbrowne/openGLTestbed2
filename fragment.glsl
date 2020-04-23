@@ -6,7 +6,7 @@ in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
 float cntr =0.;
-float cntr_offset=0.04;
+float cntr_offset=0.001;
 
 struct Material {
     sampler2D diffuse;
@@ -621,27 +621,31 @@ vec4 smoky(){
     return outColor;
 }
 
+vec4 mixer(vec4 first, vec4 second){
+    vec4 result;
+    cntr = cntr +cntr_offset;
+    if (cntr <1.){
+        if (cntr_offset < .3){
+            cntr_offset = cntr_offset + cntr_offset;
+        }
+        result = (1. -cntr)*first + cntr*second;
+    } else if (cntr>1. && cntr < 60.){
+        result = second;
+    } else {
+        cntr = 0.;
+        cntr_offset = 0.04;
+    }
+    return result;
+}
+
+
 
 void main()
 {
     if (smokeFlag ==1){
         vec4 smokeColor = smoky();
         vec4 rayColor = newImage();
-        cntr = cntr + cntr_offset;
-        if (cntr <1.){
-            if (cntr_offset <.6){
-                cntr_offset = cntr_offset +cntr_offset;
-            }
-            FragColor = (1.-cntr)*smokeColor + (cntr)*rayColor;
-        } else if (cntr > 1. && cntr <20.){
-            FragColor = rayColor;
-            cntr = cntr + cntr_offset;
-        }
-        else {
-            cntr = 0.;
-        }
-        //        FragColor = newImage();
-
+        FragColor = mixer(smokeColor, rayColor);
 
     } else if (dotFlag ==1){
         vec3  result = genCellularDots();
