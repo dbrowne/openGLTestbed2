@@ -38,10 +38,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
 const float MIX_INCR = 0.0001;
-int g_motion = 1;
+int g_fly_motion = 1;
+int g_background_motion = 1;
 int g_light = 0;
 int g_show_sphere = 1;
 int g_iteration_count = 0;
+int g_star_mult = 1;
+double g_last_time = 0;
 
 float g_mix_cntr = 0.;
 float g_mix_offset = MIX_INCR;
@@ -328,6 +331,7 @@ int main() {
         shader1.setFloat("cntr_offset", g_mix_offset);
         shader1.setInt("ITERATIONS", g_iteration_count);
         shader1.setFloat("density", g_density);
+        shader1.setFloat("star_mult", float(g_star_mult));
         tent->draw();
 
 
@@ -351,7 +355,8 @@ int main() {
 }
 
 void motion_gen() {
-    if (g_motion == 1) {
+    double t_now = glfwGetTime();
+    if (g_fly_motion == 1) {
         g_pitch += g_pitch_const * g_pitch_flag;
         g_yaw -= g_yaw_const * g_pitch_flag;
 
@@ -368,20 +373,31 @@ void motion_gen() {
         if (g_set_count % 201 == 0) {
             g_set_change = false;
         }
+
+    } else if (int(g_mix_cntr) % 60 == 0 && g_mix_cntr > 60.) {
+        g_mix_flag *= -1;
+        g_mix_offset = float(g_mix_flag) * MIX_INCR;
+        g_mix_cntr -= 1.;
+    }
+
+    if (g_background_motion == 1) {
         g_mix_cntr += g_mix_offset;
-        g_iteration_count = abs(300 + int(290. * cos(g_mix_cntr)));
+        g_iteration_count = abs(600 + int(590. * cos(g_mix_cntr)));
         g_density = 1 + 36 * sin(g_mix_cntr / PI);
 
         if (g_mix_cntr < 0.) {
             g_mix_cntr = 0;
             g_mix_flag *= -1;
         }
-    } else if (int(g_mix_cntr) % 60 == 0 && g_mix_cntr > 60.) {
-        g_mix_flag *= -1;
-        g_mix_offset = float(g_mix_flag) * MIX_INCR;
-        g_mix_cntr -= 1.;
+
+        if (abs(t_now - g_last_time) > 15) {
+            g_last_time = t_now;
+            g_star_mult += 1;
+            g_star_mult %= 128;
+        }
+
     }
-    }
+}
 
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -391,6 +407,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         glfwSetWindowShouldClose(window, true);
     }
 
+    // Polygon mode
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
         switch (g_poly_flag) {
             case 0:
@@ -409,31 +426,47 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_poly_flag %= 3;
     }
 
-
+    // Stop light
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         g_light_flag *= -1;
     }
 
-
+    // Pitch decrease
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
         g_pitch_const = g_pitch_const - .25 * g_pitch_const;
         g_yaw_const = g_yaw_const - .125 * g_yaw_const;
     }
-
+    // Pitch increase
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
         g_pitch_const = g_pitch_const + .25 * g_pitch_const;
         g_yaw_const = g_yaw_const + .25 * g_yaw_const;
     }
 
+    // Stop fly motion
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-        g_motion *= -1;
+        g_fly_motion *= -1;
     }
+
+    // Stop background motion
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+        g_background_motion *= -1;
+    }
+
+
+    // increase Z of light
 
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
         g_l_zh += .1;
         g_l_zh = fmod(g_l_zh, 360.0);
     }
+    // decrease Z of light
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
+        g_l_zh -= .1;
+        g_l_zh = fmod(g_l_zh, 360.0);
 
+    }
+
+    // wing movement
     if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) { //< key
         if (g_move == 1) {
             g_move = 0;
@@ -443,23 +476,21 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
 
+    //    increase smoke density
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
         g_bMult += 1.0;
     }
 
+    // decrease smoke density
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
         g_bMult -= 1.0;
         if (g_bMult < 1.0) {
-            g_bMult = 3.0;
+            g_bMult = 1.0;
         }
     }
 
 
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
-        g_l_zh -= .1;
-        g_l_zh = fmod(g_l_zh, 360.0);
 
-    }
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
         switch (g_perspective) {
@@ -518,7 +549,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_angle -= 1.0;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
         g_angle += 1.0;
     }
 

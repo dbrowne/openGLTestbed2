@@ -62,6 +62,7 @@ uniform Light light;
 uniform float bMult;
 uniform int ITERATIONS;
 uniform float density;
+uniform float star_mult;
 
 float random (in vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -347,7 +348,7 @@ float noise (in vec2 _st) {
     (d - b) * u.x * u.y;
 }
 
-    #define NUM_OCTAVES 15
+    #define NUM_OCTAVES 30
 
 float fbm (in vec2 _st) {
     float v = 0.0;
@@ -493,7 +494,7 @@ float opRep(vec3 p, vec3 spacing) {
 vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
 
     // 1 : retrieve the fragment's coordinates
-    vec2 uv = FragPos.xy / u_resolution.xy*16.;
+    vec2 uv = FragPos.xy / u_resolution.xy*star_mult;
     uv -= vec2(0.5, 0.5);
     uv.x *= u_resolution.x / u_resolution.y;// Correct for aspect ratio
 
