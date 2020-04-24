@@ -491,7 +491,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 
 
 
-
+    //Perpspective
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
         switch (g_perspective) {
             case 0:
@@ -505,12 +505,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         }
     }
 
+    // lighting
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
         g_light += 1;
         g_light %= 3;
     }
 
-
+    // texture
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
         g_tex_flag += 1;
         g_tex_flag %= 3;

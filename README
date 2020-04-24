@@ -25,6 +25,9 @@ Keypress
 * y wing movement
 * b increase smoke density
 * v decrease smoke density
+* P perspective
+* t texture
+
 
 
 TO RUN
