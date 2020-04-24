@@ -45,7 +45,7 @@ int g_iteration_count = 0;
 
 float g_mix_cntr = 0.;
 float g_mix_offset = MIX_INCR;
-
+int g_mix_flag = 1;
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -369,18 +369,20 @@ void motion_gen() {
             g_set_change = false;
         }
         g_mix_cntr += g_mix_offset;
-        g_iteration_count = 250 + int(100. * cos(g_mix_cntr));
-        g_density = 1 + 2 * sin(g_mix_cntr);
-        if (g_mix_cntr < 1.) {
-//            if (g_mix_offset <.3){
-//                g_mix_offset +=MIX_INCR;
-//            }
-        } else if (g_mix_cntr > 60.) {
-            g_mix_offset = MIX_INCR;
-            g_mix_cntr = 0.;
+        g_iteration_count = abs(300 + int(290. * cos(g_mix_cntr)));
+        g_density = 1 + 36 * sin(g_mix_cntr / PI);
+
+        if (g_mix_cntr < 0.) {
+            g_mix_cntr = 0;
+            g_mix_flag *= -1;
         }
+    } else if (int(g_mix_cntr) % 60 == 0 && g_mix_cntr > 60.) {
+        g_mix_flag *= -1;
+        g_mix_offset = float(g_mix_flag) * MIX_INCR;
+        g_mix_cntr -= 1.;
     }
-}
+    }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
