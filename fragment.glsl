@@ -63,6 +63,7 @@ uniform float bMult;
 uniform int ITERATIONS;
 uniform float density;
 uniform float star_mult;
+uniform int u_show_background;
 
 float random (in vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -97,21 +98,30 @@ float box(in vec2 st, in vec2 size){
     return uv.x*uv.y;
 }
 vec3 getLightFunc(){
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 result = vec3(0.);
+    if (lightFlag ==0){
+        vec3 viewDir = normalize(viewPos - FragPos);
 
-    // ambient
-    float ambientStrength = 0.01;
-    vec3 ambient = ambientStrength * lightColor;
+        // ambient
+        float ambientStrength = 0.01;
+        vec3 ambient = ambientStrength * lightColor;
 
-    // diffuse
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
-    //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-    vec3 result = ambient+diffuse;
+        // diffuse
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(lightPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = diff * lightColor;
+        //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+        if (u_show_background == 1){
+            result = (ambient+diffuse)*ourColor.rgb;
+        }
+        else {
+            result = ambient+diffuse;
+        }
+    }
     return result;
 }
+
 float cross(in vec2 st, vec2 size){
     return clamp(box(st, vec2(size.x*0.5, size.y*0.125)) +
     box(st, vec2(size.y*0.125, size.x*0.5)), 0., 1.);
@@ -614,9 +624,7 @@ vec4 smoky(){
     clamp(length(r.x), 0.0, 1.0));
 
     if (showSphere ==1){
-
         vec3 result = getLightFunc();
-
         outColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
     } else {
         outColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
@@ -649,7 +657,6 @@ void main()
         FragColor = vec4(result.rgb, 1.0);
 
     } else if (headFlag ==1){
-
         vec3 result = genVoroni();
         FragColor = vec4(result, 1.0);
 

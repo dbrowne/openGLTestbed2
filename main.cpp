@@ -41,10 +41,11 @@ const float MIX_INCR = 0.0001;
 int g_fly_motion = 1;
 int g_background_motion = 1;
 int g_light = 0;
-int g_show_sphere = 1;
+int g_show_sphere = -1;
 int g_iteration_count = 0;
 int g_star_mult = 1;
 double g_last_time = 0;
+int g_show_background = -1;
 
 float g_mix_cntr = 0.;
 float g_mix_offset = MIX_INCR;
@@ -243,6 +244,7 @@ int main() {
         shader1.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
         shader1.setInt("material.diffuse", 0);
         shader1.setInt("material.specular", 1);
+        shader1.setInt("u_show_background", g_show_background);
 
 
         if (g_light_flag == 1) {
@@ -554,6 +556,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_angle += 1.0;
     }
 
+    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        g_show_background *= -1;
+    }
 
 }
 
