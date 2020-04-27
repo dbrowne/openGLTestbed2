@@ -13,6 +13,8 @@
 * d move camera right.
 
 
+
+
 Keypress
 * o:  Polygon mode
 * SPACE stop Light animation.
@@ -27,6 +29,11 @@ Keypress
 * v decrease smoke density
 * P perspective
 * t texture
+* L lighting
+
+* 9  reduce light angle
+* 8  increase light angle
+* 7  show sphere background
 
 
 
