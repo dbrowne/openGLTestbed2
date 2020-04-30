@@ -11,35 +11,39 @@
 * a move camera left.
 * s move camera back.
 * d move camera right.
-* SPACE stop Light animation.
 
-* y rotate sphere by y
-* z rotate sphere by z
-* p toggle perspective
-* l  Toggle lighting
-* o  Toggle Polygon mode
-* t  Toggle Texture
-* g  Toggle view motion
-* n  step light down
-* m  step light up
-* y  Toggle wing motion
-* .  increase rotation speed
-* ,  decreas rotation speed
+
+
+
+Keypress
+* o:  Polygon mode
+* SPACE stop Light animation.
+* , to decrease rotation speed
+* . to increase rotation speed
+* g stop motion
+* h stop background
+* n increase Z of light
+* m decrease Z of light
+* y wing movement
+* b increase smoke density
+* v decrease smoke density
+* P perspective
+* t texture
+* L lighting
+
+* 9  reduce light angle
+* 8  increase light angle
+* 7  show sphere background
+
+
 
 TO RUN
-* make; ./final
+* run final
 
-Total time 70 hours 
+Total time 80 hours 
 
 ISSUES:
 had to abandon original "New framework" and focused on shaders
 
 FEATURES:
 Procedural shaders
-
-
-Remaining work
-Finish shaders
-integrate keyboard commands
-fix occassional memory leak
-

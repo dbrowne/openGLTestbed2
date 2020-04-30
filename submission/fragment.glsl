@@ -5,8 +5,7 @@ in vec4 ourColor;
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
-float cntr =0.;
-float cntr_offset=0.04;
+
 
 struct Material {
     sampler2D diffuse;
@@ -44,7 +43,8 @@ uniform int headFlag;
 uniform int tailFlag;
 uniform float tailMult;
 uniform int boxFlag;
-
+uniform float cntr;
+uniform float cntr_offset;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform int texflag;
@@ -60,6 +60,10 @@ uniform vec3 objectColor;
 uniform vec3 viewPos;
 uniform Light light;
 uniform float bMult;
+uniform int ITERATIONS;
+uniform float density;
+uniform float star_mult;
+uniform int u_show_background;
 
 float random (in vec2 _st) {
     return fract(sin(dot(_st.xy,
@@ -92,6 +96,30 @@ float box(in vec2 st, in vec2 size){
     size+vec2(0.001),
     vec2(1.0)-st);
     return uv.x*uv.y;
+}
+vec3 getLightFunc(){
+    vec3 result = vec3(0.);
+    if (lightFlag ==0){
+        vec3 viewDir = normalize(viewPos - FragPos);
+
+        // ambient
+        float ambientStrength = 0.01;
+        vec3 ambient = ambientStrength * lightColor;
+
+        // diffuse
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(lightPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuse = diff * lightColor;
+        //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+        if (u_show_background == 1){
+            result = (ambient+diffuse)*ourColor.rgb;
+        }
+        else {
+            result = ambient+diffuse;
+        }
+    }
+    return result;
 }
 
 float cross(in vec2 st, vec2 size){
@@ -330,7 +358,7 @@ float noise (in vec2 _st) {
     (d - b) * u.x * u.y;
 }
 
-    #define NUM_OCTAVES 15
+    #define NUM_OCTAVES 30
 
 float fbm (in vec2 _st) {
     float v = 0.0;
@@ -346,22 +374,122 @@ float fbm (in vec2 _st) {
     }
     return v;
 }
-vec3 getLightFunc(){
-    vec3 viewDir = normalize(viewPos - FragPos);
 
-    // ambient
-    float ambientStrength = 0.01;
-    vec3 ambient = ambientStrength * lightColor;
+vec3 genVoroni(){
+    vec2 st = FragPos.xy/u_resolution.xy*160.;
+    st.x *= u_resolution.x/u_resolution.y;
+    vec3 color = vec3(.5, 1.0, .8);
 
-    // diffuse
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
-    //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
-    vec3 result = ambient+diffuse;
+    // Scale
+    st *= 3.;
+    vec3 c = voronoi(st);
+
+    // isolines
+    color = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
+    // borders
+    color = mix(vec3(1.0), color, smoothstep(0.01, 0.02, c.x));
+    // feature points
+    float dd = length(c.yz);
+    color += vec3(1.)*(1.0-smoothstep(0.0, 0.04, dd));
+
+    vec3 lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(color[0]*ourColor[0], color[1]*ourColor[1], color[2]*ourColor[2]);
     return result;
 }
+
+vec3 genCellular(){
+    vec2 st = FragPos.xy/u_resolution.xy*tailMult*6.0;
+    st *= 10.;
+
+    vec2 F = cellular(vec3(st, u_time));
+    float dots = smoothstep(0.005, 0.01, F.x);
+    float n = F.y-F.x;
+
+    n *= dots;
+
+    vec3 lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+    return result;
+}
+
+vec3 genCellularDots(){
+    // Cellular noise
+    vec2 st = FragPos.xy/u_resolution.xy*800.;
+    st.x *= u_resolution.x/u_resolution.y;
+    vec3 color = vec3(.3, .8, .3);
+
+    // Scale
+    st *= 3.;
+
+    // Tile the space
+    vec2 i_st = floor(st);
+    vec2 f_st = fract(st);
+
+    float m_dist = 1.;// minimun distance
+
+    for (int y= -1; y <= 1; y++) {
+        for (int x= -1; x <= 1; x++) {
+            // Neighbor place in the grid
+            vec2 neighbor = vec2(float(x), float(y));
+
+            // Random position from current + neighbor place in the grid
+            vec2 point = random2(i_st + neighbor);
+
+            // Animate the point
+            point = 0.5 + 0.5*sin(u_time + 6.2831*point);
+
+            // Vector between the pixel and the point
+            vec2 diff = neighbor + point - f_st;
+
+            // Distance to the point
+            float dist = length(diff);
+
+            // Keep the closer distance
+            m_dist = min(m_dist, dist);
+        }
+    }
+
+    // Draw the min distance (distance field)
+    color += .6*m_dist;
+
+    // Draw cell center
+    color += .03-step(.02, m_dist);
+
+    // Show isolines
+    color -= step(.7, abs(sin(27.0*m_dist)))*.5;
+
+    vec3  lightValue = getLightFunc();
+    vec3  result = lightValue*vec3(color[0], color[1], color[2]);
+    return result;
+}
+vec3 boxGrid(){
+    vec2 st = FragPos.xy/u_resolution.xy*512.;
+    st.x *= u_resolution.x/u_resolution.y;
+
+    vec3 color = vec3(0.0, .8, .3);
+
+    // Grid
+    vec2 grid_st = st*300.;
+    color += vec3(0.0, 0.7, 0.2)*grid(grid_st, 0.01);
+    color += vec3(0.2, 0., 0.)*grid(grid_st, 0.02);
+    color += vec3(0.2)*grid(grid_st, 0.1);
+
+    // Crosses
+    vec2 crosses_st = st + .5;
+    crosses_st *= 3.;
+    vec2 crosses_st_f = fract(crosses_st);
+    color *= 1.-cross(crosses_st_f, vec2(.3, .3));
+    color += vec3(.9)*cross(crosses_st_f, vec2(.2, .2));
+
+    // Digits
+    vec2 blocks_st = floor(st*6.);
+    float t = u_time*.8+random4(blocks_st);
+    float time_i = floor(t);
+    float time_f = fract(t);
+    color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
+    return color;
+}
+
 
 float sdHexPrism(vec3 p, vec2 h) {
     vec3 q = abs(p);
@@ -374,9 +502,9 @@ float opRep(vec3 p, vec3 spacing) {
 }
 
 vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
-    int ITERATIONS = 300;
+
     // 1 : retrieve the fragment's coordinates
-    vec2 uv = FragPos.xy / u_resolution.xy*16.;
+    vec2 uv = FragPos.xy / u_resolution.xy*star_mult;
     uv -= vec2(0.5, 0.5);
     uv.x *= u_resolution.x / u_resolution.y;// Correct for aspect ratio
 
@@ -407,10 +535,10 @@ vec4 newImage(){ // derived from https://www.shadertoy.com/view/XdGGzw
         float temp;
 
         // make a repeating SDF shape
-        temp = opRep(ip, vec3(2.5 + 2.0 * sin(u_time/2.)));
+        temp = opRep(ip, vec3(2.5 + density * sin(u_time/2.)));
         if (temp < findThresh) {
             float r = 0.7 + 0.3 * sin(ip.z/8. + ip.x/2.);
-            float g = 0.6 + 0.3 * cos(ip.z/8. + ip.y/2.);
+            float g = 0.6 + 0.3 * sin(cos(ip.z/8. + ip.y/2.));
             float b = 0.5 + 0.4 * sin(ip.z/8. + ip.x);
             ip = vec3(r, g, b);
             found = 1;
@@ -496,202 +624,59 @@ vec4 smoky(){
     clamp(length(r.x), 0.0, 1.0));
 
     if (showSphere ==1){
-
         vec3 result = getLightFunc();
-
         outColor = vec4((f*f*f+.6*f*f+.5*f)*color*result, 1.);
     } else {
         outColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.);
     }
     return outColor;
 }
+
+vec4 mixer(vec4 first, vec4 second){
+    vec4 result;
+
+    if (cntr <1.){
+        result = (1. -cntr)*first + cntr*second;
+    } else if (cntr>1. && cntr < 60.){
+        result = second;
+    }
+    return result;
+}
+
+
+
 void main()
 {
     if (smokeFlag ==1){
         vec4 smokeColor = smoky();
         vec4 rayColor = newImage();
-        cntr = cntr + cntr_offset;
-        if (cntr <1.){
-            if (cntr_offset <.6){
-                cntr_offset = cntr_offset +cntr_offset;
-            }
-            FragColor = (1.-cntr)*smokeColor + (cntr)*rayColor;
-        } else if (cntr > 1. && cntr <20.){
-            FragColor = rayColor;
-            cntr = cntr + cntr_offset;
-        }
-        else {
-            cntr = 0.;
-        }
-        //        FragColor = newImage();
-
+        FragColor = mixer(smokeColor, rayColor);
 
     } else if (dotFlag ==1){
-        // Cellular noise
-        vec2 st = FragPos.xy/u_resolution.xy*800.;
-        st.x *= u_resolution.x/u_resolution.y;
-        vec3 color = vec3(.3, .8, .3);
-
-        // Scale
-        st *= 3.;
-
-        // Tile the space
-        vec2 i_st = floor(st);
-        vec2 f_st = fract(st);
-
-        float m_dist = 1.;// minimun distance
-
-        for (int y= -1; y <= 1; y++) {
-            for (int x= -1; x <= 1; x++) {
-                // Neighbor place in the grid
-                vec2 neighbor = vec2(float(x), float(y));
-
-                // Random position from current + neighbor place in the grid
-                vec2 point = random2(i_st + neighbor);
-
-                // Animate the point
-                point = 0.5 + 0.5*sin(u_time + 6.2831*point);
-
-                // Vector between the pixel and the point
-                vec2 diff = neighbor + point - f_st;
-
-                // Distance to the point
-                float dist = length(diff);
-
-                // Keep the closer distance
-                m_dist = min(m_dist, dist);
-            }
-        }
-
-        // Draw the min distance (distance field)
-        color += .6*m_dist;
-
-        // Draw cell center
-        color += .03-step(.02, m_dist);
-
-        // Show isolines
-        color -= step(.7, abs(sin(27.0*m_dist)))*.5;
-
-        // ambient
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-
-        // diffuse
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
-
-
+        vec3  result = genCellularDots();
         FragColor = vec4(result.rgb, 1.0);
 
     } else if (headFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*160.;
-        st.x *= u_resolution.x/u_resolution.y;
-        vec3 color = vec3(.5, 1.0, .8);
-
-        // Scale
-        st *= 3.;
-        vec3 c = voronoi(st);
-
-        // isolines
-        color = c.x*(0.5 + 0.5*sin(64.0*c.x))*vec3(1.0);
-        // borders
-        color = mix(vec3(1.0), color, smoothstep(0.01, 0.02, c.x));
-        // feature points
-        float dd = length(c.yz);
-        color += vec3(1.)*(1.0-smoothstep(0.0, 0.04, dd));
-
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-
-        // diffuse
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(color[0]*ourColor[0], color[1]*ourColor[1], color[2]*ourColor[2]);
-
-
-
-
+        vec3 result = genVoroni();
         FragColor = vec4(result, 1.0);
 
     } else if (tailFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*tailMult*6.0;
-        st *= 10.;
-
-        vec2 F = cellular(vec3(st, u_time));
-        float dots = smoothstep(0.005, 0.01, F.x);
-        float n = F.y-F.x;
-
-        n *= dots;
-
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-        vec3  result = (ambient + diffuse)*vec3(n*ourColor[0], n*ourColor[1], n*ourColor[2]);
+        vec3 result = genCellular();
         FragColor = vec4(result, 1.0);
     } else if (boxFlag ==1){
-        vec2 st = FragPos.xy/u_resolution.xy*512.;
-        st.x *= u_resolution.x/u_resolution.y;
+        vec3 color = boxGrid();
 
-        vec3 color = vec3(0.0, .8, .3);
-
-        // Grid
-        vec2 grid_st = st*300.;
-        color += vec3(0.0, 0.7, 0.2)*grid(grid_st, 0.01);
-        color += vec3(0.2, 0., 0.)*grid(grid_st, 0.02);
-        color += vec3(0.2)*grid(grid_st, 0.1);
-
-        // Crosses
-        vec2 crosses_st = st + .5;
-        crosses_st *= 3.;
-        vec2 crosses_st_f = fract(crosses_st);
-        color *= 1.-cross(crosses_st_f, vec2(.3, .3));
-        color += vec3(.9)*cross(crosses_st_f, vec2(.2, .2));
-
-        // Digits
-        vec2 blocks_st = floor(st*6.);
-        float t = u_time*.8+random4(blocks_st);
-        float time_i = floor(t);
-        float time_f = fract(t);
-        color.rgb += step(0.9, random4(blocks_st+time_i))*(1.0-time_f);
-
-        float ambientStrength = 0.01;
-        vec3 ambient = ambientStrength * lightColor;
-        vec3 norm = normalize(Normal);
-        vec3 lightDir = normalize(lightPos);
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = diff * lightColor;
-
-        vec3  result = (ambient + diffuse)*vec3(color[0], color[1], color[2]);
-
-
+        vec3 lightValue = getLightFunc();
+        vec3  result = lightValue*color;
         FragColor = vec4(result, 1.0);
     }
 
 
     else {
 
-
         if (lightFlag == 0){
-            vec3 viewDir = normalize(viewPos - FragPos);
-
-            // ambient
-            float ambientStrength = 0.01;
-            vec3 ambient = ambientStrength * lightColor;
-
-            // diffuse
-            vec3 norm = normalize(Normal);
-            vec3 lightDir = normalize(lightPos);
-            float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = diff * lightColor;
-            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
+            vec3  lightValue = getLightFunc();
+            vec3  result = lightValue*vec3(ourColor[0], ourColor[1], ourColor[2]);
             //        vec3 result = (ambient + diffuse) * objectColor;
 
 

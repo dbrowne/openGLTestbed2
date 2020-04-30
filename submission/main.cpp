@@ -27,6 +27,7 @@
 #include "Sphere.h"
 #include "dflyGen.h"
 
+
 void motion_gen();
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -36,11 +37,19 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
 // settings
 const unsigned int SCR_WIDTH = 1000;
 const unsigned int SCR_HEIGHT = 1000;
-
-int g_motion = 1;
+const float MIX_INCR = 0.0001;
+int g_fly_motion = 1;
+int g_background_motion = 1;
 int g_light = 0;
-int g_show_sphere = 1;
+int g_show_sphere = -1;
+int g_iteration_count = 0;
+int g_star_mult = 1;
+double g_last_time = 0;
+int g_show_background = -1;
 
+float g_mix_cntr = 0.;
+float g_mix_offset = MIX_INCR;
+int g_mix_flag = 1;
 // camera
 Camera g_camera(glm::vec3(6.0f, 6.0f, 18.0f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -53,7 +62,7 @@ float g_angle = 0.0f;
 float g_yaw = 1.0;
 float g_pitch = 1.0;
 float g_bMult = 16.0;
-
+float g_density = 0.5;
 
 int g_tex_flag = 0;
 int g_poly_flag = 0;
@@ -115,7 +124,7 @@ int main() {
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -173,7 +182,7 @@ int main() {
     } else {
         std::cout << "Failed to load texture" << std::endl;
     }
-  
+
     stbi_image_free(data);
 
     unsigned int texture2;
@@ -235,6 +244,7 @@ int main() {
         shader1.setVec3("lightColor2", 1.0f, 1.0f, 1.0f);
         shader1.setInt("material.diffuse", 0);
         shader1.setInt("material.specular", 1);
+        shader1.setInt("u_show_background", g_show_background);
 
 
         if (g_light_flag == 1) {
@@ -319,6 +329,11 @@ int main() {
         shader1.setFloat("bMult", g_bMult);
         shader1.setVec2("u_resolution", dims[2], dims[3]);
         shader1.setFloat("u_time", glfwGetTime());
+        shader1.setFloat("cntr", g_mix_cntr);
+        shader1.setFloat("cntr_offset", g_mix_offset);
+        shader1.setInt("ITERATIONS", g_iteration_count);
+        shader1.setFloat("density", g_density);
+        shader1.setFloat("star_mult", float(g_star_mult));
         tent->draw();
 
 
@@ -342,7 +357,8 @@ int main() {
 }
 
 void motion_gen() {
-    if (g_motion == 1) {
+    double t_now = glfwGetTime();
+    if (g_fly_motion == 1) {
         g_pitch += g_pitch_const * g_pitch_flag;
         g_yaw -= g_yaw_const * g_pitch_flag;
 
@@ -356,12 +372,35 @@ void motion_gen() {
             g_set_count++;
         }
 
-    if (g_set_count % 201 == 0) {
-        g_set_change = false;
+        if (g_set_count % 201 == 0) {
+            g_set_change = false;
+        }
+
+    } else if (int(g_mix_cntr) % 60 == 0 && g_mix_cntr > 60.) {
+        g_mix_flag *= -1;
+        g_mix_offset = float(g_mix_flag) * MIX_INCR;
+        g_mix_cntr -= 1.;
     }
+
+    if (g_background_motion == 1) {
+        g_mix_cntr += g_mix_offset;
+        g_iteration_count = abs(600 + int(590. * cos(g_mix_cntr)));
+        g_density = 1 + 36 * sin(g_mix_cntr / PI);
+
+        if (g_mix_cntr < 0.) {
+            g_mix_cntr = 0;
+            g_mix_flag *= -1;
+        }
+
+        if (abs(t_now - g_last_time) > 15) {
+            g_last_time = t_now;
+            g_star_mult += 1;
+            g_star_mult %= 128;
+        }
 
     }
 }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -370,6 +409,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         glfwSetWindowShouldClose(window, true);
     }
 
+    // Polygon mode
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
         switch (g_poly_flag) {
             case 0:
@@ -388,31 +428,47 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_poly_flag %= 3;
     }
 
-
+    // Stop light
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         g_light_flag *= -1;
     }
 
-
+    // Pitch decrease
     if (glfwGetKey(window, GLFW_KEY_COMMA) == GLFW_PRESS) {
         g_pitch_const = g_pitch_const - .25 * g_pitch_const;
         g_yaw_const = g_yaw_const - .125 * g_yaw_const;
     }
-
+    // Pitch increase
     if (glfwGetKey(window, GLFW_KEY_PERIOD) == GLFW_PRESS) {
         g_pitch_const = g_pitch_const + .25 * g_pitch_const;
         g_yaw_const = g_yaw_const + .25 * g_yaw_const;
     }
 
+    // Stop fly motion
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-        g_motion *= -1;
+        g_fly_motion *= -1;
     }
+
+    // Stop background motion
+    if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+        g_background_motion *= -1;
+    }
+
+
+    // increase Z of light
 
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) { //< key
         g_l_zh += .1;
         g_l_zh = fmod(g_l_zh, 360.0);
     }
+    // decrease Z of light
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
+        g_l_zh -= .1;
+        g_l_zh = fmod(g_l_zh, 360.0);
 
+    }
+
+    // wing movement
     if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) { //< key
         if (g_move == 1) {
             g_move = 0;
@@ -422,24 +478,22 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     }
 
 
+    //    increase smoke density
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
         g_bMult += 1.0;
     }
 
+    // decrease smoke density
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
         g_bMult -= 1.0;
         if (g_bMult < 1.0) {
-            g_bMult = 3.0;
+            g_bMult = 1.0;
         }
     }
 
 
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) { //> key
-        g_l_zh -= .1;
-        g_l_zh = fmod(g_l_zh, 360.0);
 
-    }
-
+    //Perpspective
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
         switch (g_perspective) {
             case 0:
@@ -453,12 +507,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         }
     }
 
+    // lighting
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
         g_light += 1;
         g_light %= 3;
     }
 
-
+    // texture
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
         g_tex_flag += 1;
         g_tex_flag %= 3;
@@ -497,19 +552,19 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         g_angle -= 1.0;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
         g_angle += 1.0;
     }
 
-
-
+    if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
+        g_show_background *= -1;
+    }
 
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
