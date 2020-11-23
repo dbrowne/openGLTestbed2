@@ -111,7 +111,6 @@ vec3 getLightFunc(){
         vec3 lightDir = normalize(lightPos);
         float diff = max(dot(norm, lightDir), 0.0);
         vec3 diffuse = diff * lightColor;
-        //            vec3  result = (ambient + diffuse)*vec3(ourColor[0], ourColor[1], ourColor[2]);
         if (u_show_background == 1){
             result = (ambient+diffuse)*ourColor.rgb;
         }
@@ -128,15 +127,17 @@ float cross(in vec2 st, vec2 size){
 }
 
 
-// Cellular noise ("Worley noise") in 3D in GLSL.
-// Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
-// This code is released under the conditions of the MIT license.
-// See LICENSE file for details.
+
 
 // Permutation polynomial: (34x^2 + x) mod 289
 vec3 permute(vec3 x) {
     return mod((34.0 * x + 1.0) * x, 289.0);
 }
+// Cellular noise ("Worley noise") in 3D in GLSL.
+// Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
+// This code is released under the conditions of the MIT license.
+// See LICENSE file for details.
+
 
 // Cellular noise, returning F1 and F2 in a vec2.
 // 3x3x3 search region for good F2 everywhere, but a lot
@@ -308,10 +309,8 @@ vec3 voronoi(in vec2 x) {
             vec2 g = vec2(float(i), float(j));
             vec2 o = random3(n + g);
             o = 0.5 + 0.5*sin(u_time + 6.2831*o);
-
             vec2 r = g + o - f;
             float d = dot(r, r);
-
             if (d<md) {
                 md = d;
                 mr = r;
@@ -327,9 +326,7 @@ vec3 voronoi(in vec2 x) {
             vec2 g = mg + vec2(float(i), float(j));
             vec2 o = random3(n + g);
             o = 0.5 + 0.5*sin(u_time + 6.2831*o);
-
             vec2 r = g + o - f;
-
             if (dot(mr-r, mr-r)>0.00001) {
                 md = min(md, dot(0.5*(mr+r), normalize(r-mr)));
             }
@@ -651,6 +648,7 @@ void main()
         vec4 smokeColor = smoky();
         vec4 rayColor = newImage();
         FragColor = mixer(smokeColor, rayColor);
+
 
     } else if (dotFlag ==1){
         vec3  result = genCellularDots();
