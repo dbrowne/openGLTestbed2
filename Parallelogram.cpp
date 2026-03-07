@@ -306,7 +306,7 @@ int Paralleogram::get_vertex_size() {
 }
 
 float Paralleogram::chk(float inp) {
-    if (abs(inp) < 9.28108e-06) {
+    if (fabsf(inp) < 9.28108e-06) {
         return 0.0;
     } else {
         return inp;

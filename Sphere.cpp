@@ -133,7 +133,7 @@ void Sphere::draw(int useTex, int tex_num) {
         glGenBuffers(1, &sphere_vbo);
         glBindVertexArray(sphere_vao);
         glBindBuffer(GL_ARRAY_BUFFER, sphere_vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(outVertices) * outVertices_count * outVertices_stride, outVertices,
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * outVertices_count * outVertices_stride, outVertices,
                      GL_STATIC_DRAW);
         glCheckError();
         // position attribute

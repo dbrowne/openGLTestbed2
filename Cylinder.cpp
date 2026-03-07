@@ -403,7 +403,7 @@ void Cylinder::dump_vertex(int offset) {
 }
 
 float Cylinder::chk(float inp) {
-    if (abs(inp) < 9.5e-06) {
+    if (fabsf(inp) < 9.5e-06) {
         return 0.0;
     } else {
         return inp;
@@ -437,7 +437,7 @@ void Cylinder::draw() {
         glGenBuffers(1, &VBO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * vertex_stride, vertices,
                      GL_STATIC_DRAW);
         glCheckError();
         // position attribute
@@ -460,7 +460,7 @@ void Cylinder::draw() {
                               (vertex_stride) * sizeof(float),
                               (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
         glCheckError();
-        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(2);
         //Normal attribute
         glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
                               (vertex_stride) * sizeof(float),

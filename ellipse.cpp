@@ -238,7 +238,7 @@ void Ellipse::draw() {
         glGenBuffers(1, &VBO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_size, vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size, vertices, GL_STATIC_DRAW);
         glCheckError();
         // Position attribute
         glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,

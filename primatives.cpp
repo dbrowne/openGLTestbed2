@@ -82,7 +82,7 @@ void Axes::draw() {
         glGenBuffers(1, &VBO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_size, vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size, vertices, GL_STATIC_DRAW);
         // Position attribute
         glVertexAttribPointer(0, VERTEX_SIZE, GL_FLOAT, GL_FALSE,
                               (VERTEX_SIZE + COLOR_SIZE + TEXTURE_SIZE) * sizeof(float), (void *) 0);
@@ -536,7 +536,7 @@ void Polyg::draw() {
         glGenBuffers(1, &VBO);
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * vertex_count * vertex_stride, vertices,
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * vertex_stride, vertices,
                      GL_STATIC_DRAW);
         glCheckError();
         // position attribute
@@ -559,7 +559,7 @@ void Polyg::draw() {
                               (vertex_stride) * sizeof(float),
                               (void *) ((VERTEX_SIZE + COLOR_SIZE) * sizeof(float)));
         glCheckError();
-        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(2);
         //Normal attribute
         glVertexAttribPointer(3, NORMAL_SIZE, GL_FLOAT, GL_FALSE,
                               (vertex_stride) * sizeof(float),

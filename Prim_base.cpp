@@ -59,7 +59,7 @@ void Extra::gen_normal2(int idx, int offset, float *v1, float *v2, float *out) {
 }
 
 float Extra::chk(float inp) {
-    if (abs(inp) < 9.28108e-06) {
+    if (fabsf(inp) < 9.28108e-06) {
         return 0.0;
     } else {
         return inp;
